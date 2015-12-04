@@ -1,0 +1,13 @@
+#ifndef _FSCIoctl_H_
+#define _FSCIoctl_H_
+
+#ifndef _NTDDK_
+#include <winioctl.h>
+#endif
+
+// same IOCTL as for certified Intel SMBUS driver
+#define IOCTL_FSC_GET_DRIVER_VERSION	CTL_CODE(0xCBA9, 0xC00 | 0x9b, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
+#define IOCTL_FSC_HARDWARE_PRESENT		CTL_CODE(0xCBA9, 0, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
+#endif

@@ -1,0 +1,91 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GabiAcpiTest", "GabiAcpiTest\GabiAcpiTest.vcxproj", "{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GabiAcpi", "GabiAcpi\GabiAcpi.vcxproj", "{8CF74B16-2EFC-45AB-833C-3987CDE67171}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscGabi", "FscGabi\FscGabi.vcxproj", "{4B93D971-5896-4C7B-8AF7-1FF709607B79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|ARM.ActiveCfg = Debug|ARM
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|ARM.Build.0 = Debug|ARM
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|ARM64.Build.0 = Debug|ARM64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|x64.ActiveCfg = Debug|x64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|x64.Build.0 = Debug|x64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|x86.ActiveCfg = Debug|Win32
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|x86.Build.0 = Debug|Win32
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|ARM.ActiveCfg = Release|ARM
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|ARM.Build.0 = Release|ARM
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|ARM64.ActiveCfg = Release|ARM64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|ARM64.Build.0 = Release|ARM64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|x64.ActiveCfg = Release|x64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|x64.Build.0 = Release|x64
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|x86.ActiveCfg = Release|Win32
+		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|x86.Build.0 = Release|Win32
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|ARM.ActiveCfg = Debug|ARM
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|ARM.Build.0 = Debug|ARM
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|ARM64.Build.0 = Debug|ARM64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|x64.ActiveCfg = Debug|x64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|x64.Build.0 = Debug|x64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|x86.ActiveCfg = Debug|Win32
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|x86.Build.0 = Debug|Win32
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|ARM.ActiveCfg = Release|ARM
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|ARM.Build.0 = Release|ARM
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|ARM64.ActiveCfg = Release|ARM64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|ARM64.Build.0 = Release|ARM64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|x64.ActiveCfg = Release|x64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|x64.Build.0 = Release|x64
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|x86.ActiveCfg = Release|Win32
+		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|x86.Build.0 = Release|Win32
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|ARM.ActiveCfg = Debug|ARM
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|ARM.Build.0 = Debug|ARM
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|ARM64.Build.0 = Debug|ARM64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|x64.ActiveCfg = Debug|x64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|x64.Build.0 = Debug|x64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|x86.ActiveCfg = Debug|Win32
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|x86.Build.0 = Debug|Win32
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|ARM.ActiveCfg = Release|ARM
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|ARM.Build.0 = Release|ARM
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|ARM64.ActiveCfg = Release|ARM64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|ARM64.Build.0 = Release|ARM64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|x64.ActiveCfg = Release|x64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|x64.Build.0 = Release|x64
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|x86.ActiveCfg = Release|Win32
+		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://abgvtfs1a:8080/tfs/tpc1
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = GabiAcpiTest\\GabiAcpiTest.vcxproj
+		SccProjectName1 = GabiAcpiTest
+		SccLocalPath1 = GabiAcpiTest
+		SccProjectUniqueName2 = GabiAcpi\\GabiAcpi.vcxproj
+		SccProjectName2 = GabiAcpi
+		SccLocalPath2 = GabiAcpi
+		SccProjectUniqueName3 = FscGabi\\FscGabi.vcxproj
+		SccProjectName3 = FscGabi
+		SccLocalPath3 = FscGabi
+	EndGlobalSection
+EndGlobal

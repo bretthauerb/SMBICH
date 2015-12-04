@@ -1,0 +1,82 @@
+;
+; GabiAcpi.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider=%ManufacturerName%
+CatalogFile=GabiAcpi.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+GabiAcpi.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%GabiAcpi.DeviceDesc%=GabiAcpi_Device, ACPI\FUJ0420
+
+[GabiAcpi_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+GabiAcpi.sys
+
+;-------------- Service installation
+[GabiAcpi_Device.NT.Services]
+AddService = GabiAcpi,%SPSVCINST_ASSOCSERVICE%, GabiAcpi_Service_Inst
+
+; -------------- GabiAcpi driver install sections
+[GabiAcpi_Service_Inst]
+DisplayName    = %GabiAcpi.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\GabiAcpi.sys
+
+;
+;--- GabiAcpi_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+GabiAcpi_Device_CoInstaller_CopyFiles = 11
+
+[GabiAcpi_Device.NT.CoInstallers]
+AddReg=GabiAcpi_Device_CoInstaller_AddReg
+CopyFiles=GabiAcpi_Device_CoInstaller_CopyFiles
+
+[GabiAcpi_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[GabiAcpi_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+[GabiAcpi_Device.NT.Wdf]
+KmdfService =  GabiAcpi, GabiAcpi_wdfsect
+[GabiAcpi_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Fujitsu"
+DiskName = "GabiAcpi Installation Disk"
+GabiAcpi.DeviceDesc = "GabiAcpi Device"
+GabiAcpi.SVCDESC = "GabiAcpi Service"

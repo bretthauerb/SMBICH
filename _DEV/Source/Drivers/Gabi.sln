@@ -73,19 +73,4 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://abgvtfs1a.abg.fsc.net:8080/tfs/tpc1
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = GabiAcpiTest\\GabiAcpiTest.vcxproj
-		SccProjectName1 = GabiAcpiTest
-		SccLocalPath1 = GabiAcpiTest
-		SccProjectUniqueName2 = FscGabi\\FscGabi.vcxproj
-		SccProjectName2 = FscGabi
-		SccLocalPath2 = FscGabi
-		SccProjectUniqueName3 = GabiAcpi\\GabiAcpi.vcxproj
-		SccProjectName3 = GabiAcpi
-		SccLocalPath3 = GabiAcpi
-	EndGlobalSection
 EndGlobal

@@ -81,11 +81,11 @@ Global
 		SccProjectUniqueName1 = GabiAcpiTest\\GabiAcpiTest.vcxproj
 		SccProjectName1 = GabiAcpiTest
 		SccLocalPath1 = GabiAcpiTest
-		SccProjectUniqueName2 = GabiAcpi\\GabiAcpi.vcxproj
-		SccProjectName2 = GabiAcpi
-		SccLocalPath2 = GabiAcpi
-		SccProjectUniqueName3 = FscGabi\\FscGabi.vcxproj
-		SccProjectName3 = FscGabi
-		SccLocalPath3 = FscGabi
+		SccProjectUniqueName2 = FscGabi\\FscGabi.vcxproj
+		SccProjectName2 = FscGabi
+		SccLocalPath2 = FscGabi
+		SccProjectUniqueName3 = GabiAcpi\\GabiAcpi.vcxproj
+		SccProjectName3 = GabiAcpi
+		SccLocalPath3 = GabiAcpi
 	EndGlobalSection
 EndGlobal

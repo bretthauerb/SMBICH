@@ -313,7 +313,7 @@
             <InArgument x:TypeArguments="x:String">[SourcesDirectory + VersionFile]</InArgument>
           </Assign.Value>
         </Assign>
-        <bw:UpdateVersionInfo DisplayName="UpdateCommonVersionFile" DoCheckin="True" DoCheckout="True" VersRegexStrArr="[CommonVersionFileRegexStrArray]" VersReplaceStrArr="[CommonVersionFileReplaceStrArray]" VersionFilePath="[VersionFileSrcPath]" Workspace="[Workspace]" sap2010:WorkflowViewState.IdRef="UpdateVersionInfo_2" />
+        <!-- <bw:UpdateVersionInfo DisplayName="UpdateCommonVersionFile" DoCheckin="True" DoCheckout="True" VersRegexStrArr="[CommonVersionFileRegexStrArray]" VersReplaceStrArr="[CommonVersionFileReplaceStrArray]" VersionFilePath="[VersionFileSrcPath]" Workspace="[Workspace]" sap2010:WorkflowViewState.IdRef="UpdateVersionInfo_2" /> -->
       </Sequence>
       <If Condition="[CreateLabel]" DisplayName="If CreateLabel" sap2010:WorkflowViewState.IdRef="If_10" mtbwt:BuildTrackingParticipant.Importance="Low">
         <If.Then>

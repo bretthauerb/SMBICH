@@ -223,7 +223,7 @@
             <InArgument x:TypeArguments="x:Int32">[BuildNumArray.Length]</InArgument>
           </Assign.Value>
         </Assign>
-        <If Condition="[BuildNumParts &gt; 2]" DisplayName="If Build Number Parts" sap2010:WorkflowViewState.IdRef="If_9">
+        <!-- <If Condition="[BuildNumParts &gt; 2]" DisplayName="If Build Number Parts" sap2010:WorkflowViewState.IdRef="If_9">
           <If.Then>
             <Sequence sap2010:WorkflowViewState.IdRef="Sequence_6">
               <Assign DisplayName="Assign Revision Version" sap2010:WorkflowViewState.IdRef="Assign_10">
@@ -316,8 +316,8 @@
             <InArgument x:TypeArguments="x:String">[SourcesDirectory + VersionFile]</InArgument>
           </Assign.Value>
         </Assign>
-        <!-- <bw:UpdateVersionInfo DisplayName="UpdateCommonVersionFile" DoCheckin="True" DoCheckout="True" VersRegexStrArr="[CommonVersionFileRegexStrArray]" VersReplaceStrArr="[CommonVersionFileReplaceStrArray]" VersionFilePath="[VersionFileSrcPath]" Workspace="[Workspace]" sap2010:WorkflowViewState.IdRef="UpdateVersionInfo_2" /> -->
-      </Sequence>
+        <bw:UpdateVersionInfo DisplayName="UpdateCommonVersionFile" DoCheckin="True" DoCheckout="True" VersRegexStrArr="[CommonVersionFileRegexStrArray]" VersReplaceStrArr="[CommonVersionFileReplaceStrArray]" VersionFilePath="[VersionFileSrcPath]" Workspace="[Workspace]" sap2010:WorkflowViewState.IdRef="UpdateVersionInfo_2" />
+      </Sequence> -->
       <If Condition="[CreateLabel]" DisplayName="If CreateLabel" sap2010:WorkflowViewState.IdRef="If_10" mtbwt:BuildTrackingParticipant.Importance="Low">
         <If.Then>
           <mtbwa:InvokeForReason DisplayName="Create and Set Label for non-Shelveset Builds" sap2010:WorkflowViewState.IdRef="InvokeForReason_2" Reason="Manual, IndividualCI, BatchedCI, Schedule, ScheduleForced, UserCreated">

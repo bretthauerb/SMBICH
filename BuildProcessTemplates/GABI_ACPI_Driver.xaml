@@ -206,7 +206,7 @@
         </If>
         <mtbwa:SyncWorkspace DisplayName="Get Workspace" sap2010:WorkflowViewState.IdRef="SyncWorkspace_1" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces" VersionOverride="[GetVersion]" Workspace="[Workspace]" />
       </Sequence>
-      <Sequence DisplayName="Custom Sequence: Get BuildNumber" sap2010:WorkflowViewState.IdRef="Sequence_8">
+      <!-- <Sequence DisplayName="Custom Sequence: Get BuildNumber" sap2010:WorkflowViewState.IdRef="Sequence_8">
         <Assign DisplayName="Assign Split BuildNumber" sap2010:WorkflowViewState.IdRef="Assign_1">
           <Assign.To>
             <OutArgument x:TypeArguments="s:String[]">[BuildNumArray]</OutArgument>
@@ -223,7 +223,7 @@
             <InArgument x:TypeArguments="x:Int32">[BuildNumArray.Length]</InArgument>
           </Assign.Value>
         </Assign>
-        <!-- <If Condition="[BuildNumParts &gt; 2]" DisplayName="If Build Number Parts" sap2010:WorkflowViewState.IdRef="If_9">
+        <If Condition="[BuildNumParts &gt; 2]" DisplayName="If Build Number Parts" sap2010:WorkflowViewState.IdRef="If_9">
           <If.Then>
             <Sequence sap2010:WorkflowViewState.IdRef="Sequence_6">
               <Assign DisplayName="Assign Revision Version" sap2010:WorkflowViewState.IdRef="Assign_10">

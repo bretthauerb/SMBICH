@@ -36,6 +36,9 @@
  xmlns:si="clr-namespace:System.IO;assembly=mscorlib"
  xmlns:sl="clr-namespace:System.Linq;assembly=System.Core"
  xmlns:this="clr-namespace:TfsBuild"
+ xmlns:swm="clr-namespace:System.Windows.Media;assembly=WindowsBase"
+ xmlns:swm1="clr-namespace:System.Windows.Media;assembly=PresentationCore"
+ xmlns:swm2="clr-namespace:System.Activities.Presentation.WorkflowViewState;assembly=System.Activities.Presentation"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="BuildSettings" Type="InArgument(mtbwa:BuildSettings)" />

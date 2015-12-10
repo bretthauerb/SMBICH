@@ -1071,7 +1071,7 @@ eInterpreterReturn ParseModRM(psInterpreterContext pContext, PUSHORT pwCurrentIn
 				return INTERPRETER_E_EOF;
 			}
 
-			pInstruction->Displacement += (pContext->pEntryPoint[*pwCurrentIndex] << (i * 8));
+			pInstruction->Displacement += ((ULONGLONG)pContext->pEntryPoint[*pwCurrentIndex] << (i * 8));
 		}
 
 		if (sibRequired || displacementBytes > 0)

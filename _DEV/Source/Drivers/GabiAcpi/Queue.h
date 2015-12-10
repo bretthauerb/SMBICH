@@ -47,4 +47,12 @@ NTSTATUS EvaluateAcpiMethode(IN WDFIOTARGET IoTarget, IN ULONG Revision, IN ULON
 
 static const PHYSICAL_ADDRESS Phys4GB = {/*LowPart*/~0UL, /*HighPart*/0 };
 
+//typedef struct
+//{
+//	PVOID pVirtual;
+//	PHYSICAL_ADDRESS Physical;
+//	ULONG ulSize;
+//} 
+//DriverBufferDescriptor, *PDriverBufferDescriptor;
+
 EXTERN_C_END

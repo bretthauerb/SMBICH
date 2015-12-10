@@ -34,6 +34,7 @@ typedef struct
 	ULONG RequestBufferLen;
 	PHYSICAL_ADDRESS ResponseBuffer;
 	ULONG ResponseBufferLen;
+	ULONG AddressLength;  //Possible values: 0 or 8. If 8 then struct contains sub memory blocks
 }
 GabiAcpiCmd, *PGabiAcpiCmd;
 

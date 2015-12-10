@@ -77,6 +77,6 @@ KmdfLibraryVersion = $KMDFVERSION$
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
 ManufacturerName="Fujitsu"
-DiskName = "GabiAcpi Installation Disk"
-GabiAcpi.DeviceDesc = "GabiAcpi Device"
-GabiAcpi.SVCDESC = "GabiAcpi Service"
+DiskName = "FUJ0420 Installation Disk"
+GabiAcpi.DeviceDesc = "FUJ0420 Device"
+GabiAcpi.SVCDESC = "FUJ0420 Service"

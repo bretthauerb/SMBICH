@@ -1,4 +1,4 @@
-﻿<Activity mc:Ignorable="sads sap sap2010" x:Class="TfsBuild.Process" this:Process.BuildSettings="[New Microsoft.TeamFoundation.Build.Workflow.Activities.BuildSettings()]" this:Process.TestSpecs="[New Microsoft.TeamFoundation.Build.Workflow.Activities.TestSpecList(New Microsoft.TeamFoundation.Build.Workflow.Activities.TestAssemblySpec(&quot;**\*test*.dll&quot;))]" this:Process.BuildNumberFormat="[&quot;$(BuildDefinitionName)_$(Date:yyyyMMdd)$(Rev:.r)&quot;]" this:Process.CleanWorkspace="[Microsoft.TeamFoundation.Build.Workflow.Activities.CleanWorkspaceOption.All]" this:Process.RunCodeAnalysis="[Microsoft.TeamFoundation.Build.Workflow.Activities.CodeAnalysisOption.AsConfigured]" this:Process.SourceAndSymbolServerSettings="[New Microsoft.TeamFoundation.Build.Workflow.Activities.SourceAndSymbolServerSettings(True, Nothing)]" this:Process.AgentSettings="[New Microsoft.TeamFoundation.Build.Workflow.Activities.AgentSettings() With {.MaxWaitTime = New System.TimeSpan(4, 0, 0), .MaxExecutionTime = New System.TimeSpan(0, 0, 0), .TagComparison = Microsoft.TeamFoundation.Build.Workflow.Activities.TagComparison.MatchExactly }]" this:Process.AssociateChangesetsAndWorkItems="[True]" this:Process.CreateWorkItem="[True]" this:Process.DropBuild="[True]" this:Process.MSBuildPlatform="[Microsoft.TeamFoundation.Build.Workflow.Activities.ToolPlatform.Auto]" this:Process.PerformTestImpactAnalysis="[True]" this:Process.CreateLabel="[True]" this:Process.DisableTests="[False]" this:Process.Verbosity="[Microsoft.TeamFoundation.Build.Workflow.BuildVerbosity.Normal]" this:Process.SupportedReasons="All" this:Process.VersionFile="\Source\_SHARED\inc\CommonVersion.h"
+﻿<Activity mc:Ignorable="sads sap sap2010" x:Class="TfsBuild.Process" this:Process.BuildSettings="[New Microsoft.TeamFoundation.Build.Workflow.Activities.BuildSettings()]" this:Process.TestSpecs="[New Microsoft.TeamFoundation.Build.Workflow.Activities.TestSpecList(New Microsoft.TeamFoundation.Build.Workflow.Activities.TestAssemblySpec(&quot;**\*test*.dll&quot;))]" this:Process.BuildNumberFormat="[&quot;$(BuildDefinitionName)_$(Date:yyyyMMdd)$(Rev:.r)&quot;]" this:Process.CleanWorkspace="[Microsoft.TeamFoundation.Build.Workflow.Activities.CleanWorkspaceOption.All]" this:Process.RunCodeAnalysis="[Microsoft.TeamFoundation.Build.Workflow.Activities.CodeAnalysisOption.AsConfigured]" this:Process.SourceAndSymbolServerSettings="[New Microsoft.TeamFoundation.Build.Workflow.Activities.SourceAndSymbolServerSettings(True, Nothing)]" this:Process.AgentSettings="[New Microsoft.TeamFoundation.Build.Workflow.Activities.AgentSettings() With {.MaxWaitTime = New System.TimeSpan(4, 0, 0), .MaxExecutionTime = New System.TimeSpan(0, 0, 0), .TagComparison = Microsoft.TeamFoundation.Build.Workflow.Activities.TagComparison.MatchExactly }]" this:Process.AssociateChangesetsAndWorkItems="[True]" this:Process.CreateWorkItem="[True]" this:Process.DropBuild="[True]" this:Process.MSBuildPlatform="[Microsoft.TeamFoundation.Build.Workflow.Activities.ToolPlatform.Auto]" this:Process.PerformTestImpactAnalysis="[True]" this:Process.CreateLabel="[True]" this:Process.DisableTests="[False]" this:Process.Verbosity="[Microsoft.TeamFoundation.Build.Workflow.BuildVerbosity.Normal]" this:Process.SupportedReasons="All" this:Process.VersionFile="\Source\_SHARED\inc\CommonVersion.h" this:Process.SignAllCatSysBat="\Scripts\sign_all_cat_sys.bat"
  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
  xmlns:b="clr-namespace:BuildActivities;assembly=BuildActivities"
  xmlns:bw="clr-namespace:BuildActivities.WorkflowActivities;assembly=BuildActivities"
@@ -62,6 +62,7 @@
     <x:Property Name="Metadata" Type="mtbw:ProcessParameterMetadataCollection" />
     <x:Property Name="SupportedReasons" Type="mtbc:BuildReason" />
     <x:Property Name="VersionFile" Type="InArgument(x:String)" />
+	<x:Property Name="SignAllCatSysBat" Type="InArgument(x:String)" />
   </x:Members>
   <this:Process.MSBuildArguments>
     <InArgument x:TypeArguments="x:String" />
@@ -72,6 +73,7 @@
   <this:Process.Metadata>
     <mtbw:ProcessParameterMetadataCollection>
       <mtbw:ProcessParameterMetadata BrowsableWhen="Always" Category="Project" Description="Path of CommonVersion.h in Workspace" DisplayName="VersionFile" ParameterName="VersionFile" />
+	  <mtbw:ProcessParameterMetadata BrowsableWhen="Always" Category="Project" Description="Path of Sign_All_Cat_Sys.bat in Workspace" DisplayName="SignAllCatSysBat" ParameterName="SignAllCatSysBat" />
     </mtbw:ProcessParameterMetadataCollection>
   </this:Process.Metadata>
   <sap2010:WorkflowViewState.IdRef>TfsBuild.Process_1</sap2010:WorkflowViewState.IdRef>
@@ -131,6 +133,8 @@
         <Variable x:TypeArguments="x:String" Name="BuildNumMajorVersion" />
         <Variable x:TypeArguments="x:String" Name="VersionFileSrcPath" />
         <Variable x:TypeArguments="x:String" Name="BuildNumRevisionVersion" />
+		<Variable x:TypeArguments="x:String" Name="SignAllCatSysBatPath" />
+		<Variable x:TypeArguments="x:Int32" Name="ResultCode" />
       </mtbwa:AgentScope.Variables>
       <Sequence DisplayName="Initialize Variables" sap2010:WorkflowViewState.IdRef="Sequence_4" mtbwt:BuildTrackingParticipant.Importance="Low">
         <mtbwa:GetBuildAgent DisplayName="Get the Agent" sap2010:WorkflowViewState.IdRef="GetBuildAgent_1" mtbwt:BuildTrackingParticipant.Importance="Low" Result="[BuildAgent]" />
@@ -329,6 +333,40 @@
       <TryCatch DisplayName="Try Compile, Test, and Associate Changesets and Work Items" sap2010:WorkflowViewState.IdRef="TryCatch_2" mtbwt:BuildTrackingParticipant.Importance="Low">
         <TryCatch.Finally>
           <Sequence DisplayName="Revert Workspace and Copy Files to Drop Location" mtbwt:BuildTrackingParticipant.Importance="Low">
+			<Sequence DisplayName="Custom Sequence: Post Build Actions">
+				<Assign>
+					<Assign.To>
+						<OutArgument x:TypeArguments="x:String">[SignAllCatSysBatPath]</OutArgument>
+					</Assign.To>
+					<Assign.Value>
+						<InArgument x:TypeArguments="x:String">[SourcesDirectory + SignAllCatSysBat]</InArgument>
+					</Assign.Value>
+				</Assign>
+				<mtbwa:InvokeProcess Arguments="[BinariesDirectory]" DisplayName="InvokeProcess: Sign_All_Cat_Sys_bat" FileName="[SignAllCatSysBatPath]" Result="[ResultCode]" WorkingDirectory="[SourcesDirectory]">
+					<mtbwa:InvokeProcess.ErrorDataReceived>
+						<ActivityAction x:TypeArguments="x:String">
+							<ActivityAction.Argument>
+								<DelegateInArgument x:TypeArguments="x:String" Name="errOutput" />
+							</ActivityAction.Argument>
+						</ActivityAction>
+					</mtbwa:InvokeProcess.ErrorDataReceived>
+					<mtbwa:InvokeProcess.OutputDataReceived>
+						<ActivityAction x:TypeArguments="x:String">
+							<ActivityAction.Argument>
+								<DelegateInArgument x:TypeArguments="x:String" Name="stdOutput" />
+							</ActivityAction.Argument>
+						</ActivityAction>
+					</mtbwa:InvokeProcess.OutputDataReceived>				
+				</mtbwa:InvokeProcess>
+				<If Condition="[ResultCode.Equals(0)]" DisplayName="If InvokeProcess ExitCode = 0">
+					<If.Then>
+						<mtbwa:WriteBuildMessage Importance="[Microsoft.TeamFoundation.Build.Client.BuildMessageImportance.High]" Message="[&quot;Sign_all_cat_sys.bat successful: &quot; + SignAllCatSysBatPath]" mva:VisualBasic.Settings="Assembly references and imported namespaces serialized as XML namespaces" />
+					</If.Then>
+					<If.Else>
+						<mtbwa:WriteBuildError Message="[&quot;Sign_all_cat_sys.bat not successful: &quot; + SignAllCatSysBatPath + &quot; - Exitcode: &quot; + ResultCode.ToString]" />
+					</If.Else>					
+				</If>
+			</Sequence>
             <mtbwa:InvokeForReason DisplayName="Revert Workspace for Shelveset Builds" Reason="ValidateShelveset, CheckInShelveset">
               <mtbwa:RevertWorkspace DisplayName="Revert Workspace" Workspace="[Workspace]" />
             </mtbwa:InvokeForReason>

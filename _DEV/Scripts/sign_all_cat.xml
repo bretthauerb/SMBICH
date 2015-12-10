@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<sections>
+  <section name="sign">
+    <file name="*.cat" timestamp="no" />	
+  </section>
+  
+  <section name="exclude">
+  </section>
+</sections>

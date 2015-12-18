@@ -68,6 +68,7 @@ Return Value:
 		);
 
 	queueConfig.EvtIoDeviceControl = GabiAcpiEvtIoDeviceControl;
+	queueConfig.EvtIoInternalDeviceControl = GabiAcpiEvtIoInternalDeviceControl;
 	queueConfig.EvtIoStop = GabiAcpiEvtIoStop;
 
 	status = WdfIoQueueCreate(

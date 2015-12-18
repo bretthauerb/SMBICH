@@ -44,6 +44,7 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="Driver.h" />
     <ClInclude Include="Queue.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Trace.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +175,12 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -182,6 +189,12 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -190,6 +203,12 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -198,6 +217,12 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
@@ -206,6 +231,12 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
@@ -214,6 +245,12 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
@@ -222,6 +259,12 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
@@ -230,9 +273,18 @@
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
+    <Inf>
+      <TimeStamp>1.0.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GabiAcpi.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

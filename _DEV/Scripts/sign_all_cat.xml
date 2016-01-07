@@ -2,7 +2,6 @@
 <sections>
   <section name="sign">
     <file name="*.cat" timestamp="no" />
-    <file name="*.exe" timestamp="no" />
   </section>
   
   <section name="exclude">

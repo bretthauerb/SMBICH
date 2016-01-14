@@ -64,6 +64,36 @@ static void x(char * s, PUCHAR p, int i)
 }
 
 static const PHYSICAL_ADDRESS Phys4GB = {/*LowPart*/~0UL, /*HighPart*/0};
+static const PHYSICAL_ADDRESS ZeroAddr = {/*LowPart*/0UL, /*HighPart*/0 };
+
+static PVOID AllocateContiguousMemory(SIZE_T NumberOfBytes, PHYSICAL_ADDRESS HighestAcceptableAddress)
+{
+	typedef PVOID(*PFN_MmAllocateContiguousNodeMemory)(_In_ SIZE_T NumberOfBytes, _In_ PHYSICAL_ADDRESS LowestAcceptableAddress, _In_ PHYSICAL_ADDRESS HighestAcceptableAddress, _In_opt_ PHYSICAL_ADDRESS BoundaryAddressMultiple, _In_ ULONG Protect, _In_ NODE_REQUIREMENT PreferredNode);
+
+	static PFN_MmAllocateContiguousNodeMemory pfnMmAllocateContiguousNodeMemory = NULL;
+	static BOOLEAN bAlreadyGot = FALSE;
+
+	if (!bAlreadyGot)
+	{
+		UNICODE_STRING uniFuncName;
+		RtlInitUnicodeString(&uniFuncName, L"MmAllocateContiguousNodeMemory");
+
+#pragma warning(push)
+#pragma warning(disable : 4055)
+		pfnMmAllocateContiguousNodeMemory = (PFN_MmAllocateContiguousNodeMemory)MmGetSystemRoutineAddress(&uniFuncName);
+#pragma warning(pop)
+		bAlreadyGot = TRUE;
+	}
+
+	if (pfnMmAllocateContiguousNodeMemory != NULL)
+	{
+		return pfnMmAllocateContiguousNodeMemory(NumberOfBytes, ZeroAddr, HighestAcceptableAddress, ZeroAddr, PAGE_READWRITE, MM_ANY_NODE_OK);
+	}
+	else
+	{
+		return MmAllocateContiguousMemory(NumberOfBytes, HighestAcceptableAddress);
+	}
+}
 
 static BOOLEAN AllocateContiguousBuffer(DriverBufferDescriptor_T * pB, ULONG Size)
 {
@@ -73,7 +103,7 @@ static BOOLEAN AllocateContiguousBuffer(DriverBufferDescriptor_T * pB, ULONG Siz
 		if (pB->pVirtual)
 			MmFreeContiguousMemory(pB->pVirtual);
 		ULONG new_size = max(1024, Size);
-		pB->pVirtual = (PUCHAR)MmAllocateContiguousMemory(new_size, Phys4GB);
+		pB->pVirtual = (PUCHAR)AllocateContiguousMemory(new_size, Phys4GB);
 		if (pB->pVirtual == NULL)
 			return FALSE;
 		pB->ulSize = (USHORT)new_size;
@@ -156,7 +186,7 @@ static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt,
 	while (ulSize)
 	{
 		ULONG s = min(ulSegSize, ulSize);
-		PVOID a = MmAllocateContiguousMemory(s, Phys4GB);
+		PVOID a = AllocateContiguousMemory(s, Phys4GB);
 		if (!a)
 		{
 			ulSegSize = (ULONG)(ROUND_TO_PAGES(ulSegSize))/2;	// is an ULONG_PTR on 64 bit

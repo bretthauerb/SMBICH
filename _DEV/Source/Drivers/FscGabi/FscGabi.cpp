@@ -34,6 +34,8 @@ typedef struct tagGABIHeader
 
 #pragma pack(pop)
 
+extern ULONG ulForceInterpreter;
+
 static UCHAR compute_cs(PUCHAR p, unsigned l)
 {
 	UCHAR rv = 0;
@@ -276,8 +278,9 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 			pdx->GabiCallAddress = (void (__stdcall *)(PHYSICAL_ADDRESS,PHYSICAL_ADDRESS,PHYSICAL_ADDRESS))(MappedBios + ulEP_Offset);
 
 #if defined(_AMD64_) || defined(_IA64_)
-			if (pdx->ulCodeIntegrityCheck != 0)
+			if (pdx->ulCodeIntegrityCheck != 0 || ulForceInterpreter != 0)
 			{
+				DbgPrint("---- Interpreter is active ----");
 				pdx->pInterpreterContext = InitInterpreter(MappedBios + ulEP_Offset, (USHORT)(MAP_BIOS_SIZE - ulEP_Offset), ucAddressingMode);
 			}
 #endif

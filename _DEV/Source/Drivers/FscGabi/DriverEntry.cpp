@@ -29,6 +29,7 @@ static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT
 #pragma pack(pop)
 
 ULONG ulMaxSegmentSize = 0;
+ULONG ulForceInterpreter = 0;
 
 #pragma INITCODE
 
@@ -81,6 +82,17 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	table[0].DefaultType = REG_DWORD;
 	table[0].DefaultData = &zero;
 	table[0].DefaultLength = sizeof(ulMaxSegmentSize);
+
+	RtlQueryRegistryValues(RTL_REGISTRY_SERVICES, L"FscGabi", table, NULL, NULL);
+
+	zero = 0;
+
+	table[0].Flags = RTL_QUERY_REGISTRY_DIRECT;
+	table[0].Name = L"ForceInterpreter";
+	table[0].EntryContext = &ulForceInterpreter;
+	table[0].DefaultType = REG_DWORD;
+	table[0].DefaultData = &zero;
+	table[0].DefaultLength = sizeof(ulForceInterpreter);
 
 	RtlQueryRegistryValues(RTL_REGISTRY_SERVICES, L"FscGabi", table, NULL, NULL);
 

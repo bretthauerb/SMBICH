@@ -69,7 +69,7 @@ Return Value:
 
 	queueConfig.EvtIoDeviceControl = GabiAcpiEvtIoDeviceControl;
 	queueConfig.EvtIoInternalDeviceControl = GabiAcpiEvtIoInternalDeviceControl;
-	queueConfig.EvtIoStop = GabiAcpiEvtIoStop;
+	queueConfig.EvtIoStop = GabiAcpiEvtIoStop;	
 
 	status = WdfIoQueueCreate(
 				 Device,
@@ -187,7 +187,7 @@ Return Value:
 --*/
 {
 	NTSTATUS status = STATUS_SUCCESS;
-	//WDFDEVICE parent = WdfIoQueueGetDevice(Queue);
+	WDFDEVICE parent = WdfIoQueueGetDevice(Queue);
 
 	TraceEvents(TRACE_LEVEL_INFORMATION,
 		TRACE_QUEUE,
@@ -196,18 +196,18 @@ Return Value:
 
 	switch (IoControlCode)
 	{
-		//case IOCTL_GABI_ACPI_CMD:
-		//	{
-		//		if (InputBufferLength != sizeof(GabiAcpiCmd))
-		//		{
-		//			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "wrong buffer length\n");
-		//			status = STATUS_INVALID_PARAMETER_1;
-		//			break;
-		//		}
+		case IOCTL_GABI_ACPI_CMD:
+			{
+				if (InputBufferLength != sizeof(GabiAcpiCmd))
+				{
+					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "wrong buffer length\n");
+					status = STATUS_INVALID_PARAMETER_1;
+					break;
+				}
 
-		//		status = GabiAcpiCallAcpi(Request, parent, 1);
-		//	}
-		//	break;
+				status = GabiAcpiCallAcpi(Request, parent, 1);
+			}
+			break;
 
 		default:
 			status = STATUS_NOT_SUPPORTED;
@@ -295,121 +295,47 @@ Return Value:
 	return;
 }
 
-//NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVOID* pBuffer2, ULONG ulLenBuffer2, PDriverBufferDescriptor* ppBufferDesc)
-//{
-//	NTSTATUS status = STATUS_SUCCESS;
-//	ULONG count = 0;
-//
-//	if (ppBufferDesc == NULL)
-//	{
-//		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "ppBufferDesc is null\n");
-//		return STATUS_INVALID_PARAMETER_1;
-//	}
-//
-//	if (pBuffer1 != NULL)
-//	{
-//		try
-//		{
-//			for (ULONG i = 0x10; i < (ulLenBuffer1 - 8); i += 8)
-//			{
-//				if ((ULONGLONG)(pBuffer1 + i) != NULL)
-//				{
-//					count++;
-//					i += 8; //skip length
-//				}
-//			}
-//		}
-//		except(EXCEPTION_EXECUTE_HANDLER)
-//		{
-//			status = STATUS_IN_PAGE_ERROR;
-//			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffer1\n");
-//		}
-//	}
-//
-//	if (pBuffer2 != NULL)
-//	{
-//		try
-//		{
-//			for (ULONG i = 0x10; i < (ulLenBuffer2 - 8); i += 8)
-//			{
-//				if ((ULONGLONG)(pBuffer2 + i) != NULL)
-//				{
-//					count++;
-//					i += 8; //skip length
-//				}
-//			}
-//		}
-//		except(EXCEPTION_EXECUTE_HANDLER)
-//		{
-//			status = STATUS_IN_PAGE_ERROR;
-//			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffer2\n");
-//		}
-//	}
-//
-//	if (count > 0)
-//	{
-//		ULONG ulLen = (count + 1) * sizeof(DriverBufferDescriptor); //one free entry to mark end of list
-//		*ppBufferDesc = ExAllocatePoolWithTag(PagedPool, ulLen, MEM_TAG);
-//
-//		if (*ppBufferDesc != NULL)
-//		{
-//			RtlZeroMemory(*ppBufferDesc, ulLen);
-//		}
-//		else
-//		{
-//			return STATUS_NO_MEMORY;
-//		}
-//	}
-//
-//	return status;
-//}
-//
-//NTSTATUS FreeMemoryBlocks(PDriverBufferDescriptor pBufferDesc)
-//{
-//	NTSTATUS status = STATUS_SUCCESS;
-//
-//	if (pBufferDesc == NULL)
-//	{
-//		return;
-//	}
-//
-//
-//
-//	return status;
-//}
-//
-//NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen)
-//{
-//	NTSTATUS status = STATUS_SUCCESS;
-//
-//
-//
-//	return status;
-//}
-//
-//NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriverBufferDescriptor pBufferDesc)
-//{
-//	NTSTATUS status = STATUS_SUCCESS;
-//
-//
-//
-//	return status;
-//}
+PVOID AllocateContiguousMemory(SIZE_T NumberOfBytes, PHYSICAL_ADDRESS HighestAcceptableAddress)
+{
+	typedef PVOID(*PFN_MmAllocateContiguousNodeMemory)(_In_ SIZE_T NumberOfBytes, _In_ PHYSICAL_ADDRESS LowestAcceptableAddress, _In_ PHYSICAL_ADDRESS HighestAcceptableAddress, _In_opt_ PHYSICAL_ADDRESS BoundaryAddressMultiple, _In_ ULONG Protect, _In_ NODE_REQUIREMENT PreferredNode);
+
+	static PFN_MmAllocateContiguousNodeMemory pfnMmAllocateContiguousNodeMemory = NULL;
+	static BOOLEAN bAlreadyGot = FALSE;
+
+	if (!bAlreadyGot)
+	{
+		UNICODE_STRING uniFuncName;
+		RtlInitUnicodeString(&uniFuncName, L"MmAllocateContiguousNodeMemory");
+
+#pragma warning(push)
+#pragma warning(disable : 4055)
+		pfnMmAllocateContiguousNodeMemory = (PFN_MmAllocateContiguousNodeMemory)MmGetSystemRoutineAddress(&uniFuncName);
+#pragma warning(pop)
+		bAlreadyGot = TRUE;
+	}
+
+	if (pfnMmAllocateContiguousNodeMemory != NULL)
+	{
+		return pfnMmAllocateContiguousNodeMemory(NumberOfBytes, ZeroAddr, HighestAcceptableAddress, ZeroAddr, PAGE_READWRITE, MM_ANY_NODE_OK);
+	}
+	else
+	{
+		return MmAllocateContiguousMemory(NumberOfBytes, HighestAcceptableAddress);
+	}
+}
 
 NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal)
 {
 	NTSTATUS status = STATUS_SUCCESS;
-	//PVOID controlBufferVirtual = NULL;
-	//PVOID requestBufferVirtual = NULL;
-	//PVOID responseBufferVirtual = NULL;
+	PVOID controlBufferVirtual = NULL;
+	PVOID requestBufferVirtual = NULL;
+	PVOID responseBufferVirtual = NULL;
 	PHYSICAL_ADDRESS controlBuffer;
 	PHYSICAL_ADDRESS requestBuffer;
 	PHYSICAL_ADDRESS responseBuffer;
 	WDFMEMORY inputMemory;
 	PGabiAcpiCmd pCmd = NULL;
-	//PDriverBufferDescriptor pBuffers = NULL;
-
-	UNREFERENCED_PARAMETER(ucExternal);
+	PDriverBufferDescriptor pBuffers = NULL;
 
 	status = WdfRequestRetrieveInputMemory(Request, &inputMemory);
 
@@ -421,102 +347,102 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 	pCmd = (PGabiAcpiCmd)WdfMemoryGetBuffer(inputMemory, NULL);
 
-	//if (ucExternal != 0)
-	//{
-	//	//Usermode buffers
-	//	PUCHAR pData;
+	if (ucExternal != 0)
+	{
+		//Usermode buffers
+		PUCHAR pData;
 
-	//	controlBufferVirtual = MmAllocateContiguousMemory(pCmd->ControlBufferLen, Phys4GB);
-	//	requestBufferVirtual = MmAllocateContiguousMemory(pCmd->RequestBufferLen, Phys4GB);
-	//	responseBufferVirtual = MmAllocateContiguousMemory(pCmd->ResponseBufferLen, Phys4GB);
+		controlBufferVirtual = AllocateContiguousMemory(pCmd->ControlBufferLen, Phys4GB);
+		requestBufferVirtual = AllocateContiguousMemory(pCmd->RequestBufferLen, Phys4GB);
+		responseBufferVirtual = AllocateContiguousMemory(pCmd->ResponseBufferLen, Phys4GB);
 
-	//	if (controlBufferVirtual == NULL || requestBufferVirtual == NULL || responseBufferVirtual == NULL)
-	//	{
-	//		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "MmAllocateContiguousMemory failed\n");
+		if (controlBufferVirtual == NULL || requestBufferVirtual == NULL || responseBufferVirtual == NULL)
+		{
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "AllocateContiguousMemory failed\n");
 
-	//		if (controlBufferVirtual != NULL)
-	//		{
-	//			MmFreeContiguousMemory(controlBufferVirtual);
-	//		}
+			if (controlBufferVirtual != NULL)
+			{
+				MmFreeContiguousMemory(controlBufferVirtual);
+			}
 
-	//		if (requestBufferVirtual != NULL)
-	//		{
-	//			MmFreeContiguousMemory(requestBufferVirtual);
-	//		}
+			if (requestBufferVirtual != NULL)
+			{
+				MmFreeContiguousMemory(requestBufferVirtual);
+			}
 
-	//		if (responseBufferVirtual != NULL)
-	//		{
-	//			MmFreeContiguousMemory(responseBufferVirtual);
-	//		}
+			if (responseBufferVirtual != NULL)
+			{
+				MmFreeContiguousMemory(responseBufferVirtual);
+			}
 
-	//		return STATUS_NO_MEMORY;
-	//	}
+			return STATUS_NO_MEMORY;
+		}
 
-	//	try
-	//	{
-	//		RtlCopyMemory(&pData, &pCmd->ControlBuffer, sizeof(PUCHAR));
+		try
+		{
+			RtlCopyMemory(&pData, &pCmd->ControlBuffer, sizeof(PUCHAR));
 
-	//		ProbeForRead(controlBufferVirtual,
-	//			pCmd->ControlBufferLen,
-	//			sizeof(UCHAR));
+			ProbeForRead(controlBufferVirtual,
+				pCmd->ControlBufferLen,
+				sizeof(UCHAR));
 
-	//		RtlCopyMemory(controlBufferVirtual, pData, pCmd->ControlBufferLen);
+			RtlCopyMemory(controlBufferVirtual, pData, pCmd->ControlBufferLen);
 
-	//		RtlCopyMemory(&pData, &pCmd->RequestBuffer, sizeof(PUCHAR));
+			RtlCopyMemory(&pData, &pCmd->RequestBuffer, sizeof(PUCHAR));
 
-	//		ProbeForRead(requestBufferVirtual,
-	//			pCmd->RequestBufferLen,
-	//			sizeof(UCHAR));
+			ProbeForRead(requestBufferVirtual,
+				pCmd->RequestBufferLen,
+				sizeof(UCHAR));
 
-	//		RtlCopyMemory(requestBufferVirtual, pData, pCmd->RequestBufferLen);
+			RtlCopyMemory(requestBufferVirtual, pData, pCmd->RequestBufferLen);
 
-	//		RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
+			RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
 
-	//		ProbeForRead(responseBufferVirtual,
-	//			pCmd->ResponseBufferLen,
-	//			sizeof(UCHAR));
+			ProbeForRead(responseBufferVirtual,
+				pCmd->ResponseBufferLen,
+				sizeof(UCHAR));
 
-	//		RtlCopyMemory(responseBufferVirtual, pData, pCmd->ResponseBufferLen);
-	//	}
-	//	except(EXCEPTION_EXECUTE_HANDLER)
-	//	{
-	//		status = STATUS_IN_PAGE_ERROR;
-	//		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffers\n");
-	//	}
+			RtlCopyMemory(responseBufferVirtual, pData, pCmd->ResponseBufferLen);
+		}
+		except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			status = STATUS_IN_PAGE_ERROR;
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffers\n");
+		}
 
-	//	controlBuffer = MmGetPhysicalAddress(controlBufferVirtual);
-	//	requestBuffer = MmGetPhysicalAddress(requestBufferVirtual);
-	//	responseBuffer = MmGetPhysicalAddress(responseBufferVirtual);
+		controlBuffer = MmGetPhysicalAddress(controlBufferVirtual);
+		requestBuffer = MmGetPhysicalAddress(requestBufferVirtual);
+		responseBuffer = MmGetPhysicalAddress(responseBufferVirtual);
 
-	//	if (pCmd->AddressLength > 0)
-	//	{
-	//		status = AllocateDriverBufferDescriptor(requestBufferVirtual, pCmd->RequestBufferLen, responseBufferVirtual, pCmd->ResponseBufferLen, &pBuffers);
+		if (pCmd->AddressLength > 0)
+		{
+			status = AllocateDriverBufferDescriptor(requestBufferVirtual, pCmd->RequestBufferLen, responseBufferVirtual, pCmd->ResponseBufferLen, &pBuffers);
 
-	//		if (!NT_SUCCESS(status))
-	//		{
-	//			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyAndAllocateMemoryBlocks(Req) failed: 0x%x\n", status);
-	//		}
-	//		else
-	//		{
-	//			status = ReplaceAndAllocateMemoryBlocks(requestBufferVirtual, pCmd->RequestBufferLen, pBuffers);
+			if (!NT_SUCCESS(status))
+			{
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyAndAllocateMemoryBlocks(Req) failed: 0x%x\n", status);
+			}
+			else
+			{
+				status = ReplaceAndAllocateMemoryBlocks(requestBufferVirtual, pCmd->RequestBufferLen, pBuffers);
 
-	//			if (!NT_SUCCESS(status))
-	//			{
-	//				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyAndAllocateMemoryBlocks(Req) failed: 0x%x\n", status);
-	//			}
-	//			else
-	//			{
-	//				status = ReplaceAndAllocateMemoryBlocks(responseBufferVirtual, pCmd->ResponseBufferLen, pBuffers);
+				if (!NT_SUCCESS(status))
+				{
+					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyAndAllocateMemoryBlocks(Req) failed: 0x%x\n", status);
+				}
+				else
+				{
+					status = ReplaceAndAllocateMemoryBlocks(responseBufferVirtual, pCmd->ResponseBufferLen, pBuffers);
 
-	//				if (!NT_SUCCESS(status))
-	//				{
-	//					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyAndAllocateMemoryBlocks(Res) failed: 0x%x\n", status);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-	//else
+					if (!NT_SUCCESS(status))
+					{
+						TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyAndAllocateMemoryBlocks(Res) failed: 0x%x\n", status);
+					}
+				}
+			}
+		}
+	}
+	else
 	{
 		controlBuffer = pCmd->ControlBuffer;
 		requestBuffer = pCmd->RequestBuffer;
@@ -528,66 +454,66 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 		status = EvaluateAcpiMethode(WdfDeviceGetIoTarget(parent), pCmd->Revision, pCmd->FunctionIndex, controlBuffer, requestBuffer, responseBuffer);
 	}
 
-	//if (ucExternal != 0)
-	//{
-	//	//Usermode buffers
-	//	PUCHAR pData;
+	if (ucExternal != 0)
+	{
+		//Usermode buffers
+		PUCHAR pData;
 
-	//	if (pCmd->AddressLength > 0)
-	//	{
-	//		RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
+		if (pCmd->AddressLength > 0)
+		{
+			RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
 
-	//		if (NT_SUCCESS(status))
-	//		{
-	//			status = CopyMemoryBlocks(responseBufferVirtual, pData, pCmd->ResponseBufferLen);
+			if (NT_SUCCESS(status))
+			{
+				status = CopyMemoryBlocks(responseBufferVirtual, pData, pCmd->ResponseBufferLen);
 
-	//			if (!NT_SUCCESS(status))
-	//			{
-	//				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyMemoryBlocks(Res) failed: 0x%x\n", status);
-	//			}
-	//		}
+				if (!NT_SUCCESS(status))
+				{
+					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyMemoryBlocks(Res) failed: 0x%x\n", status);
+				}
+			}
 
-	//		status = FreeMemoryBlocks(pBuffers);
+			status = FreeMemoryBlocks(pBuffers);
 
-	//		if (!NT_SUCCESS(status))
-	//		{
-	//			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "FreeMemoryBlocks failed: 0x%x\n", status);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		try
-	//		{
-	//			RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
+			if (!NT_SUCCESS(status))
+			{
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "FreeMemoryBlocks failed: 0x%x\n", status);
+			}
+		}
+		else
+		{
+			try
+			{
+				RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
 
-	//			ProbeForWrite(responseBufferVirtual,
-	//				pCmd->ResponseBufferLen,
-	//				sizeof(UCHAR));
+				ProbeForWrite(responseBufferVirtual,
+					pCmd->ResponseBufferLen,
+					sizeof(UCHAR));
 
-	//			RtlCopyMemory(pData, responseBufferVirtual, pCmd->ResponseBufferLen);
-	//		}
-	//		except(EXCEPTION_EXECUTE_HANDLER)
-	//		{
-	//			status = STATUS_IN_PAGE_ERROR;
-	//			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception write user mode buffers\n");
-	//		}
-	//	}
+				RtlCopyMemory(pData, responseBufferVirtual, pCmd->ResponseBufferLen);
+			}
+			except(EXCEPTION_EXECUTE_HANDLER)
+			{
+				status = STATUS_IN_PAGE_ERROR;
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception write user mode buffers\n");
+			}
+		}
 
-	//	if (controlBufferVirtual != NULL)
-	//	{
-	//		MmFreeContiguousMemory(controlBufferVirtual);
-	//	}
+		if (controlBufferVirtual != NULL)
+		{
+			MmFreeContiguousMemory(controlBufferVirtual);
+		}
 
-	//	if (requestBufferVirtual != NULL)
-	//	{
-	//		MmFreeContiguousMemory(requestBufferVirtual);
-	//	}
+		if (requestBufferVirtual != NULL)
+		{
+			MmFreeContiguousMemory(requestBufferVirtual);
+		}
 
-	//	if (responseBufferVirtual != NULL)
-	//	{
-	//		MmFreeContiguousMemory(responseBufferVirtual);
-	//	}
-	//}
+		if (responseBufferVirtual != NULL)
+		{
+			MmFreeContiguousMemory(responseBufferVirtual);
+		}
+	}
 
 	return status;
 }
@@ -725,6 +651,238 @@ EvaluateAcpiMethode(
 	if (pInputBuffer != NULL)
 	{
 		ExFreePoolWithTag(pInputBuffer, MEM_TAG);
+	}
+
+	return status;
+}
+
+NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVOID* pBuffer2, ULONG ulLenBuffer2, PDriverBufferDescriptor* ppBufferDesc)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+	ULONG count = 0;
+
+	if (ppBufferDesc == NULL)
+	{
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "ppBufferDesc is null\n");
+		return STATUS_INVALID_PARAMETER_1;
+	}
+
+	if (pBuffer1 != NULL)
+	{
+		try
+		{
+			for (ULONG i = 0x10; i < (ulLenBuffer1 - 8); i += 8)
+			{
+				PULONGLONG pAddr = (PULONGLONG)(pBuffer1 + i);
+
+				ProbeForRead(pAddr,
+					8,
+					sizeof(UCHAR));
+
+				if (*pAddr != 0)
+				{
+					count++;
+					i += 8; //skip length
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			status = STATUS_IN_PAGE_ERROR;
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffer1\n");
+		}
+	}
+
+	if (pBuffer2 != NULL)
+	{
+		try
+		{
+			for (ULONG i = 0x10; i < (ulLenBuffer2 - 8); i += 8)
+			{
+				PULONGLONG pAddr = (PULONGLONG)(pBuffer2 + i);
+
+				ProbeForRead(pBuffer2 + i,
+					8,
+					sizeof(UCHAR));
+
+				if (*pAddr != 0)
+				{
+					count++;
+					i += 8; //skip length
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			status = STATUS_IN_PAGE_ERROR;
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffer2\n");
+		}
+	}
+
+	if (count > 0)
+	{
+		ULONG ulLen = (count + 1) * sizeof(DriverBufferDescriptor); //one free entry to mark end of list
+		*ppBufferDesc = ExAllocatePoolWithTag(PagedPool, ulLen, MEM_TAG);
+
+		if (*ppBufferDesc != NULL)
+		{
+			RtlZeroMemory(*ppBufferDesc, ulLen);
+		}
+		else
+		{
+			return STATUS_NO_MEMORY;
+		}
+	}
+
+	return status;
+}
+
+NTSTATUS FreeMemoryBlocks(PDriverBufferDescriptor pBufferDesc)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+
+	if (pBufferDesc != NULL)
+	{
+		PDriverBufferDescriptor pBuffer = pBufferDesc;
+
+		while (1)
+		{
+			if (pBuffer == NULL)
+			{
+				break;
+			}
+
+			if (pBuffer->pVirtual == NULL)
+			{
+				break; //end of list
+			}
+
+			MmFreeContiguousMemory(pBuffer->pVirtual);
+
+			pBuffer++;
+		}
+
+		ExFreePoolWithTag(pBufferDesc, MEM_TAG);
+	}
+
+	return status;
+}
+
+NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+
+	if (pBufferSrc != NULL && pBufferDest != NULL)
+	{
+		try
+		{
+			for (ULONG i = 0x10; i < (ulBufferLen - 8); i += 8)
+			{
+				PULONGLONG pAddrDest = (PULONGLONG)(pBufferDest + i);
+				PULONGLONG pAddrSrc = (PULONGLONG)(pBufferSrc + i);
+
+				ProbeForRead(pAddrDest,
+					16,
+					sizeof(UCHAR));
+
+				if (*pAddrDest != 0)
+				{
+					ULONGLONG lenDest = *((PULONGLONG)(pBufferDest + i + 8));
+					ULONGLONG lenSrc = *((PULONGLONG)(pBufferSrc + i + 8));
+
+					ProbeForWrite((void*)*pAddrDest,
+						lenDest,
+						sizeof(UCHAR));
+
+					RtlCopyMemory(pAddrDest, pAddrSrc, min(lenDest, lenSrc));
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			status = STATUS_IN_PAGE_ERROR;
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffer2\n");
+		}
+	}
+
+	return status;
+}
+
+NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriverBufferDescriptor pBufferDesc)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+
+	//search for free entry
+	while (1)
+	{
+		if (pBufferDesc == NULL)
+		{
+			break;
+		}
+
+		if (pBufferDesc->pVirtual == NULL)
+		{
+			break; //end of list
+		}
+
+		pBufferDesc++;
+	}
+
+	try
+	{
+		for (ULONG i = 0x10; i < (ulBufferLen - 8); i += 8)
+		{
+			PULONGLONG pAddr = (PULONGLONG)(pBuffer + i);
+
+			ProbeForRead(pAddr,
+				16,
+				sizeof(UCHAR));
+
+			if (*pAddr != 0)
+			{
+				ULONGLONG len = *((PULONGLONG)(pBuffer + i + 8));
+
+				ProbeForRead((void*)*pAddr,
+					len,
+					sizeof(UCHAR));
+
+				pBufferDesc->pVirtual = AllocateContiguousMemory(len, Phys4GB);
+
+				if (pBufferDesc->pVirtual == NULL)
+				{
+					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "AllocateContiguousMemory failed\n");
+
+					return STATUS_NO_MEMORY;
+				}
+
+				pBufferDesc->Physical = MmGetPhysicalAddress(pBufferDesc->pVirtual);
+				pBufferDesc->ullSize = len;
+
+				RtlCopyMemory(pAddr, &(pBufferDesc->Physical), 8);
+				pBufferDesc++;
+			}
+			else
+			{
+				break;
+			}
+		}
+	}
+	except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		status = STATUS_IN_PAGE_ERROR;
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffer\n");
 	}
 
 	return status;

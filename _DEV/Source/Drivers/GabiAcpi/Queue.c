@@ -786,17 +786,22 @@ NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 		{
 			for (ULONG i = 0x10; i < (ulBufferLen - 8); i += 8)
 			{
+#if defined(_AMD64_) || defined(_IA64_)
 				PULONGLONG pAddrDest = (PULONGLONG)(pBufferDest + i);
 				PULONGLONG pAddrSrc = (PULONGLONG)(pBufferSrc + i);
+#else
+				PULONG pAddrDest = (PULONG)(pBufferDest + i);
+				PULONG pAddrSrc = (PULONG)(pBufferSrc + i);
+#endif
 
 				ProbeForRead(pAddrDest,
 					16,
 					sizeof(UCHAR));
 
-				if (*pAddrDest != 0)
+				if (*pAddrDest != 0) 
 				{
-					ULONGLONG lenDest = *((PULONGLONG)(pBufferDest + i + 8));
-					ULONGLONG lenSrc = *((PULONGLONG)(pBufferSrc + i + 8));
+					SIZE_T lenDest = (SIZE_T)*((PULONGLONG)(pBufferDest + i + 8));
+					SIZE_T lenSrc = (SIZE_T)*((PULONGLONG)(pBufferSrc + i + 8));
 
 					ProbeForWrite((void*)*pAddrDest,
 						lenDest,
@@ -844,7 +849,11 @@ NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriv
 	{
 		for (ULONG i = 0x10; i < (ulBufferLen - 8); i += 8)
 		{
+#if defined(_AMD64_) || defined(_IA64_)
 			PULONGLONG pAddr = (PULONGLONG)(pBuffer + i);
+#else
+			PULONG pAddr = (PULONG)(pBuffer + i);
+#endif
 
 			ProbeForRead(pAddr,
 				16,
@@ -852,7 +861,7 @@ NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriv
 
 			if (*pAddr != 0)
 			{
-				ULONGLONG len = *((PULONGLONG)(pBuffer + i + 8));
+				SIZE_T len = (SIZE_T)*((PULONGLONG)(pBuffer + i + 8));
 
 				ProbeForRead((void*)*pAddr,
 					len,

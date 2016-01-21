@@ -187,7 +187,7 @@ typedef struct
 	}u;
 }sInstruction, *psInstruction;
 
-#define STACK_SIZE 2048
+#define STACK_SIZE 32768
 
 typedef union
 {

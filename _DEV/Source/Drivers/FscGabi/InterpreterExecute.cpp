@@ -1146,7 +1146,17 @@ eInterpreterReturn ExecuteInstruction_OUT(psInterpreterContext pContext, psInstr
 	//call out assembler function
 	CallOUT(stackPointer, GET_STATE(pContext), (pInstruction->u.OUT_ARGS.WithOperand) ? pInstruction->u.OUT_ARGS.Operand : 0xFFFFFFFF);
 
-	return ret;
+	if (ret != INTERPRETER_OK)
+	{
+		return ret;
+	}
+
+	//  some PC's GABI entry point has a loop to call out opcode to wait SMI, 
+	//  and it falls into an infinite loop.
+	//  Now, interpreter out asm code already waits for SMI and 
+	//  such loop is unnecessary.
+	//  Interpreter will stop execution here.
+	return INTERPRETER_SEGMENT_OK;
 }
 
 eInterpreterReturn ExecuteInstruction_CMP(psInterpreterContext pContext, psInstruction pInstruction)

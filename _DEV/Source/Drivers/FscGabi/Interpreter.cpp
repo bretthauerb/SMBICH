@@ -30,7 +30,7 @@ psInterpreterContext InitInterpreter(UCHAR* pEntryPoint, USHORT wSize, UCHAR ucA
 		pContext->pEntryPoint = pEntryPoint;
 		pContext->wSize = wSize;
 		pContext->ucAddressingMode = ucAddressingMode;
-		pContext->pInterpreterState = ALLOCATE_BUFFER(STACK_SIZE);
+		pContext->pInterpreterState = NULL;
 	}
 
 	return pContext;
@@ -55,7 +55,7 @@ void CleanupInterpreter(psInterpreterContext pContext)
 	}
 }
 
-eInterpreterReturn ExecuteInterpreter(psInterpreterContext pContext, PHYSICAL_ADDRESS pParam1, PHYSICAL_ADDRESS pParam2, PHYSICAL_ADDRESS pParam3)
+eInterpreterReturn ExecuteInterpreterInternal(psInterpreterContext pContext, PHYSICAL_ADDRESS pParam1, PHYSICAL_ADDRESS pParam2, PHYSICAL_ADDRESS pParam3)
 {
 	eInterpreterReturn ret;
 	sInstruction sCurrentInstruction;
@@ -86,7 +86,7 @@ eInterpreterReturn ExecuteInterpreter(psInterpreterContext pContext, PHYSICAL_AD
 
 		wCurrentPC = (USHORT)GET_STATE(pContext)->RIP;
 
-		if (sCurrentInstruction.Type == INTERPRETER_RET)
+		if (sCurrentInstruction.Type == INTERPRETER_RET || sCurrentInstruction.Type == INTERPRETER_OUT)
 		{
 			if (ret == INTERPRETER_SEGMENT_OK)
 			{
@@ -101,6 +101,26 @@ eInterpreterReturn ExecuteInterpreter(psInterpreterContext pContext, PHYSICAL_AD
 	}
 
 	return INTERPRETER_OK;
+}
+
+eInterpreterReturn ExecuteInterpreter(psInterpreterContext pContext, PHYSICAL_ADDRESS pParam1, PHYSICAL_ADDRESS pParam2, PHYSICAL_ADDRESS pParam3)
+{
+	eInterpreterReturn ret;
+
+	if (pContext->pInterpreterState == NULL)
+	{
+		pContext->pInterpreterState = ALLOCATE_BUFFER(STACK_SIZE);
+	}
+
+	ret = ExecuteInterpreterInternal(pContext, pParam1, pParam2, pParam3);
+
+	if (pContext->pInterpreterState != NULL)
+	{
+		FREE_BUFFER(pContext->pInterpreterState);
+		pContext->pInterpreterState = NULL;
+	}
+
+	return ret;
 }
 
 eInterpreterReturn AnalyzeInterpreter(psInterpreterContext pContext)

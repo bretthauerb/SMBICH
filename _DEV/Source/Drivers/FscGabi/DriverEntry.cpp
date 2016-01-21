@@ -44,6 +44,9 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 		KdPrint((DRIVER_NAME " - Expected version of WDM (%d.%2.2d) not available\n", 1, 0));
 		return STATUS_UNSUCCESSFUL;
 	}
+
+	ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
+
 #if 0
 	// Save the name of the service key
 	servkey.Buffer = (PWSTR)ExAllocatePool(PagedPool, RegistryPath->Length + sizeof(WCHAR));
@@ -55,8 +58,8 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	servkey.MaximumLength = RegistryPath->Length + sizeof(WCHAR);
 	RtlCopyUnicodeString(&servkey, RegistryPath);
 #endif
-	// Initialize function pointers
 
+	// Initialize function pointers
 	DriverObject->DriverUnload = DriverUnload;
 	DriverObject->DriverExtension->AddDevice = AddDevice;
 
@@ -97,7 +100,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	RtlQueryRegistryValues(RTL_REGISTRY_SERVICES, L"FscGabi", table, NULL, NULL);
 
 	return STATUS_SUCCESS;
-	}							// DriverEntry
+}							// DriverEntry
 
 #pragma PAGEDCODE
 

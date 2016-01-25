@@ -1129,11 +1129,6 @@ eInterpreterReturn ExecuteInstruction_STI(psInterpreterContext pContext, psInstr
 eInterpreterReturn ExecuteInstruction_OUT(psInterpreterContext pContext, psInstruction pInstruction)
 {
 	eInterpreterReturn ret = INTERPRETER_OK;
-#if defined(_AMD64_) || defined(_IA64_)
-	const UCHAR ucSize = 8;
-#else
-	const UCHAR ucSize = 4;
-#endif
 	PHYSICAL_ADDRESS stackPointer;
 
 	if (pContext == NULL || pInstruction == NULL || pContext->pInterpreterState == NULL)

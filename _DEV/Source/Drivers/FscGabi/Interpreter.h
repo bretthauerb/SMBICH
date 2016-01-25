@@ -1,5 +1,7 @@
 #pragma once
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct
 {
@@ -28,3 +30,7 @@ void CleanupInterpreter(psInterpreterContext pContext);
 
 eInterpreterReturn AnalyzeInterpreter(psInterpreterContext pContext);
 eInterpreterReturn ExecuteInterpreter(psInterpreterContext pContext, PHYSICAL_ADDRESS pParam1, PHYSICAL_ADDRESS pParam2, PHYSICAL_ADDRESS pParam3);
+
+#ifdef __cplusplus
+}
+#endif

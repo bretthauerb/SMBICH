@@ -33,35 +33,35 @@
 
 #pragma LOCKEDCODE 
 
-static void x(char * s, PUCHAR p, int i)
-{
-
-	DbgPrint("--- %s ----\n", s);
-
-	for (int indx = 0; indx < i; indx++)
-	{
-		DbgPrint(" %02x", p[indx]);
-		if (indx % 8)
-		{
-			DbgPrint("   ");
-
-		}
-		if (indx % 16)
-		{
-			DbgPrint("\n");
-
-		}
-	}
-	DbgPrint("--- END of %s ----\n", s);
-
-	/*DbgPrint("%s%02x %02x %02x %02x %02x %02x %02x %02x\n", s,p[0],p[1],p[2],p[3],p[4],p[5],p[6],p[7]);
-	if (i>8)
-	DbgPrint("        %02x %02x %02x %02x %02x %02x %02x %02x\n", p[8],p[9],p[10],p[11],p[12],p[13],p[14],p[15]);
-	if (i>16)
-	DbgPrint("        %02x %02x %02x %02x %02x %02x %02x %02x\n", p[16],p[17],p[18],p[19],p[20],p[21],p[22],p[23]);
-	if (i>24)
-	DbgPrint("        %02x %02x %02x %02x %02x %02x %02x %02x\n", p[24],p[25],p[26],p[27],p[28],p[29],p[30],p[31]);*/
-}
+//static void x(char * s, PUCHAR p, int i)
+//{
+//
+//	DbgPrint("--- %s ----\n", s);
+//
+//	for (int indx = 0; indx < i; indx++)
+//	{
+//		DbgPrint(" %02x", p[indx]);
+//		if (indx % 8)
+//		{
+//			DbgPrint("   ");
+//
+//		}
+//		if (indx % 16)
+//		{
+//			DbgPrint("\n");
+//
+//		}
+//	}
+//	DbgPrint("--- END of %s ----\n", s);
+//
+//	/*DbgPrint("%s%02x %02x %02x %02x %02x %02x %02x %02x\n", s,p[0],p[1],p[2],p[3],p[4],p[5],p[6],p[7]);
+//	if (i>8)
+//	DbgPrint("        %02x %02x %02x %02x %02x %02x %02x %02x\n", p[8],p[9],p[10],p[11],p[12],p[13],p[14],p[15]);
+//	if (i>16)
+//	DbgPrint("        %02x %02x %02x %02x %02x %02x %02x %02x\n", p[16],p[17],p[18],p[19],p[20],p[21],p[22],p[23]);
+//	if (i>24)
+//	DbgPrint("        %02x %02x %02x %02x %02x %02x %02x %02x\n", p[24],p[25],p[26],p[27],p[28],p[29],p[30],p[31]);*/
+//}
 
 static const PHYSICAL_ADDRESS Phys4GB = {/*LowPart*/~0UL, /*HighPart*/0};
 static const PHYSICAL_ADDRESS ZeroAddr = {/*LowPart*/0UL, /*HighPart*/0 };
@@ -573,14 +573,16 @@ DriverIOCTL ( PDEVICE_OBJECT pDeviceObject, PIRP pIrp )
 			}
 
 DbgPrint("ulIoctlInputLength=%x In.ulSize=%x  ulIoctlOutputLength=%x Out.ulSize=%x\n", ulIoctlInputLength,pDevExt->InBuffer.ulSize,ulIoctlOutputLength,pDevExt->OutBuffer.ulSize);
-x("Ctrl", pDevExt->ControlBuffer.pVirtual, 16);
-x("In", pDevExt->InBuffer.pVirtual, pDevExt->InBuffer.ulSize);
-x("Out", pDevExt->OutBuffer.pVirtual, 64);
+//x("Ctrl", pDevExt->ControlBuffer.pVirtual, 16);
+//x("In", pDevExt->InBuffer.pVirtual, pDevExt->InBuffer.ulSize);
+//x("Out", pDevExt->OutBuffer.pVirtual, 64);
 
 DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulSize,ulIoctlOutputLength,pDevExt->OutBuffer.ulSize);
 
 			if (pDevExt->ulUseACPI != 0 && pDevExt->ACPIDevice != NULL)
 			{
+				DbgPrint("---- ACPI call ----");
+
 				KEVENT Event;
 				PIO_STACK_LOCATION nextStack;
 				PIRP Irp = IoAllocateIrp(pDevExt->ACPIDevice->StackSize, FALSE);
@@ -656,6 +658,7 @@ DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulS
 			}
 			else if(pDevExt->pInterpreterContext != NULL)
 			{
+				DbgPrint("---- Interpreter call ----");
 				eInterpreterReturn r = AnalyzeInterpreter(pDevExt->pInterpreterContext);
 
 				if (r == INTERPRETER_OK)
@@ -672,15 +675,17 @@ DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulS
 			}
 			else
 			{
+				DbgPrint("---- ASM call ----");
+
 				BapiCall(pDevExt->GabiCallAddress,
 					pDevExt->InBuffer.Physical,
 					pDevExt->OutBuffer.Physical,
 					pDevExt->ControlBuffer.Physical);
 			}
 
-x("Ctrl", pDevExt->ControlBuffer.pVirtual, 16);
-x("In", pDevExt->InBuffer.pVirtual, pDevExt->InBuffer.ulSize);
-x("Out", pDevExt->OutBuffer.pVirtual, pDevExt->OutBuffer.ulSize);
+//x("Ctrl", pDevExt->ControlBuffer.pVirtual, 16);
+//x("In", pDevExt->InBuffer.pVirtual, pDevExt->InBuffer.ulSize);
+//x("Out", pDevExt->OutBuffer.pVirtual, pDevExt->OutBuffer.ulSize);
 
 			// copy the control buffer without the length field
 			RtlCopyMemory(pSystemBuffer, pDevExt->ControlBuffer.pVirtual+2, sizeof(GabiGenericAPIHeader_T));

@@ -382,7 +382,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 		{
 			RtlCopyMemory(&pData, &pCmd->ControlBuffer, sizeof(PUCHAR));
 
-			ProbeForRead(controlBufferVirtual,
+			ProbeForRead(pData,
 				pCmd->ControlBufferLen,
 				sizeof(UCHAR));
 
@@ -390,7 +390,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 			RtlCopyMemory(&pData, &pCmd->RequestBuffer, sizeof(PUCHAR));
 
-			ProbeForRead(requestBufferVirtual,
+			ProbeForRead(pData,
 				pCmd->RequestBufferLen,
 				sizeof(UCHAR));
 
@@ -398,7 +398,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 			RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
 
-			ProbeForRead(responseBufferVirtual,
+			ProbeForRead(pData,
 				pCmd->ResponseBufferLen,
 				sizeof(UCHAR));
 
@@ -486,7 +486,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 			{
 				RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
 
-				ProbeForWrite(responseBufferVirtual,
+				ProbeForWrite(pData,
 					pCmd->ResponseBufferLen,
 					sizeof(UCHAR));
 

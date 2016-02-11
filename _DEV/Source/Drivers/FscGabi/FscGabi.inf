@@ -7,7 +7,7 @@ CatalogFile=FscGabi.cat
 DriverVer=01/26/2016,6.1.0.0
 
 [Manufacturer]
-%MFGNAME%=DeviceList, NTx86, NTamd64
+%MFGNAME%=DeviceList, NT$ARCH$
 
 [DestinationDirs]
 DefaultDestDir=10,System32\Drivers
@@ -18,27 +18,17 @@ FscGabi.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,FscGabi.sys,,
 
-[DeviceList.NTx86]
+[DeviceList.NT$ARCH$]
 %DESCRIPTION% = DriverInstall, Root\FscGabi
 %DESCRIPTION% = DriverInstall, ACPI\IBAG
 
-[DeviceList.NTamd64]
-%DESCRIPTION% = DriverInstall, Root\FscGabi
-%DESCRIPTION% = DriverInstall, ACPI\IBAG
-
-[DriverInstall.NTx86]
-CopyFiles=DriverCopyFiles
-
-[DriverInstall.NTamd64]
+[DriverInstall.NT$ARCH$]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
 FscGabi.sys,,,2
 
-[DriverInstall.NTx86.Services]
-AddService = FscGabi, 2, ServiceInstall
-
-[DriverInstall.NTamd64.Services]
+[DriverInstall.NT$ARCH$.Services]
 AddService = FscGabi, 2, ServiceInstall
 
 [ServiceInstall]

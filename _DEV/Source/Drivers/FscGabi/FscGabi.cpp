@@ -202,7 +202,13 @@ NTSTATUS RegisterACPIInterfaceNotification(PDEVICE_EXTENSION pdx)
 
 NTSTATUS UnregisterACPIInterfaceNotification(PDEVICE_EXTENSION pdx)
 {
-	NTSTATUS status = IoUnregisterPlugPlayNotificationEx(pdx->pvNotificationEntry);
+	NTSTATUS status = STATUS_SUCCESS;
+
+	if (pdx != NULL && pdx->pvNotificationEntry != NULL)
+	{
+		status = IoUnregisterPlugPlayNotificationEx(pdx->pvNotificationEntry);
+		pdx->pvNotificationEntry = NULL;
+	}
 	return status;
 }
 

@@ -149,7 +149,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -162,7 +162,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -175,7 +175,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -188,7 +188,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -201,7 +201,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -214,7 +214,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -227,7 +227,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -240,7 +240,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ClCompile>
-      <PreprocessorDefinitions>DPOOL_NX_OPTIN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>

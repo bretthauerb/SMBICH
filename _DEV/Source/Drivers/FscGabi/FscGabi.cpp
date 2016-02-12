@@ -315,26 +315,30 @@ VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN oktouch /* = FALSE */)
 
 	UnregisterACPIInterfaceNotification(pdx);
 
-	CleanupInterpreter(pdx->pInterpreterContext);
+	if (pdx != NULL)
+	{
+		CleanupInterpreter(pdx->pInterpreterContext);
+		pdx->pInterpreterContext = NULL;
 
-	if (pdx->ControlBuffer.pVirtual)
-	{
-		MmFreeContiguousMemory(pdx->ControlBuffer.pVirtual);
-		pdx->ControlBuffer.pVirtual = NULL;
-	}
-	if (pdx->InBuffer.pVirtual)
-	{
-		MmFreeContiguousMemory(pdx->InBuffer.pVirtual);
-		pdx->InBuffer.pVirtual = NULL;
-	}
-	if (pdx->OutBuffer.pVirtual)
-	{
-		MmFreeContiguousMemory(pdx->OutBuffer.pVirtual);
-		pdx->OutBuffer.pVirtual = NULL;
-	}	
-	if (pdx->MappedBios)
-	{
-		MmUnmapIoSpace(pdx->MappedBios, MAP_BIOS_SIZE);
-		pdx->MappedBios = NULL;
+		if (pdx->ControlBuffer.pVirtual)
+		{
+			MmFreeContiguousMemory(pdx->ControlBuffer.pVirtual);
+			pdx->ControlBuffer.pVirtual = NULL;
+		}
+		if (pdx->InBuffer.pVirtual)
+		{
+			MmFreeContiguousMemory(pdx->InBuffer.pVirtual);
+			pdx->InBuffer.pVirtual = NULL;
+		}
+		if (pdx->OutBuffer.pVirtual)
+		{
+			MmFreeContiguousMemory(pdx->OutBuffer.pVirtual);
+			pdx->OutBuffer.pVirtual = NULL;
+		}
+		if (pdx->MappedBios)
+		{
+			MmUnmapIoSpace(pdx->MappedBios, MAP_BIOS_SIZE);
+			pdx->MappedBios = NULL;
+		}
 	}
 }							// StopDevice

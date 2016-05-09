@@ -380,7 +380,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 		try
 		{
-			RtlCopyMemory(&pData, &pCmd->ControlBuffer, sizeof(PUCHAR));
+			pData = (PUCHAR)pCmd->ControlBuffer.QuadPart;
 
 			ProbeForRead(pData,
 				pCmd->ControlBufferLen,
@@ -388,7 +388,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 			RtlCopyMemory(controlBufferVirtual, pData, pCmd->ControlBufferLen);
 
-			RtlCopyMemory(&pData, &pCmd->RequestBuffer, sizeof(PUCHAR));
+			pData = (PUCHAR)pCmd->RequestBuffer.QuadPart;
 
 			ProbeForRead(pData,
 				pCmd->RequestBufferLen,
@@ -396,7 +396,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 			RtlCopyMemory(requestBufferVirtual, pData, pCmd->RequestBufferLen);
 
-			RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
+			pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
 
 			ProbeForRead(pData,
 				pCmd->ResponseBufferLen,
@@ -461,7 +461,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 		if (pCmd->AddressLength > 0)
 		{
-			RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
+			pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
 
 			if (NT_SUCCESS(status))
 			{
@@ -484,7 +484,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 		{
 			try
 			{
-				RtlCopyMemory(&pData, &pCmd->ResponseBuffer, sizeof(PUCHAR));
+				pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
 
 				ProbeForWrite(pData,
 					pCmd->ResponseBufferLen,
@@ -497,6 +497,22 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 				status = STATUS_IN_PAGE_ERROR;
 				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception write user mode buffers\n");
 			}
+		}
+
+		try
+		{
+			pData = (PUCHAR)pCmd->ControlBuffer.QuadPart;
+
+			ProbeForWrite(pData,
+				pCmd->ControlBufferLen,
+				sizeof(UCHAR));
+
+			RtlCopyMemory(pData, controlBufferVirtual, pCmd->ControlBufferLen);
+		}
+		except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			status = STATUS_IN_PAGE_ERROR;
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception write user mode buffers\n");
 		}
 
 		if (controlBufferVirtual != NULL)

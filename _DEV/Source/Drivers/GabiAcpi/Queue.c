@@ -380,7 +380,11 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 		try
 		{
+#if defined(_AMD64_) || defined(_IA64_)
 			pData = (PUCHAR)pCmd->ControlBuffer.QuadPart;
+#else
+			pData = (PUCHAR)pCmd->ControlBuffer.LowPart;
+#endif
 
 			ProbeForRead(pData,
 				pCmd->ControlBufferLen,
@@ -388,7 +392,11 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 			RtlCopyMemory(controlBufferVirtual, pData, pCmd->ControlBufferLen);
 
+#if defined(_AMD64_) || defined(_IA64_)
 			pData = (PUCHAR)pCmd->RequestBuffer.QuadPart;
+#else
+			pData = (PUCHAR)pCmd->RequestBuffer.LowPart;
+#endif
 
 			ProbeForRead(pData,
 				pCmd->RequestBufferLen,
@@ -396,7 +404,11 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 			RtlCopyMemory(requestBufferVirtual, pData, pCmd->RequestBufferLen);
 
+#if defined(_AMD64_) || defined(_IA64_)
 			pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
+#else
+			pData = (PUCHAR)pCmd->ResponseBuffer.LowPart;
+#endif
 
 			ProbeForRead(pData,
 				pCmd->ResponseBufferLen,
@@ -461,7 +473,11 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 		if (pCmd->AddressLength > 0)
 		{
+#if defined(_AMD64_) || defined(_IA64_)
 			pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
+#else
+			pData = (PUCHAR)pCmd->ResponseBuffer.LowPart;
+#endif
 
 			if (NT_SUCCESS(status))
 			{
@@ -484,7 +500,11 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 		{
 			try
 			{
+#if defined(_AMD64_) || defined(_IA64_)
 				pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
+#else
+				pData = (PUCHAR)pCmd->ResponseBuffer.LowPart;
+#endif
 
 				ProbeForWrite(pData,
 					pCmd->ResponseBufferLen,
@@ -501,7 +521,11 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 		try
 		{
+#if defined(_AMD64_) || defined(_IA64_)
 			pData = (PUCHAR)pCmd->ControlBuffer.QuadPart;
+#else
+			pData = (PUCHAR)pCmd->ControlBuffer.LowPart;
+#endif
 
 			ProbeForWrite(pData,
 				pCmd->ControlBufferLen,

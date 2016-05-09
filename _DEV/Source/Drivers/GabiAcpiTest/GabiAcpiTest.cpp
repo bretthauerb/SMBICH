@@ -161,11 +161,23 @@ BOOL GabiCmd(BYTE* pControlBuffer, ULONG ulControlBufferLength, BYTE* pRequestBu
 		memset(&cmd, 0, sizeof(cmd));		
 
 		cmd.FunctionIndex = 1;
-		memcpy(&cmd.ControlBuffer, &pControlBuffer, sizeof(pControlBuffer));
+#if defined(_AMD64_) || defined(_IA64_)
+		cmd.ControlBuffer.QuadPart = (LONGLONG)pControlBuffer;
+#else
+		cmd.ControlBuffer.LowPart = (DWORD)pControlBuffer;
+#endif
 		cmd.ControlBufferLen = ulControlBufferLength;
-		memcpy(&cmd.RequestBuffer, &pRequestBuffer, sizeof(pRequestBuffer));
+#if defined(_AMD64_) || defined(_IA64_)
+		cmd.RequestBuffer.QuadPart = (LONGLONG)pRequestBuffer;
+#else
+		cmd.RequestBuffer.LowPart = (DWORD)pRequestBuffer;
+#endif
 		cmd.RequestBufferLen = ulRequestBufferLength;
-		memcpy(&cmd.ResponseBuffer, &pResponseBuffer, sizeof(pResponseBuffer));
+#if defined(_AMD64_) || defined(_IA64_)
+		cmd.ResponseBuffer.QuadPart = (LONGLONG)pResponseBuffer;
+#else
+		cmd.ResponseBuffer.LowPart = (DWORD)pResponseBuffer;
+#endif
 		cmd.ResponseBufferLen = ulResponseBufferLength;
 
 		BOOL ret = DeviceIoControl(handle, IOCTL_GABI_ACPI_CMD, &cmd, sizeof(cmd), NULL, 0, &junk, (LPOVERLAPPED)NULL);

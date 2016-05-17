@@ -1,0 +1,9 @@
+TARGETNAME=D3003OEM
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+#USER_C_FLAGS = /DBLAH
+
+INCLUDES=..\..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\WalterOney
+
+SOURCES = DriverEntry.cpp D3003OEM.cpp DevQueue.cpp RemoveLock.cpp Dispatch.cpp D3003OEM.rc Power.cpp PlugPlay.cpp

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Support Files">
+      <UniqueIdentifier>{43ef0d9e-b35c-4cb6-8202-85bf6df91fc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Support Files\Reg">
+      <UniqueIdentifier>{beea288c-f4ef-4119-bb94-9b56b7f757b8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\Registry\HWMD3062.reg">
+      <Filter>Support Files\Reg</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+TARGETNAME=SmbIch
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+#USER_C_FLAGS = /DBLAH
+
+INCLUDES=..\..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\WalterOney
+
+SOURCES=SmbIch.rc DebugPrint.c DevQueue.cpp DriverEntry.cpp ICH_SMB.cpp \
+	PlugPlay.cpp Power.cpp Dispatch.cpp ReadWritePCISpace.cpp RemoveLock.cpp dmi.cpp

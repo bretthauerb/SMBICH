@@ -1,0 +1,7 @@
+TARGETNAME=FscTime
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+INCLUDES=..\..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\WalterOney
+
+SOURCES=DriverEntry.cpp ioctl.cpp FscTime.rc dispatch.cpp devqueue.cpp power.cpp plugplay.cpp removelock.cpp FscTime.cpp

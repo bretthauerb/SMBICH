@@ -1,0 +1,141 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg]
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion\1]
+"IntrusionDeviceType"=dword:5
+"SwitchDeviceType"=dword:5
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\1]
+; FanConnector 1, HeCeTa device
+"Where"=dword:2001
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f		; 9999
+"MinSpeed"=dword:3e8		; 1000
+"Percentage"=dword:46
+"IndexTachL"=dword:2c		; Tach 1
+"IndexStatus"=dword:42
+"TachClock"=dword:5265c0
+"status_bitmask"=dword:4
+"FullSpeedDeviceType"=dword:2
+"IndexFullspeed"=dword:80
+"fullspeed_bitmask"=dword:e0
+"fullspeed_value"=dword:60
+"FanTachLimitIndexL"=dword:62
+"FanTachLimit"=dword:fff0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\2]
+; FanConnector 2, HeCeTa device
+"Where"=dword:2002
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"IndexTachL"=dword:2e		; Tach 2
+"IndexStatus"=dword:42
+"TachClock"=dword:5265c0
+"status_bitmask"=dword:8
+"FullSpeedDeviceType"=dword:2
+"IndexFullspeed"=dword:81
+"fullspeed_bitmask"=dword:e0
+"fullspeed_value"=dword:60
+"FanTachLimitIndexL"=dword:64
+"FanTachLimit"=dword:fff0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\3]
+; FanConnector 3, HeCeTa device
+"Where"=dword:2003
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"IndexTachL"=dword:30		; Tach 3
+"IndexStatus"=dword:42
+"TachClock"=dword:5265c0
+"status_bitmask"=dword:10
+"FullSpeedDeviceType"=dword:2
+"IndexFullspeed"=dword:82
+"fullspeed_bitmask"=dword:e0
+"fullspeed_value"=dword:60
+"FanTachLimitIndexL"=dword:66
+"FanTachLimit"=dword:fff0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\4]
+; Powersupply , HeCeTa device
+"Where"=dword:3
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"IndexTachL"=dword:32		; Tach 4
+"IndexStatus"=dword:42
+"TachClock"=dword:5265c0
+"status_bitmask"=dword:20
+"FullSpeedDeviceType"=dword:2
+"IndexFullspeed"=dword:8e
+"fullspeed_bitmask"=dword:e0
+"fullspeed_value"=dword:60
+"FanTachLimitIndexL"=dword:68
+"FanTachLimit"=dword:fff0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\1]
+; VBatt, HeCeTa device
+"Where"=dword:1
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:24
+"SMSCVBat"=dword:2			; 1st measurement done by bios
+"Multiplier"=dword:42d5
+"Offset"=dword:0
+"HighLimit"=dword:387520	; 3.70 V
+"LowLimit"=dword:256250		; 2.45 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\1]
+; CPU, HeCeTa device
+"Where"=dword:1001
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:2b
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"HighLimitIndex"=dword:61
+"HighLimit"=dword:162e8ef0	; 99
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:161f4cb0	; 98
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\2]
+; System 1, HeCeTa device
+"Where"=dword:101
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:26
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"HighLimitIndex"=dword:57
+"HighLimit"=dword:14558930	; 68
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:1427c270	; 65
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\3]
+; System 2, HeCeTa device
+"Where"=dword:102
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:27
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"HighLimitIndex"=dword:59
+"HighLimit"=dword:14558930	; 68
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:1427c270	; 65
+"LowWarn"=dword:a520f30		; -100

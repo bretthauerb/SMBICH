@@ -1,0 +1,10 @@
+TARGETNAME=SCH5627AMD
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+#USER_C_FLAGS = /DBLAH
+
+INCLUDES=..\..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\WalterOney
+
+SOURCES=SCH5627AMD.rc DebugPrint.c DevQueue.cpp DriverEntry.cpp SCH5627AMD.cpp \
+	PlugPlay.cpp Power.cpp Dispatch.cpp RemoveLock.cpp

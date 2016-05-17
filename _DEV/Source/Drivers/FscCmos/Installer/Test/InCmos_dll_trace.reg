@@ -1,0 +1,16 @@
+Windows Registry Editor Version 5.00
+
+# @@LABEL=DVNC6.75@@
+[HKEY_LOCAL_MACHINE\SOFTWARE\Fujitsu]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Fujitsu\Common]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Fujitsu\Common\Tracing\InCmos.dll\1.12]
+"Trace"=dword:00000001
+"Key"=dword:00000000
+"TraceClear"=dword:00000000
+"TraceFile"="C:\\Trace\\InCmos.dll_1.12.trace.txt"
+"TraceLevel"=dword:00000006
+"TraceTStampFormat"=dword:00000001
+"TraceInfo"=dword:00000000
+

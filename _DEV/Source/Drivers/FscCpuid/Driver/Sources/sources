@@ -1,0 +1,12 @@
+TARGETNAME=FscCpuid
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+#USER_C_FLAGS = /DBLAH
+
+INCLUDES=..\..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\WalterOney
+
+SOURCES=DriverEntry.cpp ioctl.cpp cpuid.rc dispatch.cpp devqueue.cpp power.cpp plugplay.cpp removelock.cpp FscCpuid.cpp
+
+AMD64_SOURCES=cpuid.asm getmsr.asm
+I386_SOURCES=cpuid.asm getmsr.asm

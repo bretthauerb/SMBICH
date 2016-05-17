@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3288Support", "HWMD3288Support.vcxproj", "{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://abgvtfs1a:8080/tfs/tpc1
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = HWMD3288Support.vcxproj
+		SccLocalPath1 = .
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Debug|Win32.Build.0 = Debug|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Release|Win32.ActiveCfg = Release|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

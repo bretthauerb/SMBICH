@@ -1,0 +1,218 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg]
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion\1]
+; Use GABI
+"SwitchDeviceType"=dword:00000005
+"IntrusionDeviceType"=dword:00000005
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\1]
+; FanConnector 1, Teutates device
+"Where"=dword:2001
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"PageSelect"=dword:7f
+"IndexTachL"=dword:82
+"IndexStatus"=dword:80
+"IndexControl"=dword:81
+"FanPage"=dword:49
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\1]
+; 3V3, Teutates device
+"Where"=dword:5
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:18
+"Multiplier"=dword:379b
+"Offset"=dword:0
+"HighLimit"=dword:36ee80 ; 3.6 V
+"LowLimit"=dword:2dc6c0	 ; 3.0 V
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\2]
+; 3V3, Teutates device
+"Where"=dword:6
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:19
+"Multiplier"=dword:379b
+"Offset"=dword:0
+"HighLimit"=dword:36ee80 ; 3.6 V
+"LowLimit"=dword:2dc6c0	 ; 3.0 V
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\3]
+; 12V, Teutates device
+"Where"=dword:4
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:1a
+"Multiplier"=dword:c526
+"Offset"=dword:0
+"HighLimit"=dword:c96a80 ; 13.2 V
+"LowLimit"=dword:a4cb80	 ; 10.8 V
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\4]
+; VBat, Teutates device
+"Where"=dword:1
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:1b
+"Multiplier"=dword:328d
+"Offset"=dword:0
+"HighLimit"=dword:387520 ; 3.70 V
+"LowLimit"=dword:256250  ; 2.45 V
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\1]
+; CPU1, Teutates device
+"Where"=dword:1001
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:40
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:80
+"IndexControl"=dword:81
+"HighLimitIndex"=dword:84
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="PECI CPU"
+"TempPage"=dword:06
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\2]
+; CPU2, Teutates device
+"Where"=dword:102
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:41
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:80
+"IndexControl"=dword:81
+"HighLimitIndex"=dword:84
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="PSU"
+"TempPage"=dword:07
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\3]
+; System 3, Teutates device
+"Where"=dword:103
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:42
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:80
+"IndexControl"=dword:81
+"HighLimitIndex"=dword:84
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="Ambient"
+"TempPage"=dword:08
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\4]
+; MEM, Teutates device
+"Where"=dword:104
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:43
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:80
+"IndexControl"=dword:81
+"HighLimitIndex"=dword:84
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="Core"
+"TempPage"=dword:09
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\5]
+; MEM, Teutates device
+"Where"=dword:4
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:44
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:80
+"IndexControl"=dword:81
+"HighLimitIndex"=dword:84
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="MEM"
+"TempPage"=dword:0A
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\6]
+; MEM, Teutates device
+"Where"=dword:5
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:45
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:80
+"IndexControl"=dword:81
+"HighLimitIndex"=dword:84
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="PCH"
+"TempPage"=dword:0B
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\7]
+; MEM, Teutates device
+"Where"=dword:107
+"DeviceType"=dword:8
+"DeviceAddress"=dword:e6
+"RegisterIndex"=dword:46
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:80
+"IndexControl"=dword:81
+"HighLimitIndex"=dword:84
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="Teutates"
+"TempPage"=dword:0C
+"PageSelect"=dword:7f
+"RegisterPage"=dword:0

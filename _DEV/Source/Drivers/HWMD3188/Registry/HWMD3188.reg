@@ -1,0 +1,156 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg]
+
+;[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion]
+;[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion\1]
+; Use GABI
+;"SwitchDeviceType"=dword:00000005
+;"IntrusionDeviceType"=dword:00000005
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\1]
+; FanConnector 1, Kronos device
+"Where"=dword:2001
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\1 -i 0560"
+"GetStatus"="sensor -R Fan\\1 -i 09e0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\2]
+; FanConnector 2, Kronos device
+"Where"=dword:2002
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\2 -i 05a0"
+"GetStatus"="sensor -R Fan\\2 -i 0a10"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\3]
+; FanConnector 3, Kronos device
+"Where"=dword:2003
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\3 -i 05e0"
+"GetStatus"="sensor -R Fan\\3 -i 0a40"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\4]
+; FanConnector 4, Kronos device
+"Where"=dword:2004
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\4 -i 0620"
+"GetStatus"="sensor -R Fan\\4 -i 0a70"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\5]
+; FanConnector 5, Kronos device
+"Where"=dword:2005
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\5 -i 0660"
+"GetStatus"="sensor -R Fan\\5 -i 0aa0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\6]
+; Fan PSU, Kronos device
+"Where"=dword:3
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:2710
+"GetReading"="sensor -R Fan\\6 -i 06a0"
+"GetStatus"="sensor -R Fan\\6 -i 0ad0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\1]
+; VBatt, Kronos device
+"Where"=dword:1
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\1 -i 01e0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\2]
+; STBY 3V3, Kronos device
+"Where"=dword:6
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\2 -i 0260"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\3]
+; 12V, Kronos device
+"Where"=dword:4
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\3 -i 0360"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\4]
+; 5V, Kronos device
+"Where"=dword:2
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\4 -i 03a0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\5]
+; 3V3, Kronos device
+"Where"=dword:5
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\5 -i 03e0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\6]
+; CPU Voltage, Kronos device
+"Where"=dword:201
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\6 -i 0420"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\7]
+; MEM Voltage, Kronos device
+"Where"=dword:21
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\7 -i 0520"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\1]
+; System 1 (Ambient), Kronos device
+"Where"=dword:101
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\1 -i 0020" 
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\2]
+; System 2 (DIMM), Kronos device
+"Where"=dword:102
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\2 -i 0060" 
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\3]
+; System 3 (PCI), Kronos device
+"Where"=dword:103
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\3 -i 00a0" 
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\4]
+; Board, Kronos device
+"Where"=dword:1
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\4 -i 0160" 
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\5]
+; CPU, Kronos device
+"Where"=dword:1001
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\5 -i 01a0" 

@@ -1,0 +1,252 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg]
+
+;[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion]
+;[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion\1]
+; Use GABI
+;"SwitchDeviceType"=dword:00000005
+;"IntrusionDeviceType"=dword:00000005
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\1]
+; FanConnector 1, Kronos device
+"Where"=dword:2001
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\1 -i 001f"
+"GetStatus"="sensor -R Fan\\1 -i 003b"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\2]
+; FanConnector 2, Kronos device
+"Where"=dword:2002
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\2 -i 0020"
+"GetStatus"="sensor -R Fan\\2 -i 003c"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\3]
+; FanConnector 3, Kronos device
+"Where"=dword:2003
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\3 -i 0021"
+"GetStatus"="sensor -R Fan\\3 -i 003d"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\4]
+; FanConnector 4, Kronos device
+"Where"=dword:2004
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\4 -i 0022"
+"GetStatus"="sensor -R Fan\\4 -i 003e"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\5]
+; FanConnector 5, Kronos device
+"Where"=dword:2005
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:4268
+"GetReading"="sensor -R Fan\\5 -i 0023"
+"GetStatus"="sensor -R Fan\\5 -i 003f"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\6]
+; Fan PSU, Kronos device
+"Where"=dword:2006
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:2710
+"GetReading"="sensor -R Fan\\6 -i 0024"
+"GetStatus"="sensor -R Fan\\6 -i 0040"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\7]
+; Fan PSU, Kronos device
+"Where"=dword:3
+"DeviceType"=dword:7
+"MustBePresent"=dword:1
+"Percentage"=dword:46
+"MinSpeed"=dword:3e8
+"MaxSpeed"=dword:4e20
+"Reference"=dword:2710
+"GetReading"="sensor -R Fan\\7 -i 0026"
+"GetStatus"="sensor -R Fan\\7 -i 0042"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\1]
+; VBatt, Kronos device
+"Where"=dword:1
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\1 -i 00f"
+"HighLimit"=dword:387520 ; 3.70 V
+"LowLimit"=dword:256250  ; 2.45 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\2]
+; STBY 1V5, Kronos device
+"Where"=dword:6
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\2 -i 0011"
+"HighLimit"=dword:33E140 ; 3.4 V
+"LowLimit"=dword:2DC6C0	 ; 3.0 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\3]
+; 12V, Kronos device
+"Where"=dword:4
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\3 -i 0016"
+"HighLimit"=dword:c96a80 ; 13.2 V
+"LowLimit"=dword:a4cb80	 ; 10.8 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\4]
+; 5V, Kronos device
+"Where"=dword:2
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\4 -i 001d"
+"LowLimit"=dword:4AC4A0 ; 4.9 V
+"HighLimit"=dword:4DD1E0 ; 5.1 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\5]
+; 3V3, Kronos device
+"Where"=dword:5
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\5 -i 001e"
+"HighLimit"=dword:36ee80 ; 3.6 V
+"LowLimit"=dword:2dc6c0	 ; 3.0 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\6]
+; CPU Voltage, Kronos device
+"Where"=dword:201
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\6 -i 0017"
+"HighLimit"=dword:10C8E0 ; 1.1 V
+"LowLimit"=dword:F4240	 ; 1.0 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\7]
+; MEM Voltage, Kronos device
+"Where"=dword:21
+"DeviceType"=dword:7
+"GetReading"="sensor -R Volt\\7 -i 0019"
+"HighLimit"=dword:124F80 ; 1.2 V
+"LowLimit"=dword:10C8E0	 ; 1.1 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\1]
+; System 1 (Ambient), Kronos device
+"Where"=dword:101
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\1 -i 0001" 
+"HighLimit"=dword:12C684C0	; 42
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:127A3980	; 37
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\2]
+; System 2 (DIMM), Kronos device
+"Where"=dword:1000
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\2 -i 0003" 
+"HighLimit"=dword:15846C40	; 88
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:1565E7C0	; 86
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\3]
+; System 3 (PCI), Kronos device
+"Where"=dword:4
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\3 -i 0004" 
+"HighLimit"=dword:1528DEC0	; 82
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:14EBD5C0	; 78
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\4]
+; System 3 (PCI), Kronos device
+"Where"=dword:4
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\4 -i 0005" 
+"HighLimit"=dword:1528DEC0	; 82
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:14EBD5C0	; 78
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\5]
+; System 3 (PCI), Kronos device
+"Where"=dword:4
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\5 -i 0006" 
+"HighLimit"=dword:1528DEC0	; 82
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:14EBD5C0	; 78
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\6]
+; System 3 (PCI), Kronos device
+"Where"=dword:4
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\6 -i 0007" 
+"HighLimit"=dword:1556A580	; 85
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:150A5A40	; 80
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\7]
+; Board, Kronos device
+"Where"=dword:1
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\7 -i 0008" 
+"HighLimit"=dword:1528DEC0	; 82
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:14EBD5C0	; 78
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\8]
+; CPU, Kronos device
+"Where"=dword:5
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\8 -i 000c"
+"HighLimit"=dword:1556A580	; 85
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:150A5A40	; 80
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\9]
+; CPU, Kronos device
+"Where"=dword:5
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\9 -i 000d"
+"HighLimit"=dword:1556A580	; 85
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:150A5A40	; 80
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\10]
+; CPU, Kronos device
+"Where"=dword:102
+"DeviceType"=dword:7
+"GetReading"="sensor -R Temp\\10 -i 000e" 
+"HighLimit"=dword:13E86F80	; 61
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:13AB6680	; 57
+"LowWarn"=dword:a520f30		; -100

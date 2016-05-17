@@ -1,0 +1,9 @@
+TARGETNAME=FscCmos
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+#USER_C_FLAGS = /DBLAH
+
+INCLUDES=..\..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\WalterOney
+
+SOURCES=DriverEntry.cpp ioctl.cpp cmos.rc dispatch.cpp devqueue.cpp power.cpp plugplay.cpp removelock.cpp FscCmos.cpp

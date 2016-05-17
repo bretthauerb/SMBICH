@@ -1,0 +1,172 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg]
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion\1]
+; Use GABI
+"SwitchDeviceType"=dword:00000005
+"IntrusionDeviceType"=dword:00000005
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\1]
+; FanConnector 1, Theseus device
+"Where"=dword:2001
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f		; 9999
+"MinSpeed"=dword:3e8		; 1000
+"Percentage"=dword:46
+"IndexTachL"=dword:2c
+"IndexStatus"=dword:880
+"TachClock"=dword:5265c0
+
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\1]
+; VBatt, HeCeTa device
+"Where"=dword:1
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:24
+"Multiplier"=dword:3d08
+"Offset"=dword:0
+"HighLimit"=dword:387520 ; 3.70 V
+"LowLimit"=dword:256250  ; 2.45 V
+
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\1]
+; System 1, Theseus device
+"Where"=dword:101
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:2b
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:790
+"HighLimitIndex"=dword:7f0
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\2]
+; System 2, Theseus device
+"Where"=dword:102
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:26
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:791
+"HighLimitIndex"=dword:7f1
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\3]
+; System 3, Theseus device
+"Where"=dword:103
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:27
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:792
+"HighLimitIndex"=dword:7f2
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\4]
+; System 4, Theseus device
+"Where"=dword:104
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:28
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:793
+"HighLimitIndex"=dword:7f3
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\5]
+; System 5, Theseus device
+"Where"=dword:105
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:29
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:794
+"HighLimitIndex"=dword:7f4
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\6]
+; System 6, Theseus device
+"Where"=dword:106
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:2a
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:795
+"HighLimitIndex"=dword:7f5
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\7]
+; System 7, Theseus device
+"Where"=dword:107
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:180
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:796
+"HighLimitIndex"=dword:7f6
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\8]
+; System 8, Theseus device
+"Where"=dword:108
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:181
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:797
+"HighLimitIndex"=dword:7f7
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\9]
+; System 9, Theseus device
+"Where"=dword:109
+"DeviceType"=dword:6
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:85
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:fc2f6fff
+"StatusIndex"=dword:798
+"HighLimitIndex"=dword:7f8
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100

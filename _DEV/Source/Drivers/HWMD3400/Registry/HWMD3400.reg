@@ -1,0 +1,154 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg]
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion\1]
+; Use GABI
+"SwitchDeviceType"=dword:00000005
+"IntrusionDeviceType"=dword:00000005
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\1]
+; FanConnector 1, Charites device
+"Where"=dword:4
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f		; 9999
+"MinSpeed"=dword:3e8		; 1000
+"Percentage"=dword:46
+"PageSelect"=dword:4e
+"IndexTachL"=dword:c1
+"PWMPage"=dword:1
+"PWMIndex"=dword:27
+"FanPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\2]
+; FanConnector 2, Charites device
+"Where"=dword:22
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"PageSelect"=dword:4e
+"IndexTachL"=dword:c3
+"PWMPage"=dword:2
+"PWMIndex"=dword:27
+"FanPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\3]
+; FanConnector 3, Charites device
+"Where"=dword:3
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"PageSelect"=dword:4e
+"IndexTachL"=dword:c5
+"PWMPage"=dword:3
+"PWMIndex"=dword:27
+"FanPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\1]
+; 3V3, Charites device
+"Where"=dword:5
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:83
+"Multiplier"=dword:3e80
+"Offset"=dword:0
+"HighLimit"=dword:36ee80 ; 3.6 V
+"LowLimit"=dword:2dc6c0	 ; 3.0 V
+"PageSelect"=dword:4e
+"RegisterPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\2]
+; 3V3, Charites device
+"Where"=dword:6
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:87
+"Multiplier"=dword:3e80
+"Offset"=dword:0
+"HighLimit"=dword:36ee80 ; 3.6 V
+"LowLimit"=dword:2dc6c0	 ; 3.0 V
+"PageSelect"=dword:4e
+"RegisterPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\3]
+; 12V, Charites device
+"Where"=dword:4
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:8c
+"Multiplier"=dword:15040
+"Offset"=dword:0
+"HighLimit"=dword:c96a80 ; 13.2 V
+"LowLimit"=dword:a4cb80	 ; 10.8 V
+"PageSelect"=dword:4e
+"RegisterPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\4]
+; VBat, Charites device
+"Where"=dword:1
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:88
+"Multiplier"=dword:3e80
+"Offset"=dword:0
+"HighLimit"=dword:387520 ; 3.70 V
+"LowLimit"=dword:256250  ; 2.45 V
+"PageSelect"=dword:4e
+"RegisterPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\1]
+; CPU1, Charites device
+"Where"=dword:100
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:91
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:0
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="Core"
+"PageSelect"=dword:4e
+"RegisterPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\2]
+; CPU2, Charites device
+"Where"=dword:101
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:92
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:0
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="Grafic Slot"
+"PageSelect"=dword:4e
+"RegisterPage"=dword:4
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\3]
+; System 3, Charites device
+"Where"=dword:8000
+"DeviceType"=dword:a
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:20
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:0
+"HighLimit"=dword:166b97f0	; 103
+"LowLimit"=dword:a520f30	; -100
+"HighWarn"=dword:163dd130	; 100
+"LowWarn"=dword:a520f30		; -100
+"Caption"="CPU"
+"PageSelect"=dword:4e
+"RegisterPage"=dword:7

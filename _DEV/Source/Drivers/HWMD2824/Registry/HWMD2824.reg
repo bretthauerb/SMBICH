@@ -1,0 +1,105 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg]
+
+;[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion]
+;[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Intrusion\1]
+; Done by FscHMCfg based on CAOS structure
+; All other CAOS entries are defect and rejected by FscHMCfg.
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\1]
+; FanConnector 1, HeCeTa device
+"Where"=dword:2001
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f		; 9999
+"MinSpeed"=dword:3e8		; 1000
+"Percentage"=dword:46
+"IndexTachL"=dword:28		; Tach 1
+"IndexStatus"=dword:42
+"TachClock"=dword:5265c0
+"status_bitmask"=dword:4
+"FullSpeedDeviceType"=dword:2
+"IndexFullspeed"=dword:40
+"fullspeed_bitmask"=dword:8
+"FanTachLimitIndexL"=dword:54
+"FanTachLimit"=dword:fff0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\2]
+; Powersupply , HeCeTa device
+"Where"=dword:3
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"IndexTachL"=dword:2a		; Tach 2
+"IndexStatus"=dword:42
+"TachClock"=dword:5265c0
+"status_bitmask"=dword:8
+"FullSpeedDeviceType"=dword:2
+"IndexFullspeed"=dword:40
+"fullspeed_bitmask"=dword:8
+"FanTachLimitIndexL"=dword:56
+"FanTachLimit"=dword:fff0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Fan\3]
+; FanConnector 2, HeCeTa device
+"Where"=dword:2002
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"MaxSpeed"=dword:270f
+"MinSpeed"=dword:3e8
+"Percentage"=dword:46
+"IndexTachL"=dword:2c		; Tach 3
+"IndexStatus"=dword:42
+"TachClock"=dword:5265c0
+"status_bitmask"=dword:10
+"FullSpeedDeviceType"=dword:2
+"IndexFullspeed"=dword:40
+"fullspeed_bitmask"=dword:8
+"FanTachLimitIndexL"=dword:58
+"FanTachLimit"=dword:fff0
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Volt\1]
+; VBatt, HeCeTa device
+"Where"=dword:1
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:9a
+"SMSCVBat"=dword:1
+"Multiplier"=dword:42d5
+"Offset"=dword:0
+"HighLimit"=dword:387520 ; 3.70 V
+"LowLimit"=dword:2932e0	 ; 2.70 V
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp]
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\1]
+; On board, HeCeTa device
+"Where"=dword:1
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:26
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:0
+"HighLimitIndex"=dword:51
+"HighLimit"=dword:14558930	; 68
+"LowLimit"=dword:1047f030	; 0
+"HighWarn"=dword:1427c270	; 65
+"LowWarn"=dword:10573270	; 1
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FscHWMonCfg\Temp\2]
+; CPU, HeCeTa device
+"Where"=dword:1001
+"DeviceType"=dword:2
+"DeviceAddress"=dword:5c
+"RegisterIndex"=dword:27
+"Multiplier"=dword:f4240	; 1000000
+"Offset"=dword:0
+"HighLimitIndex"=dword:53
+"HighLimit"=dword:162e8ef0	; 99
+"LowLimit"=dword:0f16c330	; -20
+"HighWarn"=dword:161f4cb0	; 98
+"LowWarn"=dword:0f260570	; -19

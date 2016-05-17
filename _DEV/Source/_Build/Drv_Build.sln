@@ -1,0 +1,586 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscTime", "..\Drivers\FscTime\Driver\Sources\FscTime.vcxproj", "{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmbIch", "..\Drivers\SmbIch\Driver\Sources\SmbIch.vcxproj", "{3C0B002A-D922-4065-BFE2-54E4E4D484F7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SysmonCharos", "..\Drivers\SysmonCharos\Driver\Sources\SysmonCharos.vcxproj", "{9AB31E86-8400-4597-8ECD-C10F876B96AB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2581Support", "..\Drivers\HWMD2581\Sources\HWMD2581Support.vcxproj", "{C46F56C9-790B-4637-855B-2B6519841982}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2594Support", "..\Drivers\HWMD2594\Sources\HWMD2594Support.vcxproj", "{782C7024-3A7F-476E-8906-BCC53AE1818E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2703Support", "..\Drivers\HWMD2703\Sources\HWMD2703Support.vcxproj", "{28E6C99F-9ADF-4983-A4F6-4DF551889DE8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2721Support", "..\Drivers\HWMD2721\Sources\HWMD2721Support.vcxproj", "{8DC47C3D-2BBB-4D43-96FA-810D7F213C40}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2724Support", "..\Drivers\HWMD2724\Sources\HWMD2724Support.vcxproj", "{021DC0B0-1DCA-436E-A454-89637064F323}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2764Support", "..\Drivers\HWMD2764\Sources\HWMD2764Support.vcxproj", "{4CE6F86A-B065-4A3D-91B4-6868F27392C3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2804Support", "..\Drivers\HWMD2804\Sources\HWMD2804Support.vcxproj", "{B84A396D-A759-45E8-80AB-F42DA6EBE1BD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2811Support", "..\Drivers\HWMD2811\Sources\HWMD2811Support.vcxproj", "{6A1F7902-E976-4534-B17F-D8A7996E9F89}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2824Support", "..\Drivers\HWMD2824\Sources\HWMD2824Support.vcxproj", "{F3C03622-67DB-4FC9-AAE5-5432ADD327FF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SCH5627AMD", "..\Drivers\SCH5627AMD\Driver\Sources\SCH5627AMD.vcxproj", "{07E84582-8BC2-453A-94A6-64F56BDFB1D2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2981Support", "..\Drivers\HWMD2981\Sources\HWMD2981Support.vcxproj", "{94A94E5B-17ED-44A5-9EEC-C79188975C0D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD2984Support", "..\Drivers\HWMD2984\Sources\HWMD2984Support.vcxproj", "{5D5CB1EF-092F-470E-934E-DDF1AF8F2EF6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3062Support", "..\Drivers\HWMD3062\Sources\HWMD3062Support.vcxproj", "{ED98F30A-2576-497B-9894-4027573C9C5D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3061Support", "..\Drivers\HWMD3061\Sources\HWMD3061Support.vcxproj", "{8668857A-5F4E-45B6-BFAB-A43C729C5F9D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3064Support", "..\Drivers\HWMD3064\Sources\HWMD3064Support.vcxproj", "{21033576-E3A7-4743-BAD6-E2232322C23C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3067Support", "..\Drivers\HWMD3067\Sources\HWMD3067Support.vcxproj", "{22475937-E1F1-43E8-9E16-2AE26A567789}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3071Support", "..\Drivers\HWMD3071\Sources\HWMD3071Support.vcxproj", "{72C3D804-1337-4146-B5B5-7480E83A3F01}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3076Support", "..\Drivers\HWMD3076\Sources\HWMD3076Support.vcxproj", "{BAE1BC6D-EE15-4D22-9E5A-815EB984678C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3003Support", "..\Drivers\HWMD3003\Sources\HWMD3003Support.vcxproj", "{5E38F7F9-7829-484C-9325-1B6F2EF640D9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3003OEM", "..\Drivers\D3003OEM\Driver\Sources\D3003OEM.vcxproj", "{5A037061-F757-4606-AC7B-2916F4C5CEA7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3118Support", "..\Drivers\HWMD3118\Sources\HWMD3118Support.vcxproj", "{ECCC0C29-B701-450C-9A7D-721DBEAC33AB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3128Support", "..\Drivers\HWMD3128\Sources\HWMD3128Support.vcxproj", "{BA5EC026-551A-4DED-A830-BB5A2B3C36EE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3091Support", "..\Drivers\HWMD3091\Sources\HWMD3091Support.vcxproj", "{DB898D38-A8E2-4B79-B5B3-D401125BE057}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3183Support", "..\Drivers\HWMD3183\Sources\HWMD3183Support.vcxproj", "{67725FAC-24F4-4A30-BC44-AE629127C0B6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3167Support", "..\Drivers\HWMD3167\Sources\HWMD3167Support.vcxproj", "{F57E08AC-80C7-473A-AE5C-858852DF37EF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3173Support", "..\Drivers\HWMD3173\Sources\HWMD3173Support.vcxproj", "{5FB605FA-8F3C-4E5A-A901-49FF8B0C1271}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3188Support", "..\Drivers\HWMD3188\Sources\HWMD3188Support.vcxproj", "{2CCB5117-3F56-4D52-9289-DC0F26248EC8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IMBDRVSupport", "..\Drivers\IMBDRV\Driver\Sources\IMBDRVSupport.vcxproj", "{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3204Support", "..\Drivers\HWMD3204\Sources\HWMD3204Support.vcxproj", "{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3348Support", "..\Drivers\HWMD3348\Sources\HWMD3348Support.vcxproj", "{090C4E26-9DE5-4DF6-B760-8498507CADC4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3358Support", "..\Drivers\HWMD3358\Sources\HWMD3358Support.vcxproj", "{CFE6C9A6-9CB6-49F6-A77D-5A89C04B6B82}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3288Support", "..\Drivers\HWMD3288\Sources\HWMD3288Support.vcxproj", "{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3402Support", "..\Drivers\HWMD3402\Sources\HWMD3402Support.vcxproj", "{C79D6CE8-D173-4CA0-AE73-DF81E47320EC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3403Support", "..\Drivers\HWMD3403\Sources\HWMD3403Support.vcxproj", "{B9D3E07F-1D6D-424E-8E06-1CB34DC1806A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3413Support", "..\Drivers\HWMD3413\Sources\HWMD3413Support.vcxproj", "{02842CE0-A7C7-4F30-BF85-7D829ADEE34A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3417Support", "..\Drivers\HWMD3417\Sources\HWMD3417Support.vcxproj", "{3CE16C88-3545-4E92-A1BD-92ED1A2BA3EA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3422Support", "..\Drivers\HWMD3422\Sources\HWMD3422Support.vcxproj", "{C0FA638A-BB6E-4117-9BC3-A24EC05B6A9D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3427Support", "..\Drivers\HWMD3427\Sources\HWMD3427Support.vcxproj", "{98A8E92C-2D41-4E6A-9A5C-F1DB79B1EF52}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3400Support", "..\Drivers\HWMD3400\Sources\HWMD3400Support.vcxproj", "{D559BB8B-6FA7-4EA0-8D25-8F7AF8A71C60}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3401Support", "..\Drivers\HWMD3401\Sources\HWMD3401Support.vcxproj", "{AC98E9F1-0014-411E-807B-AE9D1E6EF07A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3430Support", "..\Drivers\HWMD3430\Sources\HWMD3430Support.vcxproj", "{9368962D-CAEC-44D0-888B-81797DCD13BA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3431Support", "..\Drivers\HWMD3431\Sources\HWMD3431Support.vcxproj", "{3CCC5583-0C75-42A1-AED5-BD4604D8DE0D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3444Support", "..\Drivers\HWMD3444\Sources\HWMD3444Support.vcxproj", "{97BFECD5-9308-4588-B301-5CC609C63570}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HWMD3432Support", "..\Drivers\HWMD3432\Sources\HWMD3432Support.vcxproj", "{CC345012-5982-4F15-9F7C-26FF608A43A8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscCmos", "..\Drivers\FscCmos\Driver\Sources\FscCmos.vcxproj", "{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscCpuid", "..\Drivers\FscCpuid\Driver\Sources\FscCpuid.vcxproj", "{7F5B9198-FA3F-4808-9AAC-A62A01058625}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Debug|Win32.Build.0 = Debug|Win32
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Debug|x64.ActiveCfg = Debug|x64
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Debug|x64.Build.0 = Debug|x64
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Release|Win32.ActiveCfg = Release|Win32
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Release|Win32.Build.0 = Release|Win32
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Release|x64.ActiveCfg = Release|x64
+		{DF81BCB6-0B9E-46BD-AD20-F9EE51710C88}.Release|x64.Build.0 = Release|x64
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Debug|Win32.Build.0 = Debug|Win32
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Debug|x64.ActiveCfg = Debug|x64
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Debug|x64.Build.0 = Debug|x64
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Release|Win32.ActiveCfg = Release|Win32
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Release|Win32.Build.0 = Release|Win32
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Release|x64.ActiveCfg = Release|x64
+		{3C0B002A-D922-4065-BFE2-54E4E4D484F7}.Release|x64.Build.0 = Release|x64
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Debug|Win32.Build.0 = Debug|Win32
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Debug|x64.ActiveCfg = Debug|x64
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Debug|x64.Build.0 = Debug|x64
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Release|Win32.ActiveCfg = Release|Win32
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Release|Win32.Build.0 = Release|Win32
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Release|x64.ActiveCfg = Release|x64
+		{9AB31E86-8400-4597-8ECD-C10F876B96AB}.Release|x64.Build.0 = Release|x64
+		{C46F56C9-790B-4637-855B-2B6519841982}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C46F56C9-790B-4637-855B-2B6519841982}.Debug|Win32.Build.0 = Debug|Win32
+		{C46F56C9-790B-4637-855B-2B6519841982}.Debug|x64.ActiveCfg = Debug|Win32
+		{C46F56C9-790B-4637-855B-2B6519841982}.Release|Win32.ActiveCfg = Release|Win32
+		{C46F56C9-790B-4637-855B-2B6519841982}.Release|Win32.Build.0 = Release|Win32
+		{C46F56C9-790B-4637-855B-2B6519841982}.Release|x64.ActiveCfg = Release|Win32
+		{782C7024-3A7F-476E-8906-BCC53AE1818E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{782C7024-3A7F-476E-8906-BCC53AE1818E}.Debug|Win32.Build.0 = Debug|Win32
+		{782C7024-3A7F-476E-8906-BCC53AE1818E}.Debug|x64.ActiveCfg = Debug|Win32
+		{782C7024-3A7F-476E-8906-BCC53AE1818E}.Release|Win32.ActiveCfg = Release|Win32
+		{782C7024-3A7F-476E-8906-BCC53AE1818E}.Release|Win32.Build.0 = Release|Win32
+		{782C7024-3A7F-476E-8906-BCC53AE1818E}.Release|x64.ActiveCfg = Release|Win32
+		{28E6C99F-9ADF-4983-A4F6-4DF551889DE8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{28E6C99F-9ADF-4983-A4F6-4DF551889DE8}.Debug|Win32.Build.0 = Debug|Win32
+		{28E6C99F-9ADF-4983-A4F6-4DF551889DE8}.Debug|x64.ActiveCfg = Debug|Win32
+		{28E6C99F-9ADF-4983-A4F6-4DF551889DE8}.Release|Win32.ActiveCfg = Release|Win32
+		{28E6C99F-9ADF-4983-A4F6-4DF551889DE8}.Release|Win32.Build.0 = Release|Win32
+		{28E6C99F-9ADF-4983-A4F6-4DF551889DE8}.Release|x64.ActiveCfg = Release|Win32
+		{8DC47C3D-2BBB-4D43-96FA-810D7F213C40}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8DC47C3D-2BBB-4D43-96FA-810D7F213C40}.Debug|Win32.Build.0 = Debug|Win32
+		{8DC47C3D-2BBB-4D43-96FA-810D7F213C40}.Debug|x64.ActiveCfg = Debug|Win32
+		{8DC47C3D-2BBB-4D43-96FA-810D7F213C40}.Release|Win32.ActiveCfg = Release|Win32
+		{8DC47C3D-2BBB-4D43-96FA-810D7F213C40}.Release|Win32.Build.0 = Release|Win32
+		{8DC47C3D-2BBB-4D43-96FA-810D7F213C40}.Release|x64.ActiveCfg = Release|Win32
+		{021DC0B0-1DCA-436E-A454-89637064F323}.Debug|Win32.ActiveCfg = Debug|Win32
+		{021DC0B0-1DCA-436E-A454-89637064F323}.Debug|Win32.Build.0 = Debug|Win32
+		{021DC0B0-1DCA-436E-A454-89637064F323}.Debug|x64.ActiveCfg = Debug|Win32
+		{021DC0B0-1DCA-436E-A454-89637064F323}.Release|Win32.ActiveCfg = Release|Win32
+		{021DC0B0-1DCA-436E-A454-89637064F323}.Release|Win32.Build.0 = Release|Win32
+		{021DC0B0-1DCA-436E-A454-89637064F323}.Release|x64.ActiveCfg = Release|Win32
+		{4CE6F86A-B065-4A3D-91B4-6868F27392C3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4CE6F86A-B065-4A3D-91B4-6868F27392C3}.Debug|Win32.Build.0 = Debug|Win32
+		{4CE6F86A-B065-4A3D-91B4-6868F27392C3}.Debug|x64.ActiveCfg = Debug|Win32
+		{4CE6F86A-B065-4A3D-91B4-6868F27392C3}.Release|Win32.ActiveCfg = Release|Win32
+		{4CE6F86A-B065-4A3D-91B4-6868F27392C3}.Release|Win32.Build.0 = Release|Win32
+		{4CE6F86A-B065-4A3D-91B4-6868F27392C3}.Release|x64.ActiveCfg = Release|Win32
+		{B84A396D-A759-45E8-80AB-F42DA6EBE1BD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B84A396D-A759-45E8-80AB-F42DA6EBE1BD}.Debug|Win32.Build.0 = Debug|Win32
+		{B84A396D-A759-45E8-80AB-F42DA6EBE1BD}.Debug|x64.ActiveCfg = Debug|Win32
+		{B84A396D-A759-45E8-80AB-F42DA6EBE1BD}.Release|Win32.ActiveCfg = Release|Win32
+		{B84A396D-A759-45E8-80AB-F42DA6EBE1BD}.Release|Win32.Build.0 = Release|Win32
+		{B84A396D-A759-45E8-80AB-F42DA6EBE1BD}.Release|x64.ActiveCfg = Release|Win32
+		{6A1F7902-E976-4534-B17F-D8A7996E9F89}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6A1F7902-E976-4534-B17F-D8A7996E9F89}.Debug|Win32.Build.0 = Debug|Win32
+		{6A1F7902-E976-4534-B17F-D8A7996E9F89}.Debug|x64.ActiveCfg = Debug|Win32
+		{6A1F7902-E976-4534-B17F-D8A7996E9F89}.Release|Win32.ActiveCfg = Release|Win32
+		{6A1F7902-E976-4534-B17F-D8A7996E9F89}.Release|Win32.Build.0 = Release|Win32
+		{6A1F7902-E976-4534-B17F-D8A7996E9F89}.Release|x64.ActiveCfg = Release|Win32
+		{F3C03622-67DB-4FC9-AAE5-5432ADD327FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F3C03622-67DB-4FC9-AAE5-5432ADD327FF}.Debug|Win32.Build.0 = Debug|Win32
+		{F3C03622-67DB-4FC9-AAE5-5432ADD327FF}.Debug|x64.ActiveCfg = Debug|Win32
+		{F3C03622-67DB-4FC9-AAE5-5432ADD327FF}.Release|Win32.ActiveCfg = Release|Win32
+		{F3C03622-67DB-4FC9-AAE5-5432ADD327FF}.Release|Win32.Build.0 = Release|Win32
+		{F3C03622-67DB-4FC9-AAE5-5432ADD327FF}.Release|x64.ActiveCfg = Release|Win32
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Debug|Win32.Build.0 = Debug|Win32
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Debug|x64.ActiveCfg = Debug|x64
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Debug|x64.Build.0 = Debug|x64
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Release|Win32.ActiveCfg = Release|Win32
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Release|Win32.Build.0 = Release|Win32
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Release|x64.ActiveCfg = Release|x64
+		{07E84582-8BC2-453A-94A6-64F56BDFB1D2}.Release|x64.Build.0 = Release|x64
+		{94A94E5B-17ED-44A5-9EEC-C79188975C0D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{94A94E5B-17ED-44A5-9EEC-C79188975C0D}.Debug|Win32.Build.0 = Debug|Win32
+		{94A94E5B-17ED-44A5-9EEC-C79188975C0D}.Debug|x64.ActiveCfg = Debug|Win32
+		{94A94E5B-17ED-44A5-9EEC-C79188975C0D}.Release|Win32.ActiveCfg = Release|Win32
+		{94A94E5B-17ED-44A5-9EEC-C79188975C0D}.Release|Win32.Build.0 = Release|Win32
+		{94A94E5B-17ED-44A5-9EEC-C79188975C0D}.Release|x64.ActiveCfg = Release|Win32
+		{5D5CB1EF-092F-470E-934E-DDF1AF8F2EF6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D5CB1EF-092F-470E-934E-DDF1AF8F2EF6}.Debug|Win32.Build.0 = Debug|Win32
+		{5D5CB1EF-092F-470E-934E-DDF1AF8F2EF6}.Debug|x64.ActiveCfg = Debug|Win32
+		{5D5CB1EF-092F-470E-934E-DDF1AF8F2EF6}.Release|Win32.ActiveCfg = Release|Win32
+		{5D5CB1EF-092F-470E-934E-DDF1AF8F2EF6}.Release|Win32.Build.0 = Release|Win32
+		{5D5CB1EF-092F-470E-934E-DDF1AF8F2EF6}.Release|x64.ActiveCfg = Release|Win32
+		{ED98F30A-2576-497B-9894-4027573C9C5D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ED98F30A-2576-497B-9894-4027573C9C5D}.Debug|Win32.Build.0 = Debug|Win32
+		{ED98F30A-2576-497B-9894-4027573C9C5D}.Debug|x64.ActiveCfg = Debug|Win32
+		{ED98F30A-2576-497B-9894-4027573C9C5D}.Release|Win32.ActiveCfg = Release|Win32
+		{ED98F30A-2576-497B-9894-4027573C9C5D}.Release|Win32.Build.0 = Release|Win32
+		{ED98F30A-2576-497B-9894-4027573C9C5D}.Release|x64.ActiveCfg = Release|Win32
+		{8668857A-5F4E-45B6-BFAB-A43C729C5F9D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8668857A-5F4E-45B6-BFAB-A43C729C5F9D}.Debug|Win32.Build.0 = Debug|Win32
+		{8668857A-5F4E-45B6-BFAB-A43C729C5F9D}.Debug|x64.ActiveCfg = Debug|Win32
+		{8668857A-5F4E-45B6-BFAB-A43C729C5F9D}.Release|Win32.ActiveCfg = Release|Win32
+		{8668857A-5F4E-45B6-BFAB-A43C729C5F9D}.Release|Win32.Build.0 = Release|Win32
+		{8668857A-5F4E-45B6-BFAB-A43C729C5F9D}.Release|x64.ActiveCfg = Release|Win32
+		{21033576-E3A7-4743-BAD6-E2232322C23C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21033576-E3A7-4743-BAD6-E2232322C23C}.Debug|Win32.Build.0 = Debug|Win32
+		{21033576-E3A7-4743-BAD6-E2232322C23C}.Debug|x64.ActiveCfg = Debug|Win32
+		{21033576-E3A7-4743-BAD6-E2232322C23C}.Release|Win32.ActiveCfg = Release|Win32
+		{21033576-E3A7-4743-BAD6-E2232322C23C}.Release|Win32.Build.0 = Release|Win32
+		{21033576-E3A7-4743-BAD6-E2232322C23C}.Release|x64.ActiveCfg = Release|Win32
+		{22475937-E1F1-43E8-9E16-2AE26A567789}.Debug|Win32.ActiveCfg = Debug|Win32
+		{22475937-E1F1-43E8-9E16-2AE26A567789}.Debug|Win32.Build.0 = Debug|Win32
+		{22475937-E1F1-43E8-9E16-2AE26A567789}.Debug|x64.ActiveCfg = Debug|Win32
+		{22475937-E1F1-43E8-9E16-2AE26A567789}.Release|Win32.ActiveCfg = Release|Win32
+		{22475937-E1F1-43E8-9E16-2AE26A567789}.Release|Win32.Build.0 = Release|Win32
+		{22475937-E1F1-43E8-9E16-2AE26A567789}.Release|x64.ActiveCfg = Release|Win32
+		{72C3D804-1337-4146-B5B5-7480E83A3F01}.Debug|Win32.ActiveCfg = Debug|Win32
+		{72C3D804-1337-4146-B5B5-7480E83A3F01}.Debug|Win32.Build.0 = Debug|Win32
+		{72C3D804-1337-4146-B5B5-7480E83A3F01}.Debug|x64.ActiveCfg = Debug|Win32
+		{72C3D804-1337-4146-B5B5-7480E83A3F01}.Release|Win32.ActiveCfg = Release|Win32
+		{72C3D804-1337-4146-B5B5-7480E83A3F01}.Release|Win32.Build.0 = Release|Win32
+		{72C3D804-1337-4146-B5B5-7480E83A3F01}.Release|x64.ActiveCfg = Release|Win32
+		{BAE1BC6D-EE15-4D22-9E5A-815EB984678C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAE1BC6D-EE15-4D22-9E5A-815EB984678C}.Debug|Win32.Build.0 = Debug|Win32
+		{BAE1BC6D-EE15-4D22-9E5A-815EB984678C}.Debug|x64.ActiveCfg = Debug|Win32
+		{BAE1BC6D-EE15-4D22-9E5A-815EB984678C}.Release|Win32.ActiveCfg = Release|Win32
+		{BAE1BC6D-EE15-4D22-9E5A-815EB984678C}.Release|Win32.Build.0 = Release|Win32
+		{BAE1BC6D-EE15-4D22-9E5A-815EB984678C}.Release|x64.ActiveCfg = Release|Win32
+		{5E38F7F9-7829-484C-9325-1B6F2EF640D9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5E38F7F9-7829-484C-9325-1B6F2EF640D9}.Debug|Win32.Build.0 = Debug|Win32
+		{5E38F7F9-7829-484C-9325-1B6F2EF640D9}.Debug|x64.ActiveCfg = Debug|Win32
+		{5E38F7F9-7829-484C-9325-1B6F2EF640D9}.Release|Win32.ActiveCfg = Release|Win32
+		{5E38F7F9-7829-484C-9325-1B6F2EF640D9}.Release|Win32.Build.0 = Release|Win32
+		{5E38F7F9-7829-484C-9325-1B6F2EF640D9}.Release|x64.ActiveCfg = Release|Win32
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Debug|Win32.Build.0 = Debug|Win32
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Debug|x64.ActiveCfg = Debug|x64
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Debug|x64.Build.0 = Debug|x64
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Release|Win32.ActiveCfg = Release|Win32
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Release|Win32.Build.0 = Release|Win32
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Release|x64.ActiveCfg = Release|x64
+		{5A037061-F757-4606-AC7B-2916F4C5CEA7}.Release|x64.Build.0 = Release|x64
+		{ECCC0C29-B701-450C-9A7D-721DBEAC33AB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ECCC0C29-B701-450C-9A7D-721DBEAC33AB}.Debug|Win32.Build.0 = Debug|Win32
+		{ECCC0C29-B701-450C-9A7D-721DBEAC33AB}.Debug|x64.ActiveCfg = Debug|Win32
+		{ECCC0C29-B701-450C-9A7D-721DBEAC33AB}.Release|Win32.ActiveCfg = Release|Win32
+		{ECCC0C29-B701-450C-9A7D-721DBEAC33AB}.Release|Win32.Build.0 = Release|Win32
+		{ECCC0C29-B701-450C-9A7D-721DBEAC33AB}.Release|x64.ActiveCfg = Release|Win32
+		{BA5EC026-551A-4DED-A830-BB5A2B3C36EE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BA5EC026-551A-4DED-A830-BB5A2B3C36EE}.Debug|Win32.Build.0 = Debug|Win32
+		{BA5EC026-551A-4DED-A830-BB5A2B3C36EE}.Debug|x64.ActiveCfg = Debug|Win32
+		{BA5EC026-551A-4DED-A830-BB5A2B3C36EE}.Release|Win32.ActiveCfg = Release|Win32
+		{BA5EC026-551A-4DED-A830-BB5A2B3C36EE}.Release|Win32.Build.0 = Release|Win32
+		{BA5EC026-551A-4DED-A830-BB5A2B3C36EE}.Release|x64.ActiveCfg = Release|Win32
+		{DB898D38-A8E2-4B79-B5B3-D401125BE057}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DB898D38-A8E2-4B79-B5B3-D401125BE057}.Debug|Win32.Build.0 = Debug|Win32
+		{DB898D38-A8E2-4B79-B5B3-D401125BE057}.Debug|x64.ActiveCfg = Debug|Win32
+		{DB898D38-A8E2-4B79-B5B3-D401125BE057}.Release|Win32.ActiveCfg = Release|Win32
+		{DB898D38-A8E2-4B79-B5B3-D401125BE057}.Release|Win32.Build.0 = Release|Win32
+		{DB898D38-A8E2-4B79-B5B3-D401125BE057}.Release|x64.ActiveCfg = Release|Win32
+		{67725FAC-24F4-4A30-BC44-AE629127C0B6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{67725FAC-24F4-4A30-BC44-AE629127C0B6}.Debug|Win32.Build.0 = Debug|Win32
+		{67725FAC-24F4-4A30-BC44-AE629127C0B6}.Debug|x64.ActiveCfg = Debug|Win32
+		{67725FAC-24F4-4A30-BC44-AE629127C0B6}.Release|Win32.ActiveCfg = Release|Win32
+		{67725FAC-24F4-4A30-BC44-AE629127C0B6}.Release|Win32.Build.0 = Release|Win32
+		{67725FAC-24F4-4A30-BC44-AE629127C0B6}.Release|x64.ActiveCfg = Release|Win32
+		{F57E08AC-80C7-473A-AE5C-858852DF37EF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F57E08AC-80C7-473A-AE5C-858852DF37EF}.Debug|Win32.Build.0 = Debug|Win32
+		{F57E08AC-80C7-473A-AE5C-858852DF37EF}.Debug|x64.ActiveCfg = Debug|Win32
+		{F57E08AC-80C7-473A-AE5C-858852DF37EF}.Release|Win32.ActiveCfg = Release|Win32
+		{F57E08AC-80C7-473A-AE5C-858852DF37EF}.Release|Win32.Build.0 = Release|Win32
+		{F57E08AC-80C7-473A-AE5C-858852DF37EF}.Release|x64.ActiveCfg = Release|Win32
+		{5FB605FA-8F3C-4E5A-A901-49FF8B0C1271}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5FB605FA-8F3C-4E5A-A901-49FF8B0C1271}.Debug|Win32.Build.0 = Debug|Win32
+		{5FB605FA-8F3C-4E5A-A901-49FF8B0C1271}.Debug|x64.ActiveCfg = Debug|Win32
+		{5FB605FA-8F3C-4E5A-A901-49FF8B0C1271}.Release|Win32.ActiveCfg = Release|Win32
+		{5FB605FA-8F3C-4E5A-A901-49FF8B0C1271}.Release|Win32.Build.0 = Release|Win32
+		{5FB605FA-8F3C-4E5A-A901-49FF8B0C1271}.Release|x64.ActiveCfg = Release|Win32
+		{2CCB5117-3F56-4D52-9289-DC0F26248EC8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2CCB5117-3F56-4D52-9289-DC0F26248EC8}.Debug|Win32.Build.0 = Debug|Win32
+		{2CCB5117-3F56-4D52-9289-DC0F26248EC8}.Debug|x64.ActiveCfg = Debug|Win32
+		{2CCB5117-3F56-4D52-9289-DC0F26248EC8}.Release|Win32.ActiveCfg = Release|Win32
+		{2CCB5117-3F56-4D52-9289-DC0F26248EC8}.Release|Win32.Build.0 = Release|Win32
+		{2CCB5117-3F56-4D52-9289-DC0F26248EC8}.Release|x64.ActiveCfg = Release|Win32
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Debug|Win32.Build.0 = Debug|Win32
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Debug|x64.ActiveCfg = Debug|x64
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Debug|x64.Build.0 = Debug|x64
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|Win32.ActiveCfg = Release|Win32
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|Win32.Build.0 = Release|Win32
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|x64.ActiveCfg = Release|x64
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|x64.Build.0 = Release|x64
+		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Debug|Win32.Build.0 = Debug|Win32
+		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Debug|x64.ActiveCfg = Debug|Win32
+		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Release|Win32.ActiveCfg = Release|Win32
+		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Release|Win32.Build.0 = Release|Win32
+		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Release|x64.ActiveCfg = Release|Win32
+		{090C4E26-9DE5-4DF6-B760-8498507CADC4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{090C4E26-9DE5-4DF6-B760-8498507CADC4}.Debug|Win32.Build.0 = Debug|Win32
+		{090C4E26-9DE5-4DF6-B760-8498507CADC4}.Debug|x64.ActiveCfg = Debug|Win32
+		{090C4E26-9DE5-4DF6-B760-8498507CADC4}.Release|Win32.ActiveCfg = Release|Win32
+		{090C4E26-9DE5-4DF6-B760-8498507CADC4}.Release|Win32.Build.0 = Release|Win32
+		{090C4E26-9DE5-4DF6-B760-8498507CADC4}.Release|x64.ActiveCfg = Release|Win32
+		{CFE6C9A6-9CB6-49F6-A77D-5A89C04B6B82}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CFE6C9A6-9CB6-49F6-A77D-5A89C04B6B82}.Debug|Win32.Build.0 = Debug|Win32
+		{CFE6C9A6-9CB6-49F6-A77D-5A89C04B6B82}.Debug|x64.ActiveCfg = Debug|Win32
+		{CFE6C9A6-9CB6-49F6-A77D-5A89C04B6B82}.Release|Win32.ActiveCfg = Release|Win32
+		{CFE6C9A6-9CB6-49F6-A77D-5A89C04B6B82}.Release|Win32.Build.0 = Release|Win32
+		{CFE6C9A6-9CB6-49F6-A77D-5A89C04B6B82}.Release|x64.ActiveCfg = Release|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Debug|Win32.Build.0 = Debug|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Debug|x64.ActiveCfg = Debug|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Release|Win32.ActiveCfg = Release|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Release|Win32.Build.0 = Release|Win32
+		{CBEA1C6D-660D-45F6-B0A0-8AC3667E6759}.Release|x64.ActiveCfg = Release|Win32
+		{C79D6CE8-D173-4CA0-AE73-DF81E47320EC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C79D6CE8-D173-4CA0-AE73-DF81E47320EC}.Debug|Win32.Build.0 = Debug|Win32
+		{C79D6CE8-D173-4CA0-AE73-DF81E47320EC}.Debug|x64.ActiveCfg = Debug|Win32
+		{C79D6CE8-D173-4CA0-AE73-DF81E47320EC}.Release|Win32.ActiveCfg = Release|Win32
+		{C79D6CE8-D173-4CA0-AE73-DF81E47320EC}.Release|Win32.Build.0 = Release|Win32
+		{C79D6CE8-D173-4CA0-AE73-DF81E47320EC}.Release|x64.ActiveCfg = Release|Win32
+		{B9D3E07F-1D6D-424E-8E06-1CB34DC1806A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B9D3E07F-1D6D-424E-8E06-1CB34DC1806A}.Debug|Win32.Build.0 = Debug|Win32
+		{B9D3E07F-1D6D-424E-8E06-1CB34DC1806A}.Debug|x64.ActiveCfg = Debug|Win32
+		{B9D3E07F-1D6D-424E-8E06-1CB34DC1806A}.Release|Win32.ActiveCfg = Release|Win32
+		{B9D3E07F-1D6D-424E-8E06-1CB34DC1806A}.Release|Win32.Build.0 = Release|Win32
+		{B9D3E07F-1D6D-424E-8E06-1CB34DC1806A}.Release|x64.ActiveCfg = Release|Win32
+		{02842CE0-A7C7-4F30-BF85-7D829ADEE34A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{02842CE0-A7C7-4F30-BF85-7D829ADEE34A}.Debug|Win32.Build.0 = Debug|Win32
+		{02842CE0-A7C7-4F30-BF85-7D829ADEE34A}.Debug|x64.ActiveCfg = Debug|Win32
+		{02842CE0-A7C7-4F30-BF85-7D829ADEE34A}.Release|Win32.ActiveCfg = Release|Win32
+		{02842CE0-A7C7-4F30-BF85-7D829ADEE34A}.Release|Win32.Build.0 = Release|Win32
+		{02842CE0-A7C7-4F30-BF85-7D829ADEE34A}.Release|x64.ActiveCfg = Release|Win32
+		{3CE16C88-3545-4E92-A1BD-92ED1A2BA3EA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3CE16C88-3545-4E92-A1BD-92ED1A2BA3EA}.Debug|Win32.Build.0 = Debug|Win32
+		{3CE16C88-3545-4E92-A1BD-92ED1A2BA3EA}.Debug|x64.ActiveCfg = Debug|Win32
+		{3CE16C88-3545-4E92-A1BD-92ED1A2BA3EA}.Release|Win32.ActiveCfg = Release|Win32
+		{3CE16C88-3545-4E92-A1BD-92ED1A2BA3EA}.Release|Win32.Build.0 = Release|Win32
+		{3CE16C88-3545-4E92-A1BD-92ED1A2BA3EA}.Release|x64.ActiveCfg = Release|Win32
+		{C0FA638A-BB6E-4117-9BC3-A24EC05B6A9D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C0FA638A-BB6E-4117-9BC3-A24EC05B6A9D}.Debug|Win32.Build.0 = Debug|Win32
+		{C0FA638A-BB6E-4117-9BC3-A24EC05B6A9D}.Debug|x64.ActiveCfg = Debug|Win32
+		{C0FA638A-BB6E-4117-9BC3-A24EC05B6A9D}.Release|Win32.ActiveCfg = Release|Win32
+		{C0FA638A-BB6E-4117-9BC3-A24EC05B6A9D}.Release|Win32.Build.0 = Release|Win32
+		{C0FA638A-BB6E-4117-9BC3-A24EC05B6A9D}.Release|x64.ActiveCfg = Release|Win32
+		{98A8E92C-2D41-4E6A-9A5C-F1DB79B1EF52}.Debug|Win32.ActiveCfg = Debug|Win32
+		{98A8E92C-2D41-4E6A-9A5C-F1DB79B1EF52}.Debug|Win32.Build.0 = Debug|Win32
+		{98A8E92C-2D41-4E6A-9A5C-F1DB79B1EF52}.Debug|x64.ActiveCfg = Debug|Win32
+		{98A8E92C-2D41-4E6A-9A5C-F1DB79B1EF52}.Release|Win32.ActiveCfg = Release|Win32
+		{98A8E92C-2D41-4E6A-9A5C-F1DB79B1EF52}.Release|Win32.Build.0 = Release|Win32
+		{98A8E92C-2D41-4E6A-9A5C-F1DB79B1EF52}.Release|x64.ActiveCfg = Release|Win32
+		{D559BB8B-6FA7-4EA0-8D25-8F7AF8A71C60}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D559BB8B-6FA7-4EA0-8D25-8F7AF8A71C60}.Debug|Win32.Build.0 = Debug|Win32
+		{D559BB8B-6FA7-4EA0-8D25-8F7AF8A71C60}.Debug|x64.ActiveCfg = Debug|Win32
+		{D559BB8B-6FA7-4EA0-8D25-8F7AF8A71C60}.Release|Win32.ActiveCfg = Release|Win32
+		{D559BB8B-6FA7-4EA0-8D25-8F7AF8A71C60}.Release|Win32.Build.0 = Release|Win32
+		{D559BB8B-6FA7-4EA0-8D25-8F7AF8A71C60}.Release|x64.ActiveCfg = Release|Win32
+		{AC98E9F1-0014-411E-807B-AE9D1E6EF07A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AC98E9F1-0014-411E-807B-AE9D1E6EF07A}.Debug|Win32.Build.0 = Debug|Win32
+		{AC98E9F1-0014-411E-807B-AE9D1E6EF07A}.Debug|x64.ActiveCfg = Debug|Win32
+		{AC98E9F1-0014-411E-807B-AE9D1E6EF07A}.Release|Win32.ActiveCfg = Release|Win32
+		{AC98E9F1-0014-411E-807B-AE9D1E6EF07A}.Release|Win32.Build.0 = Release|Win32
+		{AC98E9F1-0014-411E-807B-AE9D1E6EF07A}.Release|x64.ActiveCfg = Release|Win32
+		{9368962D-CAEC-44D0-888B-81797DCD13BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9368962D-CAEC-44D0-888B-81797DCD13BA}.Debug|Win32.Build.0 = Debug|Win32
+		{9368962D-CAEC-44D0-888B-81797DCD13BA}.Debug|x64.ActiveCfg = Debug|Win32
+		{9368962D-CAEC-44D0-888B-81797DCD13BA}.Release|Win32.ActiveCfg = Release|Win32
+		{9368962D-CAEC-44D0-888B-81797DCD13BA}.Release|Win32.Build.0 = Release|Win32
+		{9368962D-CAEC-44D0-888B-81797DCD13BA}.Release|x64.ActiveCfg = Release|Win32
+		{3CCC5583-0C75-42A1-AED5-BD4604D8DE0D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3CCC5583-0C75-42A1-AED5-BD4604D8DE0D}.Debug|Win32.Build.0 = Debug|Win32
+		{3CCC5583-0C75-42A1-AED5-BD4604D8DE0D}.Debug|x64.ActiveCfg = Debug|Win32
+		{3CCC5583-0C75-42A1-AED5-BD4604D8DE0D}.Release|Win32.ActiveCfg = Release|Win32
+		{3CCC5583-0C75-42A1-AED5-BD4604D8DE0D}.Release|Win32.Build.0 = Release|Win32
+		{3CCC5583-0C75-42A1-AED5-BD4604D8DE0D}.Release|x64.ActiveCfg = Release|Win32
+		{97BFECD5-9308-4588-B301-5CC609C63570}.Debug|Win32.ActiveCfg = Debug|Win32
+		{97BFECD5-9308-4588-B301-5CC609C63570}.Debug|Win32.Build.0 = Debug|Win32
+		{97BFECD5-9308-4588-B301-5CC609C63570}.Debug|x64.ActiveCfg = Debug|Win32
+		{97BFECD5-9308-4588-B301-5CC609C63570}.Release|Win32.ActiveCfg = Release|Win32
+		{97BFECD5-9308-4588-B301-5CC609C63570}.Release|Win32.Build.0 = Release|Win32
+		{97BFECD5-9308-4588-B301-5CC609C63570}.Release|x64.ActiveCfg = Release|Win32
+		{CC345012-5982-4F15-9F7C-26FF608A43A8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CC345012-5982-4F15-9F7C-26FF608A43A8}.Debug|Win32.Build.0 = Debug|Win32
+		{CC345012-5982-4F15-9F7C-26FF608A43A8}.Debug|x64.ActiveCfg = Debug|Win32
+		{CC345012-5982-4F15-9F7C-26FF608A43A8}.Release|Win32.ActiveCfg = Release|Win32
+		{CC345012-5982-4F15-9F7C-26FF608A43A8}.Release|Win32.Build.0 = Release|Win32
+		{CC345012-5982-4F15-9F7C-26FF608A43A8}.Release|x64.ActiveCfg = Release|Win32
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Debug|Win32.Build.0 = Debug|Win32
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Debug|Win32.Deploy.0 = Debug|Win32
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Debug|x64.ActiveCfg = Debug|x64
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Debug|x64.Build.0 = Debug|x64
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Debug|x64.Deploy.0 = Debug|x64
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Release|Win32.ActiveCfg = Release|Win32
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Release|Win32.Build.0 = Release|Win32
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Release|Win32.Deploy.0 = Release|Win32
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Release|x64.ActiveCfg = Release|x64
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Release|x64.Build.0 = Release|x64
+		{3D146B0A-A51A-4ACA-ABA6-6D6CA2147A1F}.Release|x64.Deploy.0 = Release|x64
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Debug|Win32.Build.0 = Debug|Win32
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Debug|Win32.Deploy.0 = Debug|Win32
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Debug|x64.ActiveCfg = Debug|x64
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Debug|x64.Build.0 = Debug|x64
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Debug|x64.Deploy.0 = Debug|x64
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|Win32.ActiveCfg = Release|Win32
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|Win32.Build.0 = Release|Win32
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|Win32.Deploy.0 = Release|Win32
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|x64.ActiveCfg = Release|x64
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|x64.Build.0 = Release|x64
+		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|x64.Deploy.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 50
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://g02deas01tfoun.g02.fujitsu.local:8080/tfs/tpc1
+		SccProjectUniqueName0 = ..\\Drivers\\HWMD2581\\Sources\\HWMD2581Support.vcxproj
+		SccProjectName0 = ../Drivers/HWMD2581/Sources
+		SccLocalPath0 = ..\\Drivers\\HWMD2581\\Sources
+		SccProjectUniqueName1 = ..\\Drivers\\HWMD2594\\Sources\\HWMD2594Support.vcxproj
+		SccProjectName1 = ../Drivers/HWMD2594/Sources
+		SccLocalPath1 = ..\\Drivers\\HWMD2594\\Sources
+		SccProjectUniqueName2 = ..\\Drivers\\HWMD2703\\Sources\\HWMD2703Support.vcxproj
+		SccProjectName2 = ../Drivers/HWMD2703/Sources
+		SccLocalPath2 = ..\\Drivers\\HWMD2703\\Sources
+		SccProjectUniqueName3 = ..\\Drivers\\HWMD2721\\Sources\\HWMD2721Support.vcxproj
+		SccProjectName3 = ../Drivers/HWMD2721/Sources
+		SccLocalPath3 = ..\\Drivers\\HWMD2721\\Sources
+		SccProjectUniqueName4 = ..\\Drivers\\HWMD2724\\Sources\\HWMD2724Support.vcxproj
+		SccProjectName4 = ../Drivers/HWMD2724/Sources
+		SccLocalPath4 = ..\\Drivers\\HWMD2724\\Sources
+		SccProjectUniqueName5 = ..\\Drivers\\HWMD2764\\Sources\\HWMD2764Support.vcxproj
+		SccProjectName5 = ../Drivers/HWMD2764/Sources
+		SccLocalPath5 = ..\\Drivers\\HWMD2764\\Sources
+		SccProjectUniqueName6 = ..\\Drivers\\HWMD2804\\Sources\\HWMD2804Support.vcxproj
+		SccProjectName6 = ../Drivers/HWMD2804/Sources
+		SccLocalPath6 = ..\\Drivers\\HWMD2804\\Sources
+		SccProjectUniqueName7 = ..\\Drivers\\HWMD2811\\Sources\\HWMD2811Support.vcxproj
+		SccProjectName7 = ../Drivers/HWMD2811/Sources
+		SccLocalPath7 = ..\\Drivers\\HWMD2811\\Sources
+		SccProjectUniqueName8 = ..\\Drivers\\HWMD2824\\Sources\\HWMD2824Support.vcxproj
+		SccProjectName8 = ../Drivers/HWMD2824/Sources
+		SccLocalPath8 = ..\\Drivers\\HWMD2824\\Sources
+		SccProjectUniqueName9 = ..\\Drivers\\HWMD2981\\Sources\\HWMD2981Support.vcxproj
+		SccProjectName9 = ../Drivers/HWMD2981/Sources
+		SccLocalPath9 = ..\\Drivers\\HWMD2981\\Sources
+		SccProjectUniqueName10 = ..\\Drivers\\HWMD2984\\Sources\\HWMD2984Support.vcxproj
+		SccProjectName10 = ../Drivers/HWMD2984/Sources
+		SccLocalPath10 = ..\\Drivers\\HWMD2984\\Sources
+		SccProjectUniqueName11 = ..\\Drivers\\HWMD3062\\Sources\\HWMD3062Support.vcxproj
+		SccProjectName11 = ../Drivers/HWMD3062/Sources
+		SccLocalPath11 = ..\\Drivers\\HWMD3062\\Sources
+		SccProjectUniqueName12 = ..\\Drivers\\HWMD3061\\Sources\\HWMD3061Support.vcxproj
+		SccProjectName12 = ../Drivers/HWMD3061/Sources
+		SccLocalPath12 = ..\\Drivers\\HWMD3061\\Sources
+		SccProjectUniqueName13 = ..\\Drivers\\HWMD3064\\Sources\\HWMD3064Support.vcxproj
+		SccProjectName13 = ../Drivers/HWMD3064/Sources
+		SccLocalPath13 = ..\\Drivers\\HWMD3064\\Sources
+		SccProjectUniqueName14 = ..\\Drivers\\HWMD3067\\Sources\\HWMD3067Support.vcxproj
+		SccProjectName14 = ../Drivers/HWMD3067/Sources
+		SccLocalPath14 = ..\\Drivers\\HWMD3067\\Sources
+		SccProjectUniqueName15 = ..\\Drivers\\HWMD3071\\Sources\\HWMD3071Support.vcxproj
+		SccProjectName15 = ../Drivers/HWMD3071/Sources
+		SccLocalPath15 = ..\\Drivers\\HWMD3071\\Sources
+		SccProjectUniqueName16 = ..\\Drivers\\HWMD3076\\Sources\\HWMD3076Support.vcxproj
+		SccProjectName16 = ../Drivers/HWMD3076/Sources
+		SccLocalPath16 = ..\\Drivers\\HWMD3076\\Sources
+		SccProjectUniqueName17 = ..\\Drivers\\HWMD3003\\Sources\\HWMD3003Support.vcxproj
+		SccProjectName17 = ../Drivers/HWMD3003/Sources
+		SccLocalPath17 = ..\\Drivers\\HWMD3003\\Sources
+		SccProjectUniqueName18 = ..\\Drivers\\HWMD3118\\Sources\\HWMD3118Support.vcxproj
+		SccProjectName18 = ../Drivers/HWMD3118/Sources
+		SccLocalPath18 = ..\\Drivers\\HWMD3118\\Sources
+		SccProjectUniqueName19 = ..\\Drivers\\HWMD3128\\Sources\\HWMD3128Support.vcxproj
+		SccProjectName19 = ../Drivers/HWMD3128/Sources
+		SccLocalPath19 = ..\\Drivers\\HWMD3128\\Sources
+		SccProjectUniqueName20 = ..\\Drivers\\HWMD3091\\Sources\\HWMD3091Support.vcxproj
+		SccProjectName20 = ../Drivers/HWMD3091/Sources
+		SccLocalPath20 = ..\\Drivers\\HWMD3091\\Sources
+		SccProjectUniqueName21 = ..\\Drivers\\HWMD3183\\Sources\\HWMD3183Support.vcxproj
+		SccProjectName21 = ../Drivers/HWMD3183/Sources
+		SccLocalPath21 = ..\\Drivers\\HWMD3183\\Sources
+		SccProjectUniqueName22 = ..\\Drivers\\HWMD3167\\Sources\\HWMD3167Support.vcxproj
+		SccProjectName22 = ../Drivers/HWMD3167/Sources
+		SccLocalPath22 = ..\\Drivers\\HWMD3167\\Sources
+		SccProjectUniqueName23 = ..\\Drivers\\HWMD3173\\Sources\\HWMD3173Support.vcxproj
+		SccProjectName23 = ../Drivers/HWMD3173/Sources
+		SccLocalPath23 = ..\\Drivers\\HWMD3173\\Sources
+		SccProjectUniqueName24 = ..\\Drivers\\HWMD3188\\Sources\\HWMD3188Support.vcxproj
+		SccProjectName24 = ../Drivers/HWMD3188/Sources
+		SccLocalPath24 = ..\\Drivers\\HWMD3188\\Sources
+		SccProjectUniqueName25 = ..\\Drivers\\HWMD3204\\Sources\\HWMD3204Support.vcxproj
+		SccProjectName25 = ../Drivers/HWMD3204/Sources
+		SccLocalPath25 = ..\\Drivers\\HWMD3204\\Sources
+		SccProjectUniqueName26 = ..\\Drivers\\HWMD3348\\Sources\\HWMD3348Support.vcxproj
+		SccProjectName26 = ../Drivers/HWMD3348/Sources
+		SccLocalPath26 = ..\\Drivers\\HWMD3348\\Sources
+		SccProjectUniqueName27 = ..\\Drivers\\HWMD3358\\Sources\\HWMD3358Support.vcxproj
+		SccProjectName27 = ../Drivers/HWMD3358/Sources
+		SccLocalPath27 = ..\\Drivers\\HWMD3358\\Sources
+		SccProjectUniqueName28 = ..\\Drivers\\HWMD3288\\Sources\\HWMD3288Support.vcxproj
+		SccProjectName28 = ../Drivers/HWMD3288/Sources
+		SccLocalPath28 = ..\\Drivers\\HWMD3288\\Sources
+		SccProjectUniqueName29 = ..\\Drivers\\HWMD3402\\Sources\\HWMD3402Support.vcxproj
+		SccProjectName29 = ../Drivers/HWMD3402/Sources
+		SccLocalPath29 = ..\\Drivers\\HWMD3402\\Sources
+		SccProjectUniqueName30 = ..\\Drivers\\HWMD3403\\Sources\\HWMD3403Support.vcxproj
+		SccProjectName30 = ../Drivers/HWMD3403/Sources
+		SccLocalPath30 = ..\\Drivers\\HWMD3403\\Sources
+		SccProjectUniqueName31 = ..\\Drivers\\HWMD3413\\Sources\\HWMD3413Support.vcxproj
+		SccProjectName31 = ../Drivers/HWMD3413/Sources
+		SccLocalPath31 = ..\\Drivers\\HWMD3413\\Sources
+		SccProjectUniqueName32 = ..\\Drivers\\HWMD3417\\Sources\\HWMD3417Support.vcxproj
+		SccProjectName32 = ../Drivers/HWMD3417/Sources
+		SccLocalPath32 = ..\\Drivers\\HWMD3417\\Sources
+		SccProjectUniqueName33 = ..\\Drivers\\HWMD3422\\Sources\\HWMD3422Support.vcxproj
+		SccProjectName33 = ../Drivers/HWMD3422/Sources
+		SccLocalPath33 = ..\\Drivers\\HWMD3422\\Sources
+		SccProjectUniqueName34 = ..\\Drivers\\HWMD3427\\Sources\\HWMD3427Support.vcxproj
+		SccProjectName34 = ../Drivers/HWMD3427/Sources
+		SccLocalPath34 = ..\\Drivers\\HWMD3427\\Sources
+		SccProjectUniqueName35 = ..\\Drivers\\HWMD3400\\Sources\\HWMD3400Support.vcxproj
+		SccProjectName35 = ../Drivers/HWMD3400/Sources
+		SccLocalPath35 = ..\\Drivers\\HWMD3400\\Sources
+		SccProjectUniqueName36 = ..\\Drivers\\HWMD3401\\Sources\\HWMD3401Support.vcxproj
+		SccProjectName36 = ../Drivers/HWMD3401/Sources
+		SccLocalPath36 = ..\\Drivers\\HWMD3401\\Sources
+		SccProjectUniqueName37 = ..\\Drivers\\HWMD3430\\Sources\\HWMD3430Support.vcxproj
+		SccProjectName37 = ../Drivers/HWMD3430/Sources
+		SccLocalPath37 = ..\\Drivers\\HWMD3430\\Sources
+		SccProjectUniqueName38 = ..\\Drivers\\HWMD3431\\Sources\\HWMD3431Support.vcxproj
+		SccProjectName38 = ../Drivers/HWMD3431/Sources
+		SccLocalPath38 = ..\\Drivers\\HWMD3431\\Sources
+		SccProjectUniqueName39 = ..\\Drivers\\HWMD3444\\Sources\\HWMD3444Support.vcxproj
+		SccProjectName39 = ../Drivers/HWMD3444/Sources
+		SccLocalPath39 = ..\\Drivers\\HWMD3444\\Sources
+		SccProjectUniqueName40 = ..\\Drivers\\HWMD3432\\Sources\\HWMD3432Support.vcxproj
+		SccProjectName40 = ../Drivers/HWMD3432/Sources
+		SccLocalPath40 = ..\\Drivers\\HWMD3432\\Sources
+		SccLocalPath41 = .
+		SccProjectUniqueName42 = ..\\Drivers\\FscTime\\Driver\\Sources\\FscTime.vcxproj
+		SccProjectName42 = ../Drivers/FscTime/Driver/Sources
+		SccLocalPath42 = ..\\Drivers\\FscTime\\Driver\\Sources
+		SccProjectUniqueName43 = ..\\Drivers\\SmbIch\\Driver\\Sources\\SmbIch.vcxproj
+		SccProjectName43 = ../Drivers/SmbIch/Driver/Sources
+		SccLocalPath43 = ..\\Drivers\\SmbIch\\Driver\\Sources
+		SccProjectUniqueName44 = ..\\Drivers\\SysmonCharos\\Driver\\Sources\\SysmonCharos.vcxproj
+		SccProjectName44 = ../Drivers/SysmonCharos/Driver/Sources
+		SccLocalPath44 = ..\\Drivers\\SysmonCharos\\Driver\\Sources
+		SccProjectUniqueName45 = ..\\Drivers\\SCH5627AMD\\Driver\\Sources\\SCH5627AMD.vcxproj
+		SccProjectName45 = ../Drivers/SCH5627AMD/Driver/Sources
+		SccLocalPath45 = ..\\Drivers\\SCH5627AMD\\Driver\\Sources
+		SccProjectUniqueName46 = ..\\Drivers\\D3003OEM\\Driver\\Sources\\D3003OEM.vcxproj
+		SccProjectName46 = ../Drivers/D3003OEM/Driver/Sources
+		SccLocalPath46 = ..\\Drivers\\D3003OEM\\Driver\\Sources
+		SccProjectUniqueName47 = ..\\Drivers\\IMBDRV\\Driver\\Sources\\IMBDRVSupport.vcxproj
+		SccProjectName47 = ../Drivers/IMBDRV/Driver/Sources
+		SccLocalPath47 = ..\\Drivers\\IMBDRV\\Driver\\Sources
+		SccProjectUniqueName48 = ..\\Drivers\\FscCmos\\Driver\\Sources\\FscCmos.vcxproj
+		SccProjectName48 = ../Drivers/FscCmos/Driver/Sources
+		SccLocalPath48 = ..\\Drivers\\FscCmos\\Driver\\Sources
+		SccProjectUniqueName49 = ..\\Drivers\\FscCpuid\\Driver\\Sources\\FscCpuid.vcxproj
+		SccProjectName49 = ../Drivers/FscCpuid/Driver/Sources
+		SccLocalPath49 = ..\\Drivers\\FscCpuid\\Driver\\Sources
+	EndGlobalSection
+EndGlobal

@@ -29,7 +29,7 @@ typedef struct tagGABIHeader
 } GABI_HEADER, *PGABI_HEADER;
 
 #define MAP_SIZE 0x20000
-#define MAP_BIOS_SIZE 0x10000
+#define MAP_BIOS_SIZE 0x20000
 #define MAP_MASK 0x1ffff
 
 #pragma pack(pop)

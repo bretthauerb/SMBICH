@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="@(ClSourceFiles)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="driver.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="driver.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="driver.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="DMI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="driver.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="DMI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="driver.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="DMI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="driver.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="FscEfDmi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="@(RcSourceFiles)" />
+    <ResourceCompile Include="@(RcSourceFiles)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{a4e76adb-28f2-4a3b-8e1a-a2b4e9b9222c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{f98cd66f-20d4-47bf-ba6e-9392569f778b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Driver Files">
+      <UniqueIdentifier>{ebfc3cec-e200-463a-9305-42ae1331142f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{3d8f61a5-c3b1-457a-a1ad-039bf6c95b3a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Inf Include="*.inf">
+      <Filter>Driver Files</Filter>
+    </Inf>
+  </ItemGroup>
+</Project>

@@ -100,6 +100,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscCmos", "..\Drivers\FscCm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscCpuid", "..\Drivers\FscCpuid\Driver\Sources\FscCpuid.vcxproj", "{7F5B9198-FA3F-4808-9AAC-A62A01058625}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscEfDmi", "..\Drivers\FscEfDmi\Driver\Sources\FscEfDmi.vcxproj", "{92021143-EABB-419F-ADE9-90E5B865EE55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -300,8 +302,9 @@ Global
 		{2CCB5117-3F56-4D52-9289-DC0F26248EC8}.Release|x64.ActiveCfg = Release|Win32
 		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Debug|x64.ActiveCfg = Debug|x64
-		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|Win32.ActiveCfg = Debug|x64
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|Win32.ActiveCfg = Release|Win32
 		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|x64.ActiveCfg = Release|x64
+		{C0A8FAD5-68D0-4E10-9EA1-3826FBDD1D4B}.Release|x64.Build.0 = Release|x64
 		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Debug|Win32.Build.0 = Debug|Win32
 		{82630F92-5C2F-40C8-B24A-F4CCC880CD7D}.Debug|x64.ActiveCfg = Debug|Win32
@@ -422,12 +425,24 @@ Global
 		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|x64.ActiveCfg = Release|x64
 		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|x64.Build.0 = Release|x64
 		{7F5B9198-FA3F-4808-9AAC-A62A01058625}.Release|x64.Deploy.0 = Release|x64
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Debug|Win32.ActiveCfg = Debug|Win32
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Debug|Win32.Build.0 = Debug|Win32
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Debug|Win32.Deploy.0 = Debug|Win32
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Debug|x64.ActiveCfg = Debug|x64
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Debug|x64.Build.0 = Debug|x64
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Debug|x64.Deploy.0 = Debug|x64
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Release|Win32.ActiveCfg = Release|Win32
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Release|Win32.Build.0 = Release|Win32
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Release|Win32.Deploy.0 = Release|Win32
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Release|x64.ActiveCfg = Release|x64
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Release|x64.Build.0 = Release|x64
+		{92021143-EABB-419F-ADE9-90E5B865EE55}.Release|x64.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 50
+		SccNumberOfProjects = 51
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://g02deas01tfoun.g02.fujitsu.local:8080/tfs/tpc1
 		SccProjectUniqueName0 = ..\\Drivers\\HWMD2581\\Sources\\HWMD2581Support.vcxproj
@@ -578,5 +593,8 @@ Global
 		SccProjectUniqueName49 = ..\\Drivers\\FscCpuid\\Driver\\Sources\\FscCpuid.vcxproj
 		SccProjectName49 = ../Drivers/FscCpuid/Driver/Sources
 		SccLocalPath49 = ..\\Drivers\\FscCpuid\\Driver\\Sources
+		SccProjectUniqueName50 = ..\\Drivers\\FscEfDmi\\Driver\\Sources\\FscEfDmi.vcxproj
+		SccProjectName50 = ../Drivers/FscEfDmi/Driver/Sources
+		SccLocalPath50 = ..\\Drivers\\FscEfDmi\\Driver\\Sources
 	EndGlobalSection
 EndGlobal

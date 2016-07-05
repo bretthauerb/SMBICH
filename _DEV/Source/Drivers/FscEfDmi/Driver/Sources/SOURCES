@@ -1,0 +1,7 @@
+TARGETNAME=FscEfDmi
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+INCLUDES=..\..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\Inc;..\..\..\..\_SHARED\WalterOney
+
+SOURCES=DriverEntry.cpp ioctl.cpp efdmi.rc dispatch.cpp devqueue.cpp power.cpp plugplay.cpp removelock.cpp dmi.cpp FscEfDmi.cpp

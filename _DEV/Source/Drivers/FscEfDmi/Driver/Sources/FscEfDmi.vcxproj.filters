@@ -19,6 +19,34 @@
     <ClCompile Include="@(ClSourceFiles)" />
     <ClCompile Include="@(ClSourceFiles)" />
     <ClCompile Include="@(ClSourceFiles)" />
+    <ClCompile Include="devqueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dispatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FscEfDmi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ioctl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plugplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="power.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="removelock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SmbIch\Driver\Sources\dmi.cpp">
+      <Filter>Imports\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SmbIch\Driver\Sources\DebugPrint.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="driver.h" />
@@ -37,18 +65,22 @@
     </ClInclude>
     <ClInclude Include="driver.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="DMI.h">
+    <ClInclude Include="driver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="driver.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="FscEfDmi.h">
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SmbIch\Driver\Sources\DMI.h">
+      <Filter>Imports\Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="@(RcSourceFiles)" />
     <ResourceCompile Include="@(RcSourceFiles)" />
+    <ResourceCompile Include="efdmi.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -63,9 +95,15 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{3d8f61a5-c3b1-457a-a1ad-039bf6c95b3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Imports">
+      <UniqueIdentifier>{c0c677ea-0dcc-458d-ad62-5a11b5fb1345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imports\Classes">
+      <UniqueIdentifier>{b6e3792b-66dd-4082-96aa-662242ff1d50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Inf Include="*.inf">
+    <Inf Include="FscEfDmi.inf">
       <Filter>Driver Files</Filter>
     </Inf>
   </ItemGroup>

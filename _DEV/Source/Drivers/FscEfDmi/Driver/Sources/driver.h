@@ -1,4 +1,4 @@
-// #include "FscEfDmi.h"
+#include "FscEfDmi.h"
 #define DRIVER_NAME					EfdmiServiceName
 #define DRIVER_DEVICE_NAME			L"\\Device\\FSC_EFDMI"
 #define DRIVER_LINK_NAME_L			L"\\DosDevices\\FSC_EFDMI"

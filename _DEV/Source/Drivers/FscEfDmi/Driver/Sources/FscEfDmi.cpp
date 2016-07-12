@@ -4,10 +4,10 @@
 
 #pragma PAGEDCODE
 
-NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PARTIAL_RESOURCE_LIST translated)
+NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_PARTIAL_RESOURCE_LIST /*translated*/)
 	{							// StartDevice
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
-	NTSTATUS status;
+	// NTSTATUS status;
 	PHYSICAL_ADDRESS PhAddressESegment;
 
 	// Map E and F Segment, remains mapped untill unload
@@ -26,7 +26,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 
 #pragma PAGEDCODE
 
-VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN oktouch /* = FALSE */)
+VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN /*oktouch*/ /* = FALSE */)
 	{							// StopDevice
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 

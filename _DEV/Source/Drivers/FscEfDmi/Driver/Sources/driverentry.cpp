@@ -16,7 +16,7 @@
 #endif
 
 
-// #include "FscEfDmi.h"
+#include "FscEfDmi.h"
 #include "stddcls.h"
 #include "driver.h"
 
@@ -32,7 +32,7 @@ static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT
 #pragma INITCODE
 
 extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
-								IN PUNICODE_STRING RegistryPath)
+								IN PUNICODE_STRING /*RegistryPath*/)
 {
 	// Insist that OS support at least the WDM level of the DDK we use
 	if (!IoIsWdmVersionAvailable(1, 0))
@@ -69,7 +69,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 
 #pragma PAGEDCODE
 
-static NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
+extern NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	{							// DispatchSystemControl
 	IoSkipCurrentIrpStackLocation(Irp);
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
@@ -78,7 +78,7 @@ static NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 #pragma PAGEDCODE
 
-static VOID DriverUnload(IN PDRIVER_OBJECT DriverObject)
+static VOID DriverUnload(IN PDRIVER_OBJECT /*DriverObject*/)
 	{							// WdmDriverUnload
 	PAGED_CODE();
 //	RtlFreeUnicodeString(&servkey);
@@ -245,7 +245,7 @@ NTSTATUS ForwardAndWait(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 #pragma LOCKEDCODE
 
-static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev)
+static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT /*fdo*/, IN PIRP /*Irp*/, IN PKEVENT pev)
 	{							// OnRequestComplete
 	KeSetEvent(pev, 0, FALSE);
 	return STATUS_MORE_PROCESSING_REQUIRED;
@@ -253,13 +253,13 @@ static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT
 
 ///////////////////////////////////////////////////////////////////////////////
 
-VOID EnableAllInterfaces(PDEVICE_EXTENSION pdx, BOOLEAN enable)
+VOID EnableAllInterfaces(PDEVICE_EXTENSION /*pdx*/, BOOLEAN /*enable*/)
 	{							// EnableAllInterfaces
 	}							// EnableAllInterfaces
 
 ///////////////////////////////////////////////////////////////////////////////
 
-VOID DeregisterAllInterfaces(PDEVICE_EXTENSION pdx)
+VOID DeregisterAllInterfaces(PDEVICE_EXTENSION /*pdx*/)
 	{							// DeregisterAllInterfaces
 	}							// DeregisterAllInterfaces
 

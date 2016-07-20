@@ -4,7 +4,7 @@ Class=System
 ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
 Provider=%MFGNAME%
 CatalogFile=FscEfDmi.cat
-DriverVer=12/11/2014,6.0.2.0
+DriverVer=07/21/2016,6.2.0.0
 
 [Manufacturer]
 %MFGNAME%=DeviceList,NTx86,NTamd64

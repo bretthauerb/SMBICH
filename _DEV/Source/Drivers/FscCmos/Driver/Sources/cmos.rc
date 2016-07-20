@@ -54,8 +54,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,1,1
- PRODUCTVERSION 2,0,1,1
+ FILEVERSION 6,2,0,0
+ PRODUCTVERSION 6,2,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +72,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", VER_COMPANYNAME_STR 
             VALUE "FileDescription", "FscCmos.sys"
-            VALUE "FileVersion", "2, 0, 1, 1"
+            VALUE "FileVersion", "6, 2, 0, 0"
             VALUE "InternalName", "FscCmos.sys"
             VALUE "LegalCopyright", VER_LEGALCOPYRIGHT_STR
             VALUE "OriginalFilename", "FscCmos.sys"
             VALUE "ProductName", "FscCmos.sys"
-            VALUE "ProductVersion", "2, 0, 1, 1"
+            VALUE "ProductVersion", "6, 2, 0, 0"
         END
     END
     BLOCK "VarFileInfo"

@@ -3,9 +3,9 @@
 #define DRIVER_DEVICE_NAME			L"\\Device\\FSC_EFDMI"
 #define DRIVER_LINK_NAME_L			L"\\DosDevices\\FSC_EFDMI"
 
-#define MAJOR_VERSION	2
-#define MINOR_VERSION	3
-#define RELEASE			2
+#define MAJOR_VERSION	6
+#define MINOR_VERSION	2
+#define RELEASE		0
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
 #pragma pack(push,1)

@@ -43,10 +43,10 @@
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
     <RootNamespace>SysmonCharos</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
-    <SccProjectName>$/GABI_ACPI_Driver/_DEV/Source/Drivers/SysmonCharos/Driver/Sources</SccProjectName>
-    <SccAuxPath>http://g02deas01tfoun.g02.fujitsu.local:8080/tfs/tpc1</SccAuxPath>
-    <SccLocalPath>.</SccLocalPath>
-    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

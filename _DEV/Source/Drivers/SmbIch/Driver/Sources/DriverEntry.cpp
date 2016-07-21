@@ -27,6 +27,8 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 		return STATUS_UNSUCCESSFUL;
 	}
 
+	ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
+
 	// Save the name of the service key
 	servkey.Buffer = (PWSTR) ExAllocatePool(PagedPool, RegistryPath->Length + sizeof(WCHAR));
 	if (!servkey.Buffer)

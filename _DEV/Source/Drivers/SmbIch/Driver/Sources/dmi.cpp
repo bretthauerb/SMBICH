@@ -3,6 +3,8 @@
 #include "DebugPrint.h"
 #include "dmi.h"
 
+PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfBytes);
+
 BOOLEAN MapDMI( PDEVICE_EXTENSION pdx )
 {
 	PUCHAR						BaseAddress_DMIStructures;
@@ -16,7 +18,10 @@ BOOLEAN MapDMI( PDEVICE_EXTENSION pdx )
 	PhAddress.HighPart = 0;
 	PhAddress.LowPart = DMI_BIOS_START_ADDRESS;
 
-	PUCHAR SearchBase = (PUCHAR) MmMapIoSpace (PhAddress, DMI_BIOS_MAP_LENGTH, MmNonCached);
+	//init to zero
+	pdx->pucDMI = NULL;
+
+	PUCHAR SearchBase = (PUCHAR)MapEntryPoint(PhAddress, DMI_BIOS_MAP_LENGTH);
 	if ( SearchBase == NULL )
 	{
 		DebugPrint(DEBUGLEVEL_ERROR, "DriverGetDataStructuresSMBios : MmMapIoSpace Unsuccess");
@@ -79,10 +84,10 @@ BOOLEAN MapDMI( PDEVICE_EXTENSION pdx )
 
 //	PhAddress.HighPart = 0;
 	PhAddress.LowPart = SMBiosTableEntry->StructureTableAddress;
-	BaseAddress_DMIStructures = (PUCHAR) MmMapIoSpace (PhAddress, SMBiosTableEntry->StructureTableLength, MmNonCached);
+	BaseAddress_DMIStructures = (PUCHAR)MapEntryPoint(PhAddress, SMBiosTableEntry->StructureTableLength);
 
 	if ( BaseAddress_DMIStructures == NULL )
-	{
+	{		
 		MmUnmapIoSpace( SearchBase, DMI_BIOS_MAP_LENGTH );
 		DebugPrint(DEBUGLEVEL_ERROR, "DriverGetDataStructuresSMBios : MmMapIoSpace of DMI structures Unsuccess");
 		return FALSE;

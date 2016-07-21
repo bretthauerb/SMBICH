@@ -22,6 +22,35 @@ static BOOLEAN SMBus_ClearStatus( IN PDEVICE_EXTENSION pdx );
 // This is nearly all locked code
 #pragma LOCKEDCODE
 
+PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfBytes)
+{
+	typedef PVOID(*PFN_MmMapIoSpaceEx)(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfBytes, _In_ ULONG Protect);
+
+	static PFN_MmMapIoSpaceEx pfnMmMapIoSpaceEx = NULL;
+	static BOOLEAN bAlreadyGot = FALSE;
+
+	if (!bAlreadyGot)
+	{
+		UNICODE_STRING uniFuncName;
+		RtlInitUnicodeString(&uniFuncName, L"MmMapIoSpaceEx");
+
+#pragma warning(push)
+#pragma warning(disable : 4055)
+		pfnMmMapIoSpaceEx = (PFN_MmMapIoSpaceEx)MmGetSystemRoutineAddress(&uniFuncName);
+#pragma warning(pop)
+		bAlreadyGot = TRUE;
+	}
+
+	if (pfnMmMapIoSpaceEx != NULL)
+	{
+		return pfnMmMapIoSpaceEx(PhysicalAddress, NumberOfBytes, PAGE_READONLY | PAGE_NOCACHE);
+	}
+	else
+	{
+		return MmMapIoSpace(PhysicalAddress, NumberOfBytes, MmNonCached);
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 //
@@ -600,7 +629,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 	// map port address for RISC platform
 	if (pdx->mappedport)
 	{						// map port address for RISC platform
-		pdx->portbase = (PUCHAR) MmMapIoSpace(portbase, pdx->nports, MmNonCached);
+		pdx->portbase = (PUCHAR)MapEntryPoint(portbase, pdx->nports);
 		if (!pdx->mappedport)
 		{
 			KdPrint((SMBUS_DRIVER_NAME " - Unable to map port range %I64X, length %X\n", portbase, pdx->nports));

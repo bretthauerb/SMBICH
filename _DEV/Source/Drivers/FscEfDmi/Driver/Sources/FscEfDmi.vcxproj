@@ -151,6 +151,12 @@
     <Link>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
+    <Inf>
+      <TimeStamp>6.2.0.0</TimeStamp>
+    </Inf>
+    <Inf>
+      <DateStamp>07/21/2016</DateStamp>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Inf Include="FscEfDmi.inf" />

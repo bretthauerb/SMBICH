@@ -147,6 +147,16 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Inf>
+      <TimeStamp>6.2.0.0</TimeStamp>
+    </Inf>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Inf>
+      <DateStamp>07/21/2016</DateStamp>
+    </Inf>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <Inf Include="FscCmos.inf" />
   </ItemGroup>

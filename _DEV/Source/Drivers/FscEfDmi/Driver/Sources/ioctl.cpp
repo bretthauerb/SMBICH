@@ -30,6 +30,8 @@
 
 #pragma LOCKEDCODE
 
+PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfBytes);
+
 VOID StartIo ( PDEVICE_OBJECT fdo, PIRP pIrp )
 {
 	PDEVICE_EXTENSION	pdx	  = (PDEVICE_EXTENSION) fdo->DeviceExtension;
@@ -65,7 +67,7 @@ VOID StartIo ( PDEVICE_OBJECT fdo, PIRP pIrp )
 		if (ulIoctlInputLength == sizeof(PHYSICAL_ADDRESS))
 		{
 			PHYSICAL_ADDRESS *pa = (PHYSICAL_ADDRESS*)pIrp->AssociatedIrp.SystemBuffer;
-			PUCHAR va = (PUCHAR)MmMapIoSpace(*pa, ulIoctlOutputLength, MmNonCached);
+			PUCHAR va = (PUCHAR)MapEntryPoint(*pa, ulIoctlOutputLength);
 			if (va)
 			{
 				RtlCopyMemory(pIrp->AssociatedIrp.SystemBuffer, va, ulIoctlOutputLength);

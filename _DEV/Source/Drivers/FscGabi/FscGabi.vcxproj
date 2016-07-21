@@ -247,6 +247,7 @@
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
       <SpecifyDriverVerDirectiveVersion>true</SpecifyDriverVerDirectiveVersion>
       <TimeStamp>6.2.0.0</TimeStamp>
+      <DateStamp>07/21/2016</DateStamp>
     </Inf>
   </ItemDefinitionGroup>
   <ItemGroup>

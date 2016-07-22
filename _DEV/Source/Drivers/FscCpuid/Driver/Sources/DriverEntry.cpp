@@ -40,6 +40,9 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 		KdPrint((DRIVER_NAME " - Expected version of WDM (%d.%2.2d) not available\n", 1, 0));
 		return STATUS_UNSUCCESSFUL;
 	}
+
+	ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
+
 #if 0
 	// Save the name of the service key
 	servkey.Buffer = (PWSTR) ExAllocatePool(PagedPool, RegistryPath->Length + sizeof(WCHAR));

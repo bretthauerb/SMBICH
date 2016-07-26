@@ -7,7 +7,7 @@ CatalogFile=FscCpuid.cat
 DriverVer=07/21/2016,6.2.0.0
 
 [Manufacturer]
-%MFGNAME%=DeviceList, NTx86, NTamd64
+%MFGNAME%=DeviceList, NT$ARCH$
 
 [DestinationDirs]
 DefaultDestDir=10,System32\Drivers
@@ -18,25 +18,16 @@ FscCpuid.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,FscCpuid.sys,,
 
-[DeviceList.NTx86]
+[DeviceList.NT$ARCH$]
 %DESCRIPTION% = DriverInstall, Root\FscCpuid
 
-[DeviceList.NTamd64]
-%DESCRIPTION% = DriverInstall, Root\FscCpuid
-
-[DriverInstall.NTx86]
-CopyFiles=DriverCopyFiles
-
-[DriverInstall.NTamd64]
+[DriverInstall.NT$ARCH$]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
 FscCpuid.sys,,,2
 
-[DriverInstall.NTx86.Services]
-AddService = FscCpuid, 2, ServiceInstall
-
-[DriverInstall.NTamd64.Services]
+[DriverInstall.NT$ARCH$.Services]
 AddService = FscCpuid, 2, ServiceInstall
 
 [ServiceInstall]
@@ -49,4 +40,4 @@ ServiceBinary  = %12%\FscCpuid.sys
 [Strings]
 MFGNAME="Fujitsu"
 INSTDISK="Fujitsu Installation Disc"
-DESCRIPTION="Fujitsu cpuid access"
+DESCRIPTION="Fujitsu CPUID Access"

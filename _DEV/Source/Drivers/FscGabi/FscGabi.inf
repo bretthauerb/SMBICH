@@ -41,4 +41,4 @@ ServiceBinary  = %12%\FscGabi.sys
 [Strings]
 MFGNAME="Fujitsu"
 INSTDISK="Fujitsu Installation Disc"
-DESCRIPTION="Fujitsu gabi bios interface"
+DESCRIPTION="Fujitsu GABI BIOS Interface"

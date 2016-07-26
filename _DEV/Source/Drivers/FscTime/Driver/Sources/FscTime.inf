@@ -7,7 +7,7 @@ CatalogFile=FscTime.cat
 DriverVer=09/11/2013,6.0.1.5
 
 [Manufacturer]
-%MFGNAME%=DeviceList,NTx86,NTamd64
+%MFGNAME%=DeviceList,NT$ARCH$
 
 [DestinationDirs]
 DefaultDestDir=10,System32\Drivers
@@ -18,25 +18,16 @@ FscTime.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,FscTime.sys,,
 
-[DeviceList.NTx86]
+[DeviceList.NT$ARCH$]
 %DESCRIPTION% = DriverInstall, Root\FscTime
 
-[DeviceList.NTamd64]
-%DESCRIPTION% = DriverInstall, Root\FscTime
-
-[DriverInstall.NTx86]
-CopyFiles=DriverCopyFiles
-
-[DriverInstall.NTamd64]
+[DriverInstall.NT$ARCH$]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
 FscTime.sys,,,2
 
-[DriverInstall.NTx86.Services]
-AddService = FscTime, 2, ServiceInstall
-
-[DriverInstall.NTamd64.Services]
+[DriverInstall.NT$ARCH$.Services]
 AddService = FscTime, 2, ServiceInstall
 
 [ServiceInstall]
@@ -49,4 +40,4 @@ ServiceBinary  = %12%\FscTime.sys
 [Strings]
 MFGNAME="Fujitsu"
 INSTDISK="Fujitsu Installation Disc"
-DESCRIPTION="Fujitsu system runtime counter"
+DESCRIPTION="Fujitsu System Runtime Counter"

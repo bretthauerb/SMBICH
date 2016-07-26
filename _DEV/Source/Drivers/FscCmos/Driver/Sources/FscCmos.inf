@@ -7,7 +7,7 @@ CatalogFile=FscCmos.cat
 DriverVer=07/21/2016,6.2.0.0
 
 [Manufacturer]
-%MFGNAME%=DeviceList, NTx86, NTamd64
+%MFGNAME%=DeviceList, NT$ARCH$
 
 [DestinationDirs]
 DefaultDestDir=10,System32\Drivers
@@ -18,25 +18,17 @@ FscCmos.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,FscCmos.sys,,
 
-[DeviceList.NTx86]
+[DeviceList.NT$ARCH$]
 %DESCRIPTION% = DriverInstall, Root\FscCmos
 
-[DeviceList.NTamd64]
-%DESCRIPTION% = DriverInstall, Root\FscCmos
 
-[DriverInstall.NTx86]
-CopyFiles=DriverCopyFiles
-
-[DriverInstall.NTamd64]
+[DriverInstall.NT$ARCH$]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
 FscCmos.sys,,,2
 
-[DriverInstall.NTx86.Services]
-AddService = FscCmos, 2, ServiceInstall
-
-[DriverInstall.NTamd64.Services]
+[DriverInstall.NT$ARCH$.Services]
 AddService = FscCmos, 2, ServiceInstall
 
 [ServiceInstall]
@@ -49,4 +41,4 @@ ServiceBinary  = %12%\FscCmos.sys
 [Strings]
 MFGNAME="Fujitsu"
 INSTDISK="Fujitsu Installation Disc"
-DESCRIPTION="Fujitsu Cmos access"
+DESCRIPTION="Fujitsu CMOS Access"

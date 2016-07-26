@@ -7,7 +7,7 @@ CatalogFile=FscEfDmi.cat
 DriverVer=07/21/2016,6.2.0.0
 
 [Manufacturer]
-%MFGNAME%=DeviceList,NTx86,NTamd64
+%MFGNAME%=DeviceList,NT$ARCH$
 
 [DestinationDirs]
 DefaultDestDir=10,System32\Drivers
@@ -18,25 +18,16 @@ FscEfDmi.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,FscEfDmi.sys,,
 
-[DeviceList.NTx86]
+[DeviceList.NT$ARCH$]
 %DESCRIPTION% = DriverInstall, Root\FscEfDmi
 
-[DeviceList.NTamd64]
-%DESCRIPTION% = DriverInstall, Root\FscEfDmi
-
-[DriverInstall.NTx86]
-CopyFiles=DriverCopyFiles
-
-[DriverInstall.NTamd64]
+[DriverInstall.NT$ARCH$]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
 FscEfDmi.sys,,,2
 
-[DriverInstall.NTx86.Services]
-AddService = FscEfDmi, 2, ServiceInstall
-
-[DriverInstall.NTamd64.Services]
+[DriverInstall.NT$ARCH$.Services]
 AddService = FscEfDmi, 2, ServiceInstall
 
 [ServiceInstall]
@@ -49,4 +40,4 @@ ServiceBinary  = %12%\FscEfDmi.sys
 [Strings]
 MFGNAME="Fujitsu"
 INSTDISK="Fujitsu Installation Disc"
-DESCRIPTION="Fujitsu dmi access"
+DESCRIPTION="Fujitsu DMI Access"

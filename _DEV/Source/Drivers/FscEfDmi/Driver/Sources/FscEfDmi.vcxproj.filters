@@ -57,9 +57,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="driver.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="DMI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="driver.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="driver.h">

@@ -42,6 +42,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 	// Map E and F Segment, remains mapped untill unload
 	PhAddressESegment.LowPart = 0xe0000;
 	PhAddressESegment.HighPart = 0;
+	pdx->pucDMI = NULL;
 	pdx->pMappedESegment = (PUCHAR)MapEntryPoint(PhAddressESegment, 0x20000);
 	if (!pdx->pMappedESegment)
 		return STATUS_INSUFFICIENT_RESOURCES;
@@ -58,6 +59,11 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN /*oktouch*/ /* = FALSE */)
 {							// StopDevice
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+
+	if (pdx == NULL)
+	{
+		return;
+	}
 
 	UnmapDMI(pdx);
 	// Should have been mapped, but you never know

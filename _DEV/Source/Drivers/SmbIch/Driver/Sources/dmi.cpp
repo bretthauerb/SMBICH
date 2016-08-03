@@ -106,7 +106,7 @@ BOOLEAN MapDMI( PDEVICE_EXTENSION pdx )
 
 VOID UnmapDMI( PDEVICE_EXTENSION pdx )
 {
-	if (pdx->pucDMI)
+	if (pdx != NULL && pdx->pucDMI)
 	{
 		MmUnmapIoSpace( pdx->pucDMI, pdx->ulDMISize );
 		pdx->pucDMI = NULL;

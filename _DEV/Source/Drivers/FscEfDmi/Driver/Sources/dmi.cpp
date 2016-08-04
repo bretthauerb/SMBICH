@@ -11,6 +11,8 @@
 #include "driver.h"
 #include "dmi.h"
 
+PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfBytes);
+
 BOOLEAN MapDMI( PDEVICE_EXTENSION pdx )
 {
 	PUCHAR						BaseAddress_DMIStructures;
@@ -70,7 +72,7 @@ BOOLEAN MapDMI( PDEVICE_EXTENSION pdx )
 	PHYSICAL_ADDRESS			PhAddress;
 	PhAddress.HighPart = 0;
 	PhAddress.LowPart = SMBiosTableEntry->StructureTableAddress;
-	BaseAddress_DMIStructures = (PUCHAR) MmMapIoSpace (PhAddress, SMBiosTableEntry->StructureTableLength, MmNonCached);
+	BaseAddress_DMIStructures = (PUCHAR)MapEntryPoint(PhAddress, SMBiosTableEntry->StructureTableLength);
 
 	if ( BaseAddress_DMIStructures == NULL )
 	{
@@ -89,7 +91,7 @@ BOOLEAN MapDMI( PDEVICE_EXTENSION pdx )
 
 VOID UnmapDMI( PDEVICE_EXTENSION pdx )
 {
-	if (pdx->pucDMI)
+	if (pdx != NULL && pdx->pucDMI)
 	{
 		MmUnmapIoSpace( pdx->pucDMI, pdx->ulDMISize );
 		pdx->pucDMI = NULL;

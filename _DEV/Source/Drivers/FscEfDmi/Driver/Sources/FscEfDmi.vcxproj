@@ -191,13 +191,13 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\SmbIch\Driver\Sources\DMI.h" />
+    <ClInclude Include="DMI.h" />
     <ClInclude Include="driver.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\SmbIch\Driver\Sources\DebugPrint.c" />
-    <ClCompile Include="..\..\..\SmbIch\Driver\Sources\dmi.cpp" />
+    <ClCompile Include="dmi.cpp" />
     <ClCompile Include="DriverEntry.cpp" />
     <ClCompile Include="ioctl.cpp" />
     <ClCompile Include="dispatch.cpp" />

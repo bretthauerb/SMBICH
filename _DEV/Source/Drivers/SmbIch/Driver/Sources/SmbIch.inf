@@ -4,7 +4,7 @@ Class=System
 ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
 Provider=%MFGNAME%
 CatalogFile=SmbIch.cat
-DriverVer=03/20/2014,6.0.2.0
+DriverVer=10/13/2016,6.2.0.0
 
 [Manufacturer]
 %MFGNAME%=DeviceList,NT
@@ -34,6 +34,7 @@ SmbIch.sys=1
 %DESCRIPTION_ESB2%=DriverInstall,PCI\VEN_8086&DEV_269B
 %DESCRIPTION_WSB%=DriverInstall,PCI\VEN_8086&DEV_8D22
 %DESCRIPTION_SKY%=DriverInstall,PCI\VEN_8086&DEV_A123
+%DESCRIPTION_KAB%=DriverInstall,PCI\VEN_8086&DEV_A2A3
 
 [DeviceList.NTamd64]
 %DESCRIPTION_ICH%=DriverInstall,PCI\VEN_8086&DEV_2413
@@ -48,6 +49,7 @@ SmbIch.sys=1
 %DESCRIPTION_ESB2%=DriverInstall,PCI\VEN_8086&DEV_269B
 %DESCRIPTION_WSB%=DriverInstall,PCI\VEN_8086&DEV_8D22
 %DESCRIPTION_SKY%=DriverInstall,PCI\VEN_8086&DEV_A123
+%DESCRIPTION_KAB%=DriverInstall,PCI\VEN_8086&DEV_A2A3
 
 ;------------------------------------------------------------------------------
 ;  Windows 2000 Sections
@@ -105,6 +107,8 @@ DESCRIPTION_ICH9="Intel(r) ICH9 SMBus Controller"
 DESCRIPTION_ESB2="Intel(r) ESB2 SMBus Controller"
 DESCRIPTION_WSB="Intel(r) C610 SMBUS Controller"
 DESCRIPTION_SKY="Intel(r) C236 SMBUS Controller"
+DESCRIPTION_KAB="Intel(r) B250/Q250/Q270 SMBUS Controller"
 
 FRIENDLYNAME="SMBus Controller"
+
 

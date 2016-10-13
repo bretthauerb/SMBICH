@@ -10,7 +10,9 @@ static VOID WdmDriverUnload(IN PDRIVER_OBJECT fdo);
 static VOID DriverUnload(IN PDRIVER_OBJECT fdo);
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev);
 
-UNICODE_STRING servkey;
+#if 0
+	UNICODE_STRING servkey;
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +31,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 
 	ExInitializeDriverRuntime(DrvRtPoolNxOptIn);
 
+#if 0
 	// Save the name of the service key
 	servkey.Buffer = (PWSTR) ExAllocatePool(PagedPool, RegistryPath->Length + sizeof(WCHAR));
 	if (!servkey.Buffer)
@@ -38,7 +41,8 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	}
 	servkey.MaximumLength = RegistryPath->Length + sizeof(WCHAR);
 	RtlCopyUnicodeString(&servkey, RegistryPath);
-	
+#endif
+
 	// Initialize function pointers
 
 	DriverObject->DriverUnload = DriverUnload;
@@ -68,7 +72,9 @@ extern NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 static VOID DriverUnload(IN PDRIVER_OBJECT /*DriverObject*/)
 	{							// WdmDriverUnload
 	PAGED_CODE();
+#if 0
 	RtlFreeUnicodeString(&servkey);
+#endif
 	}							// WdmDriverUnload
 
 #pragma PAGEDCODE

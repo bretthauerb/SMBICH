@@ -22,6 +22,8 @@ static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT
 extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 								IN PUNICODE_STRING RegistryPath)
 {
+	RegistryPath;  // prevent compiler warning "'RegistryPath': unreferenced formal parameter" which is treated as error.
+
 	// Insist that OS support at least the WDM level of the DDK we use
 	if (!IoIsWdmVersionAvailable(1, 0))
 	{

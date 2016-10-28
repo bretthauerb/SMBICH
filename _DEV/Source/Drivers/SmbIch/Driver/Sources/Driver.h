@@ -5,9 +5,9 @@
 #ifndef DRIVER_H
 #define DRIVER_H
 
-#define MAJOR_VERSION	1
+#define MAJOR_VERSION	6
 #define MINOR_VERSION	2
-#define RELEASE		3
+#define RELEASE		0
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
 

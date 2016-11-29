@@ -121,12 +121,17 @@ VOID ArrivalWorker(PVOID IoObject, PVOID Context, PIO_WORKITEM IoWorkItem)
 
 	UNREFERENCED_PARAMETER(IoObject);
 
-	if (workItem->pdx->ulUseACPI != 0)
+	if (workItem)
 	{
-		IoGetDeviceObjectPointer(workItem->SymbolicLinkName,
-			FILE_ALL_ACCESS,
-			&(workItem->pdx->ACPIFileObject),
-			&(workItem->pdx->ACPIDevice));
+		if (workItem->pdx->ulUseACPI != 0)
+		{
+			IoGetDeviceObjectPointer(workItem->SymbolicLinkName,
+				FILE_ALL_ACCESS,
+				&(workItem->pdx->ACPIFileObject),
+				&(workItem->pdx->ACPIDevice));
+		}
+
+		ExFreePoolWithTag(workItem, 'cWbD');
 	}
 
 	IoFreeWorkItem(IoWorkItem);

@@ -604,7 +604,7 @@ DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulS
 				nextStack->Parameters.DeviceIoControl.InputBufferLength = sizeof(GabiAcpiCmd);
 				nextStack->Parameters.DeviceIoControl.IoControlCode = IOCTL_GABI_ACPI_CMD;
 
-				Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolWithQuotaTag(PagedPoolCacheAligned, sizeof(GabiAcpiCmd), 'AcGi');
+				Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolWithQuotaTag(NonPagedPool, sizeof(GabiAcpiCmd), 'AcGi');
 				pCmd = (PGabiAcpiCmd)Irp->AssociatedIrp.SystemBuffer;
 
 				if (Irp->AssociatedIrp.SystemBuffer == NULL)

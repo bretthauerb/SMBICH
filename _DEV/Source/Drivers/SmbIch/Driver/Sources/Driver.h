@@ -77,6 +77,7 @@ typedef struct _DEVICE_EXTENSION {
 	ULONG	ulDMISize;
 	ULONG	ulDMIStructCount;
 
+	BOOLEAN bIoInitializeTimerCalled;
 	} DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
 ///////////////////////////////////////////////////////////////////////////////

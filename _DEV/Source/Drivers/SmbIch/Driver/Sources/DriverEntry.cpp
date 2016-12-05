@@ -109,6 +109,7 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 	
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 
+	pdx->bIoInitializeTimerCalled = FALSE;
 	KeInitializeTimer( &pdx->Timer );
 	KeInitializeDpc( &pdx->PollDpc, (PKDEFERRED_ROUTINE)DpcForPoll, fdo );
 
@@ -271,13 +272,20 @@ VOID RemoveDevice(IN PDEVICE_OBJECT fdo)
 	{							// RemoveDevice
 	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
-	IoDeleteSymbolicLink( &(pdx->uniSymbolicLinkName) );
-	RtlFreeUnicodeString(&pdx->devname);
+	if (pdx->uniSymbolicLinkName.Buffer)
+	 IoDeleteSymbolicLink( &(pdx->uniSymbolicLinkName) );
+	
+	if (pdx->devname.Buffer)
+	 RtlFreeUnicodeString(&pdx->devname);
 
 	if (pdx->LowerDeviceObject)
+	{
 		IoDetachDevice(pdx->LowerDeviceObject);
+		pdx->LowerDeviceObject = NULL;
+	}
 
-	IoDeleteDevice(fdo);
+	if (fdo)
+	 IoDeleteDevice(fdo);
 	}							// RemoveDevice
 
 ///////////////////////////////////////////////////////////////////////////////

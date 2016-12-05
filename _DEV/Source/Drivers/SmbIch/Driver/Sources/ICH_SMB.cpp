@@ -559,8 +559,11 @@ VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 		}
 	}
 #endif
-	IoInitializeTimer(pdx->DeviceObject, IoTimer, NULL);
-
+	if (!pdx->bIoInitializeTimerCalled)
+	{
+		IoInitializeTimer(pdx->DeviceObject, IoTimer, NULL);
+		pdx->bIoInitializeTimerCalled = TRUE;
+	}
 	pdx->StartCommand = (pdx->UseInterrupt) ? (SMBUS_HST_CNT_START | SMBUS_HST_CNT_INTREN) : SMBUS_HST_CNT_START;
 	DebugPrint(DEBUGLEVEL_DEBUG, "bPIIX4 = %x;  UseInterrupt = %x\n", pdx->bPIIX4, pdx->UseInterrupt);
 }

@@ -7,10 +7,7 @@ CatalogFile=SmbIch.cat
 DriverVer=10/13/2016,6.2.0.0
 
 [Manufacturer]
-%MFGNAME%=DeviceList,NT
-
-[Manufacturer]
-%MFGNAME%=DeviceList,NTamd64
+%MFGNAME%=DeviceList,NT$ARCH$
 
 [DestinationDirs]
 DefaultDestDir=10,System32\Drivers
@@ -21,7 +18,7 @@ SmbIch.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,SmbIch.sys,,
 
-[DeviceList.NT]
+[DeviceList.NT$ARCH$]
 %DESCRIPTION_ICH%=DriverInstall,PCI\VEN_8086&DEV_2413
 %DESCRIPTION_ICH0%=DriverInstall,PCI\VEN_8086&DEV_2423
 %DESCRIPTION_ICH2%=DriverInstall,PCI\VEN_8086&DEV_2443
@@ -36,40 +33,13 @@ SmbIch.sys=1
 %DESCRIPTION_SKY%=DriverInstall,PCI\VEN_8086&DEV_A123
 %DESCRIPTION_KAB%=DriverInstall,PCI\VEN_8086&DEV_A2A3
 
-[DeviceList.NTamd64]
-%DESCRIPTION_ICH%=DriverInstall,PCI\VEN_8086&DEV_2413
-%DESCRIPTION_ICH0%=DriverInstall,PCI\VEN_8086&DEV_2423
-%DESCRIPTION_ICH2%=DriverInstall,PCI\VEN_8086&DEV_2443
-%DESCRIPTION_ICH4%=DriverInstall,PCI\VEN_8086&DEV_24C3
-%DESCRIPTION_ICH5%=DriverInstall,PCI\VEN_8086&DEV_24D3
-%DESCRIPTION_ICH6%=DriverInstall,PCI\VEN_8086&DEV_266A
-%DESCRIPTION_ICH7%=DriverInstall,PCI\VEN_8086&DEV_27DA
-%DESCRIPTION_ICH8%=DriverInstall,PCI\VEN_8086&DEV_283E
-%DESCRIPTION_ICH9%=DriverInstall,PCI\VEN_8086&DEV_2930
-%DESCRIPTION_ESB2%=DriverInstall,PCI\VEN_8086&DEV_269B
-%DESCRIPTION_WSB%=DriverInstall,PCI\VEN_8086&DEV_8D22
-%DESCRIPTION_SKY%=DriverInstall,PCI\VEN_8086&DEV_A123
-%DESCRIPTION_KAB%=DriverInstall,PCI\VEN_8086&DEV_A2A3
-
-;------------------------------------------------------------------------------
-;  Windows 2000 Sections
-;------------------------------------------------------------------------------
-
-; TODO Add a LogConfig command to the following install section if this is a legacy device
-
-[DriverInstall.NT]
-CopyFiles=DriverCopyFiles
-
-[DriverInstall.NTamd64]
+[DriverInstall.NT$ARCH$]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
 SmbIch.sys,,,2
 
-[DriverInstall.NT.Services]
-AddService=SmbIch,2,DriverService
-
-[DriverInstall.NTamd64.Services]
+[DriverInstall.NT$ARCH$.Services]
 AddService=SmbIch,2,DriverService
 
 [DriverService]
@@ -78,15 +48,11 @@ StartType=3
 ErrorControl=1
 ServiceBinary=%10%\system32\drivers\SmbIch.sys
 
-[DriverInstall.NT.hw]
-AddReg=DriverHwAddReg
-
-[DriverInstall.NTamd64.hw]
+[DriverInstall.NT$ARCH$.hw]
 AddReg=DriverHwAddReg
 
 [DriverHwAddReg]
 HKR,,FriendlyName,,%FRIENDLYNAME%
-
 
 ;------------------------------------------------------------------------------
 ;  String Definitions
@@ -110,5 +76,3 @@ DESCRIPTION_SKY="Intel(r) C236 SMBUS Controller"
 DESCRIPTION_KAB="Intel(r) B250/Q250/Q270 SMBUS Controller"
 
 FRIENDLYNAME="SMBus Controller"
-
-

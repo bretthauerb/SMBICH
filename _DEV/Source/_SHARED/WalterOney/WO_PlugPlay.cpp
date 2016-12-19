@@ -5,8 +5,6 @@
 #include "stddcls.h"
 #include "driver.h"
 
-static const int win98 = 0;
-
 NTSTATUS DefaultPnpHandler(IN PDEVICE_OBJECT fdo, IN PIRP Irp);
 NTSTATUS HandleCancelRemove(IN PDEVICE_OBJECT fdo, IN PIRP Irp);
 NTSTATUS HandleCancelStop(IN PDEVICE_OBJECT fdo, IN PIRP Irp);
@@ -23,9 +21,9 @@ NTSTATUS HandleSurpriseRemoval(IN PDEVICE_OBJECT fdo, IN PIRP Irp);
 #pragma PAGEDCODE
 
 NTSTATUS DispatchPnp(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// DispatchPnp
+{							// DispatchPnp
 	PAGED_CODE();
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	NTSTATUS status = IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
 	if (!NT_SUCCESS(status))
 		return CompleteRequest(Irp, status);
@@ -33,7 +31,7 @@ NTSTATUS DispatchPnp(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	ASSERT(stack->MajorFunction == IRP_MJ_PNP);
 
-	static NTSTATUS (*fcntab[])(IN PDEVICE_OBJECT fdo, IN PIRP Irp) = {
+	static NTSTATUS(*fcntab[])(IN PDEVICE_OBJECT fdo, IN PIRP Irp) = {
 		HandleStartDevice,		// IRP_MN_START_DEVICE
 		HandleQueryRemove,		// IRP_MN_QUERY_REMOVE_DEVICE
 		HandleRemoveDevice,		// IRP_MN_REMOVE_DEVICE
@@ -58,100 +56,100 @@ NTSTATUS DispatchPnp(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 		DefaultPnpHandler,		// IRP_MN_QUERY_BUS_INFORMATION
 		DefaultPnpHandler,		// IRP_MN_DEVICE_USAGE_NOTIFICATION
 		HandleSurpriseRemoval,	// IRP_MN_SURPRISE_REMOVAL
-		};
+	};
 
 	ULONG fcn = stack->MinorFunction;
 	if (fcn >= arraysize(fcntab))
-		{						// unknown function
+	{						// unknown function
 		status = DefaultPnpHandler(fdo, Irp); // some function we don't know about
 		IoReleaseRemoveLock(&pdx->RemoveLock, Irp);
 		return status;
-		}						// unknown function
+	}						// unknown function
 
 	status = (*fcntab[fcn])(fdo, Irp);
 	if (fcn != IRP_MN_REMOVE_DEVICE)
 		IoReleaseRemoveLock(&pdx->RemoveLock, Irp);
 	return status;
-	}							// DispatchPnp
+}							// DispatchPnp
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS DefaultPnpHandler(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// DefaultPnpHandler
+{							// DefaultPnpHandler
 	IoSkipCurrentIrpStackLocation(Irp);
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);
-	}							// DefaultPnpHandler
+}							// DefaultPnpHandler
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleCancelRemove(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleCancelRemove
+{							// HandleCancelRemove
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_CANCEL_REMOVE_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	if (pdx->state == PENDINGREMOVE)
-		{						// we succeeded earlier query
+	{						// we succeeded earlier query
 
-		// Lower-level drivers are presumably in the pending-remove state as
-		// well, so we need to tell them that the remove has been cancelled
-		// before we start sending IRPs down to them.
+	// Lower-level drivers are presumably in the pending-remove state as
+	// well, so we need to tell them that the remove has been cancelled
+	// before we start sending IRPs down to them.
 
 		NTSTATUS status = ForwardAndWait(fdo, Irp); // wait for lower layers
 		if (NT_SUCCESS(status))
-			{					// completed successfully
+		{					// completed successfully
 			if ((pdx->state = pdx->prevstate) == WORKING)
-				{				// back to working state
+			{				// back to working state
 				RestartRequests(&pdx->dqReadWrite, fdo);
-				}				// back to working state
-			}					// completed successfully
+			}				// back to working state
+		}					// completed successfully
 		else
 			KdPrint((DRIVER_NAME " - Status %8.8lX returned by PDO for IRP_MN_CANCEL_REMOVE_DEVICE", status));
 
 		return CompleteRequest(Irp, status);
-		}						// we succeeded earlier query
-	
+	}						// we succeeded earlier query
+
 	return DefaultPnpHandler(fdo, Irp); // unexpected cancel
-	}							// HandleCancelRemove
+}							// HandleCancelRemove
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleCancelStop(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleCancelStop
+{							// HandleCancelStop
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_CANCEL_STOP_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	if (pdx->state == PENDINGSTOP)
-		{						// we succeeded earlier query
+	{						// we succeeded earlier query
 
-		// Lower level drivers are presumably in the pending-stop state as
-		// well, so we need to tell them that the stop has been cancelled
-		// before we start sending IRPs down to them.
+	// Lower level drivers are presumably in the pending-stop state as
+	// well, so we need to tell them that the stop has been cancelled
+	// before we start sending IRPs down to them.
 
 		NTSTATUS status = ForwardAndWait(fdo, Irp); // wait for lower layers
 		if (NT_SUCCESS(status))
-			{					// completed successfully
+		{					// completed successfully
 			pdx->state = WORKING;
 			RestartRequests(&pdx->dqReadWrite, fdo);
-			}					// completed successfully
+		}					// completed successfully
 		else
 			KdPrint((DRIVER_NAME " - Status %8.8lX returned by PDO for IRP_MN_CANCEL_STOP_DEVICE", status));
-		
+
 		return CompleteRequest(Irp, status);
-		}						// we succeeded earlier query
+	}						// we succeeded earlier query
 
 	return DefaultPnpHandler(fdo, Irp); // unexpected cancel
-	}							// HandleCancelStop
+}							// HandleCancelStop
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleQueryCapabilities(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleQueryCapabilities
+{							// HandleQueryCapabilities
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_QUERY_CAPABILITIES);
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	PDEVICE_CAPABILITIES pdc = stack->Parameters.DeviceCapabilities.Capabilities;
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	// Check to be sure we know how to handle this version of the capabilities structure
 
@@ -160,82 +158,67 @@ NTSTATUS HandleQueryCapabilities(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 	NTSTATUS status = ForwardAndWait(fdo, Irp);
 	if (NT_SUCCESS(status))
-		{						// IRP succeeded
+	{						// IRP succeeded
 		stack = IoGetCurrentIrpStackLocation(Irp);
 		pdc = stack->Parameters.DeviceCapabilities.Capabilities;
 
 		// TODO Modify any capabilities that must be set on the way back up
 
 		pdx->devcaps = *pdc;	// save capabilities for whoever needs to see them
-		}						// IRP succeeded
+	}						// IRP succeeded
 
 	return CompleteRequest(Irp, status);
-	}							// HandleQueryCapabilities
+}							// HandleQueryCapabilities
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleQueryRemove(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleQueryRemove
+{							// HandleQueryRemove
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_QUERY_REMOVE_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	if (pdx->state == WORKING)
-		{						// currently working
+	{						// currently working
 
-	#ifdef _X86_
-
-		// Win98 doesn't check for open handles before allowing a remove to proceed,
-		// and it may deadlock in IoReleaseRemoveLockAndWait if handles are still
-		// open.
-
-#ifdef _DECIDE_FOR_WIN_98_OR_HIGHER
-		if (win98 && pdx->DeviceObject->ReferenceCount)
-			{
-			KdPrint((DRIVER_NAME " - Failing removal query due to open handles\n"));
-			return CompleteRequest(Irp, STATUS_DEVICE_BUSY);
-			}
-#endif // #ifdef _DECIDE_FOR_WIN_98_OR_HIGHER
-
-	#endif
 		if (CheckBusyAndStall(&pdx->dqReadWrite))
 			return CompleteRequest(Irp, STATUS_UNSUCCESSFUL);
-		}						// currently working
+	}						// currently working
 
-	// Save current state for restoration if the query gets cancelled.
-	// (We can now be stopped or working)
+// Save current state for restoration if the query gets cancelled.
+// (We can now be stopped or working)
 
 	pdx->prevstate = pdx->state;
 	pdx->state = PENDINGREMOVE;
 	return DefaultPnpHandler(fdo, Irp);
-	}							// HandleQueryRemove
+}							// HandleQueryRemove
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleQueryStop(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleQueryStop
+{							// HandleQueryStop
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_QUERY_STOP_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
-	
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
+
 	// Boot devices may get this query before they even start, so check to see
 	// if we're in the WORKING state before doing anything.
 
 	if (pdx->state != WORKING)
 		return DefaultPnpHandler(fdo, Irp);
 
-		if (CheckBusyAndStall(&pdx->dqReadWrite))
-			return CompleteRequest(Irp, STATUS_UNSUCCESSFUL);
+	if (CheckBusyAndStall(&pdx->dqReadWrite))
+		return CompleteRequest(Irp, STATUS_UNSUCCESSFUL);
 	pdx->state = PENDINGSTOP;
 	return DefaultPnpHandler(fdo, Irp);
-	}							// HandleQueryStop
+}							// HandleQueryStop
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleRemoveDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleRemoveDevice
+{							// HandleRemoveDevice
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_REMOVE_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	// Cancel any queued IRPs and start rejecting new ones
 
@@ -266,12 +249,12 @@ NTSTATUS HandleRemoveDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	RemoveDevice(fdo);
 
 	return status;				// lower-level completed IoStatus already
-	}							// HandleRemoveDevice
+}							// HandleRemoveDevice
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleStartDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleStartDevice
+{							// HandleStartDevice
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_START_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	NTSTATUS status = ForwardAndWait(fdo, Irp);
@@ -279,7 +262,7 @@ NTSTATUS HandleStartDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 		return CompleteRequest(Irp, status);
 
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	PCM_PARTIAL_RESOURCE_LIST raw;
 	if (stack->Parameters.StartDevice.AllocatedResources)
@@ -293,33 +276,33 @@ NTSTATUS HandleStartDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	else
 		translated = NULL;
 
-	status = StartDevice(fdo, raw, translated); 
+	status = StartDevice(fdo, raw, translated);
 
 	// While we were in the stopped state, we were stalling incoming requests.
 	// Now we can release any pending IRPs and start processing new ones
 
 	if (NT_SUCCESS(status))
-		{						// started okay
+	{						// started okay
 
-		// Enable all registered device interfaces.
+	// Enable all registered device interfaces.
 
 		EnableAllInterfaces(pdx, TRUE);
 
 		pdx->state = WORKING;
 		AllowRequests(&pdx->dqReadWrite); // in case we got a bogus STOP
 		RestartRequests(&pdx->dqReadWrite, fdo);
-		}						// started okay
+	}						// started okay
 
 	return CompleteRequest(Irp, status);
-	}							// HandleStartDevice
+}							// HandleStartDevice
 
 ///////////////////////////////////////////////////////////////////////////////	
 
 NTSTATUS HandleStopDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleStopDevice
+{							// HandleStopDevice
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_STOP_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	// We're supposed to always get a query before we're stopped, so
 	// we should already be in the PENDINGSTOP state. There's a Win98 bug that
@@ -327,22 +310,22 @@ NTSTATUS HandleStopDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	// we should start rejecting IRPs
 
 	if (pdx->state != PENDINGSTOP)
-		{						// no previous query
+	{						// no previous query
 		KdPrint((DRIVER_NAME " - STOP with no previous QUERY_STOP!\n"));
 		AbortRequests(&pdx->RemoveLock, &pdx->dqReadWrite, STATUS_DELETE_PENDING);
-		}						// no previous query
+	}						// no previous query
 	StopDevice(fdo, pdx->state == WORKING);
 	pdx->state = STOPPED;
 	return DefaultPnpHandler(fdo, Irp);
-	}							// HandleStopDevice
+}							// HandleStopDevice
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS HandleSurpriseRemoval(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// HandleSurpriseRemoval
+{							// HandleSurpriseRemoval
 	ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_SURPRISE_REMOVAL);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	// Cancel any queued IRPs and start rejecting new ones
 	AbortRequests(&pdx->RemoveLock, &pdx->dqReadWrite, STATUS_DELETE_PENDING);
@@ -353,7 +336,7 @@ NTSTATUS HandleSurpriseRemoval(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	StopDevice(fdo, oktouch);
 
 	return DefaultPnpHandler(fdo, Irp);
-	}							// HandleSurpriseRemoval
+}							// HandleSurpriseRemoval
 
 ///////////////////////////////////////////////////////////////////////////////	
 

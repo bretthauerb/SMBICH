@@ -139,34 +139,42 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -176,7 +184,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -190,7 +198,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -204,7 +212,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -218,7 +226,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -232,7 +240,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -246,7 +254,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -260,7 +268,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -274,7 +282,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>1.0.0.1</TimeStamp>
+      <TimeStamp>1.0.0.2</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>

@@ -48,6 +48,7 @@ typedef struct _DEVICE_EXTENSION {
 	BOOLEAN StalledForPower;
 	SMB_INFO			SMBusInfo;
 	UCHAR				CRDeviceID;
+	UCHAR				Pnp_Port;			// pnp adress 0x2E or 0x4E?
 
 } DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 

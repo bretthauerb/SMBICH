@@ -3,7 +3,7 @@
 #include "DebugPrint.h"
 
 #include "FSCIoctl.h"
-
+#include "WatchdogIoctl.h"
 
 // all in ms
 #define SEMAPHORE_WAIT	500	// 500 ms
@@ -82,6 +82,7 @@ static BOOLEAN LocateW83627(PDEVICE_EXTENSION pdx)
 		WRITE_PORT_UCHAR( PnP_Port, 0xAA );				// exit extended function mode
 
 		// if we have reached this line in the source code -> end loop
+		pdx->Pnp_Port = PnP_Port;
 		break;
 	}
 
@@ -118,6 +119,9 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 	ULONG cbout = stack->Parameters.DeviceIoControl.OutputBufferLength;
 	ULONG *pulSystemBuffer = (ULONG*)Irp->AssociatedIrp.SystemBuffer;
 	PVOID SystemBuffer = Irp->AssociatedIrp.SystemBuffer;
+
+	WATCHDOG_INFO myWDInfo;
+	UCHAR PnP_Port = pdx->Pnp_Port;
 
 	if (stack->MajorFunction != IRP_MJ_DEVICE_CONTROL) {
 		// Uh ??
@@ -178,6 +182,65 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 					WB_WRITE(pdx, (UCHAR)pdx->SMBusInfo.CommandCode, pdx->SMBusInfo.DataByteLow);
 					status = STATUS_SUCCESS;
 					info = sizeof(SMB_INFO);
+				}
+			}
+			break;
+
+		case IOCTL_WATCHDOG_READCONFIG_REG:
+			{
+				if (CheckAndCopyIn(cbin, cbout, &myWDInfo, SystemBuffer, sizeof(WATCHDOG_INFO)))
+				{
+					// enter extended function mode 
+					WRITE_PORT_UCHAR(PnP_Port, 0x87); 
+					WRITE_PORT_UCHAR(PnP_Port, 0x87);
+
+					// select logical device 8=WatchdogDevice
+					WRITE_PORT_UCHAR(PnP_Port, 0x07); WRITE_PORT_UCHAR(PnP_Port + 1, 0x08);
+					
+					// select ConfigRegister
+					WRITE_PORT_UCHAR(PnP_Port, myWDInfo->ConfigRegisterAdr);
+					
+					// read data from config register
+					myWDInfo->Data = READ_PORT_UCHAR(PnP_Port + 1);
+					
+					// exit extended function mode
+					WRITE_PORT_UCHAR(PnP_Port, 0xAA);
+
+					// copy retrieved data to SystemBuffer
+					RtlCopyMemory(SystemBuffer, &myWDInfo, sizeof(WATCHDOG_INFO));
+					status = STATUS_SUCCESS;
+					info = sizeof(WATCHDOG_INFO);
+				}
+			}
+			break;
+
+		case IOCTL_WATCHDOG_WRITECONFIG_REG:
+			{
+				if (CheckAndCopyIn(cbin, cbout, &myWDInfo, SystemBuffer, sizeof(WATCHDOG_INFO)))
+				{
+					// enter extended function mode 
+					WRITE_PORT_UCHAR(PnP_Port, 0x87);
+					WRITE_PORT_UCHAR(PnP_Port, 0x87);
+
+					// select logical device 8=WatchdogDevice
+					WRITE_PORT_UCHAR(PnP_Port, 0x07); WRITE_PORT_UCHAR(PnP_Port + 1, 0x08);
+
+					// select ConfigRegister
+					WRITE_PORT_UCHAR(PnP_Port, myWDInfo->ConfigRegisterAdr);
+
+					// write data to config register
+					WRITE_PORT_UCHAR(PnP_Port + 1, myWDInfo->Data);
+
+					// exit extended function mode
+					WRITE_PORT_UCHAR(PnP_Port, 0xAA);
+
+					// read data from config register
+					myWDInfo->Data = READ_PORT_UCHAR(PnP_Port + 1);
+
+					// copy retrieved data to SystemBuffer
+					RtlCopyMemory(SystemBuffer, &myWDInfo, sizeof(WATCHDOG_INFO));
+					status = STATUS_SUCCESS;
+					info = sizeof(WATCHDOG_INFO);
 				}
 			}
 			break;

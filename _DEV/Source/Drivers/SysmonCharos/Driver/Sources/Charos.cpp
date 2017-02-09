@@ -82,7 +82,11 @@ static BOOLEAN LocateW83627(PDEVICE_EXTENSION pdx)
 		WRITE_PORT_UCHAR( PnP_Port, 0xAA );				// exit extended function mode
 
 		// if we have reached this line in the source code -> end loop
-		pdx->Pnp_Port = *PnP_Port;
+		if (i==0)
+		  pdx->Pnp_Port = 0x2E;
+		 else
+		   pdx->Pnp_Port = 0x4E;
+
 		break;
 	}
 

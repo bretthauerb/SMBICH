@@ -125,7 +125,7 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 	PVOID SystemBuffer = Irp->AssociatedIrp.SystemBuffer;
 
 	WATCHDOG_INFO myWDInfo;
-	PUCHAR PnP_Port = &pdx->Pnp_Port;
+	PUCHAR PnP_Port = (PUCHAR) pdx->Pnp_Port;
 
 	if (stack->MajorFunction != IRP_MJ_DEVICE_CONTROL) {
 		// Uh ??

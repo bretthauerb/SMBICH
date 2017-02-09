@@ -82,7 +82,7 @@ static BOOLEAN LocateW83627(PDEVICE_EXTENSION pdx)
 		WRITE_PORT_UCHAR( PnP_Port, 0xAA );				// exit extended function mode
 
 		// if we have reached this line in the source code -> end loop
-		pdx->Pnp_Port = PnP_Port;
+		pdx->Pnp_Port = *PnP_Port;
 		break;
 	}
 
@@ -121,7 +121,7 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 	PVOID SystemBuffer = Irp->AssociatedIrp.SystemBuffer;
 
 	WATCHDOG_INFO myWDInfo;
-	UCHAR PnP_Port = pdx->Pnp_Port;
+	PUCHAR PnP_Port = &pdx->Pnp_Port;
 
 	if (stack->MajorFunction != IRP_MJ_DEVICE_CONTROL) {
 		// Uh ??
@@ -198,10 +198,10 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 					WRITE_PORT_UCHAR(PnP_Port, 0x07); WRITE_PORT_UCHAR(PnP_Port + 1, 0x08);
 					
 					// select ConfigRegister
-					WRITE_PORT_UCHAR(PnP_Port, myWDInfo->ConfigRegisterAdr);
+					WRITE_PORT_UCHAR(PnP_Port, myWDInfo.ConfigRegisterAdr);
 					
 					// read data from config register
-					myWDInfo->Data = READ_PORT_UCHAR(PnP_Port + 1);
+					myWDInfo.Data = READ_PORT_UCHAR(PnP_Port + 1);
 					
 					// exit extended function mode
 					WRITE_PORT_UCHAR(PnP_Port, 0xAA);
@@ -226,10 +226,10 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 					WRITE_PORT_UCHAR(PnP_Port, 0x07); WRITE_PORT_UCHAR(PnP_Port + 1, 0x08);
 
 					// select ConfigRegister
-					WRITE_PORT_UCHAR(PnP_Port, myWDInfo->ConfigRegisterAdr);
+					WRITE_PORT_UCHAR(PnP_Port, myWDInfo.ConfigRegisterAdr);
 
 					// write data to config register
-					WRITE_PORT_UCHAR(PnP_Port + 1, myWDInfo->Data);
+					WRITE_PORT_UCHAR(PnP_Port + 1, myWDInfo.Data);
 
 					// exit extended function mode
 					WRITE_PORT_UCHAR(PnP_Port, 0xAA);

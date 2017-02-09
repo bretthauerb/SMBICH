@@ -235,7 +235,7 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 					WRITE_PORT_UCHAR(PnP_Port, 0xAA);
 
 					// read data from config register
-					myWDInfo->Data = READ_PORT_UCHAR(PnP_Port + 1);
+					myWDInfo.Data = READ_PORT_UCHAR(PnP_Port + 1);
 
 					// copy retrieved data to SystemBuffer
 					RtlCopyMemory(SystemBuffer, &myWDInfo, sizeof(WATCHDOG_INFO));

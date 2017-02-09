@@ -11,5 +11,5 @@ typedef struct
 {
 	unsigned char	ConfigRegisterAdr;
 	unsigned char	Data;
-} WATCHDOG_INFO, *WATCHDOG_INFO;
+} WATCHDOG_INFO, *pWATCHDOG_INFO;
 #pragma pack(pop)

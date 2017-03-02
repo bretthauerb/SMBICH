@@ -149,6 +149,7 @@ NTSTATUS ACPIInterfaceNotificationCallback(PVOID NotificationStructure, PVOID Co
 		SIZE_T len = sizeof(MY_WORK_CONTEXT) + sizeof(UNICODE_STRING) + (notify->SymbolicLinkName->Length + 2);
 		PUCHAR pBase = NULL;
 		pdx->ulUseACPI = 1;
+		pdx->ulGabiVersion = 1; //fix value because acpi system may not contain any gabi header
 
 		workItem = IoAllocateWorkItem(pdx->DeviceObject);
 
@@ -300,7 +301,8 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 	else
 	{
 		MmUnmapIoSpace(MappedBios, MAP_SIZE);
-		MappedBios = NULL;
+		pdx->MappedBios = MappedBios = NULL;
+		pHeader->ucVersion = 0;
 	}
 
 	KeInitializeMutex( &(pdx->Mutex), 1 );

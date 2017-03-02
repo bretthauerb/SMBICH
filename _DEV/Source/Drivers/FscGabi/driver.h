@@ -6,7 +6,7 @@
 
 #define MAJOR_VERSION	6
 #define MINOR_VERSION	2
-#define RELEASE		1
+#define RELEASE		2
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
 #pragma warning ( disable : 4390 )

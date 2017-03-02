@@ -283,6 +283,11 @@ AcpiCompletionRoutine(PDEVICE_OBJECT DeviceObject, PIRP Irp, PVOID Context)
 	return STATUS_MORE_PROCESSING_REQUIRED;
 }
 
+BOOLEAN HasGabiInterface(PDEVICE_EXTENSION	pDevExt)
+{
+	return (pDevExt->GabiCallAddress != NULL || (pDevExt->ulUseACPI != 0 && pDevExt->ACPIDevice != NULL)) ? TRUE : FALSE;
+}
+
 NTSTATUS
 DriverIOCTL ( PDEVICE_OBJECT pDeviceObject, PIRP pIrp )
 {
@@ -306,7 +311,7 @@ DriverIOCTL ( PDEVICE_OBJECT pDeviceObject, PIRP pIrp )
 	case IOCTL_FSC_HARDWARE_PRESENT:
 		if (ulIoctlOutputLength == sizeof(*pulUlongSystemBuffer))
 		{
-			*(ULONG*)pIrp->AssociatedIrp.SystemBuffer = (pDevExt->GabiCallAddress) ? 1 : 0;
+			*(ULONG*)pIrp->AssociatedIrp.SystemBuffer = (HasGabiInterface(pDevExt)) ? 1 : 0;
 			Information = sizeof(*pulUlongSystemBuffer);
 			ntStatus = STATUS_SUCCESS;
 		}
@@ -322,7 +327,7 @@ DriverIOCTL ( PDEVICE_OBJECT pDeviceObject, PIRP pIrp )
 		break;
 
 	case IOCTL_GABI_GET_GABI_VERSION:
-		if (ulIoctlOutputLength == sizeof(*pulUlongSystemBuffer) && pDevExt->GabiCallAddress)
+		if (ulIoctlOutputLength == sizeof(*pulUlongSystemBuffer) && HasGabiInterface(pDevExt))
 		{
 			*pulUlongSystemBuffer = pDevExt->ulGabiVersion;
 			Information = sizeof(*pulUlongSystemBuffer);
@@ -334,7 +339,7 @@ DriverIOCTL ( PDEVICE_OBJECT pDeviceObject, PIRP pIrp )
 		{
 			KdPrint((DRIVER_NAME " - IOCTL_GABI_EXECUTE_REQUEST entered\n"));
 			// Gabi not here
-			if (pDevExt->GabiCallAddress == NULL) break;
+			if (!HasGabiInterface(pDevExt)) break;
 
 			ULONG min_in_and_out_size = (Command((GabiGenericAPIHeader_T*)pSystemBuffer) == OTHER_UEFI) ?
 											sizeof UEFI_GabiKernelRequest_T : sizeof GabiServiceAPIRequest_T;

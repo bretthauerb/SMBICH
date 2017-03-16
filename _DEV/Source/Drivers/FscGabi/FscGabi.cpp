@@ -302,7 +302,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 	{
 		MmUnmapIoSpace(MappedBios, MAP_SIZE);
 		pdx->MappedBios = MappedBios = NULL;
-		pHeader->ucVersion = 0;
+		pdx->ulGabiVersion = 0;
 	}
 
 	KeInitializeMutex( &(pdx->Mutex), 1 );

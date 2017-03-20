@@ -1,0 +1,201 @@
+/*++
+
+Module Name:
+
+    device.c - Device handling events for example driver.
+
+Abstract:
+
+   This file contains the device entry points and callbacks.
+    
+Environment:
+
+    Kernel-mode Driver Framework
+
+--*/
+
+#include "driver.h"
+#include "device.tmh"
+
+#ifdef ALLOC_PRAGMA
+#pragma alloc_text (PAGE, SysMonCharosCreateDevice)
+#endif
+
+//
+// check if SIO is present
+//
+//  return STATUS_SUCCESS if found, else return STATUS_FAILED
+//
+static NTSTATUS LocateW83627(PDEVICE_CONTEXT pdx)
+{
+	// Called from Init only, no need for spinlocks
+	ULONG IOBase = 0;
+	PUCHAR PnP_Port;
+
+	PUCHAR CRBase[2] = { (PUCHAR)0x2E, (PUCHAR)0x4E };
+	UCHAR CRDeviceID;
+
+	NTSTATUS status = STATUS_UNSUCCESSFUL;
+
+	TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
+
+	// check the two possible CRBase Addresses (0x2E and 0x4E)
+	for (int i = 0; i<2; i++)
+	{
+		PnP_Port = CRBase[i];
+
+		/* get/set IOBase by access p&p configuration registers of logical device B=Hardware Monitoring */
+		// enter extended function mode 
+		WRITE_PORT_UCHAR(PnP_Port, 0x87); WRITE_PORT_UCHAR(PnP_Port, 0x87);
+		// select logical device B=HardwareMonitoring
+		WRITE_PORT_UCHAR(PnP_Port, 0x07); WRITE_PORT_UCHAR(PnP_Port + 1, 0x0B);
+		// get io base
+		WRITE_PORT_UCHAR(PnP_Port, 0x60); IOBase = READ_PORT_UCHAR(PnP_Port + 1) << 8;
+		WRITE_PORT_UCHAR(PnP_Port, 0x61); IOBase |= READ_PORT_UCHAR(PnP_Port + 1) & 0xF8;
+
+		if ((IOBase == 0 || IOBase >= 0xFFF8) && (i == 0)) continue;
+		IOBase &= 0xFFF8;
+
+		TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! BIOS initializes W83627 I / O base = %x", IOBase);
+
+		if (IOBase == 0)
+		{
+			IOBase = 0x290;
+			UCHAR HiIOBase = 0x02;
+			UCHAR LoIOBase = 0x90;
+			WRITE_PORT_UCHAR(PnP_Port, 0x60); WRITE_PORT_UCHAR(PnP_Port + 1, HiIOBase);
+			WRITE_PORT_UCHAR(PnP_Port, 0x61); WRITE_PORT_UCHAR(PnP_Port + 1, LoIOBase);
+		}
+
+		pdx->indexport = (PUCHAR)0 + IOBase + 5;
+		pdx->dataport = (PUCHAR)0 + IOBase + 6;
+
+		WRITE_PORT_UCHAR(PnP_Port, 0x30);				// select device activation register
+		if ((READ_PORT_UCHAR(PnP_Port + 1) & 1) == 0x00)	// device not activated
+		{
+			TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! activate device");
+			WRITE_PORT_UCHAR(PnP_Port + 1, 1);			// activate device
+		}
+
+		// identify the device
+		WRITE_PORT_UCHAR(PnP_Port, 0x20);
+		CRDeviceID = (UCHAR)READ_PORT_UCHAR(PnP_Port + 1);
+		pdx->CRDeviceID = CRDeviceID;
+
+		WRITE_PORT_UCHAR(PnP_Port, 0x22);				// power down
+		KdPrint(("W83627 index 0x22 = %x\n", READ_PORT_UCHAR(PnP_Port + 1)));
+
+		WRITE_PORT_UCHAR(PnP_Port, 0x26);				// power down
+		KdPrint(("W83627 index 0x26 = %x\n", READ_PORT_UCHAR(PnP_Port + 1)));
+		WRITE_PORT_UCHAR(PnP_Port, 0x2a);				// power down
+		KdPrint(("W83627 index 0x2a = %x\n", READ_PORT_UCHAR(PnP_Port + 1)));
+
+		WRITE_PORT_UCHAR(PnP_Port, 0xAA);	// exit extended function mode
+																
+		if (i == 0)							// if we have reached this line in the source code -> end loop
+		 pdx->Pnp_Port = 0x2E;
+		else
+		  pdx->Pnp_Port = 0x4E;
+		
+		TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! pdx->Pnp_Port = %x ; pdx->CRDeviceID  = %x", pdx->Pnp_Port, pdx->CRDeviceID);
+
+		status = STATUS_SUCCESS;
+		break;
+	}
+
+	return status;
+}
+
+NTSTATUS
+SysMonCharosCreateDevice(
+    _Inout_ PWDFDEVICE_INIT DeviceInit
+    )
+/*++
+
+Routine Description:
+
+    Worker routine called to create a device and its software resources.
+
+Arguments:
+
+    DeviceInit - Pointer to an opaque init structure. Memory for this
+                    structure will be freed by the framework when the WdfDeviceCreate
+                    succeeds. So don't access the structure after that point.
+
+Return Value:
+
+    NTSTATUS
+
+--*/
+{
+    WDF_OBJECT_ATTRIBUTES   deviceAttributes;
+    PDEVICE_CONTEXT deviceContext;
+    WDFDEVICE device;
+    NTSTATUS status;
+
+    PAGED_CODE();
+	
+	TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Entry");
+
+    WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&deviceAttributes, DEVICE_CONTEXT);
+		
+    status = WdfDeviceCreate(&DeviceInit, &deviceAttributes, &device);
+
+	TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! WdfDeviceCreate returned: 0x%08lX", status);
+
+    if (NT_SUCCESS(status)) 
+	{
+		// create symbolic link for our device
+		// Some applications may expect to see an MS-DOS name for the device
+		DECLARE_CONST_UNICODE_STRING(DosDeviceName, L"\\DosDevices\\CHAROS");
+		status = WdfDeviceCreateSymbolicLink(device, &DosDeviceName);
+
+		if (!NT_SUCCESS(status))
+		{
+			TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! WdfDeviceCreateSymbolicLink failed (status=0x%08lX)", status);
+			return status;
+		}
+		
+        //
+        // Get a pointer to the device context structure that we just associated
+        // with the device object. We define this structure in the device.h
+        // header file. DeviceGetContext is an inline function generated by
+        // using the WDF_DECLARE_CONTEXT_TYPE_WITH_NAME macro in device.h.
+        // This function will do the type checking and return the device context.
+        // If you pass a wrong object handle it will return NULL and assert if
+        // run under framework verifier mode.
+        //
+        deviceContext = DeviceGetContext(device);
+
+        //
+        // Initialize the context.
+        //
+        memset(deviceContext,0,sizeof(DEVICE_CONTEXT));
+		
+        //
+        // Create a device interface so that applications can find and talk
+        // to us.
+        //
+        status = WdfDeviceCreateDeviceInterface(
+            device,
+            &GUID_DEVINTERFACE_SysMonCharos,
+            NULL // ReferenceString
+            );
+
+		TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! WdfDeviceCreateDeviceInterface returned: 0x%08lX",status);
+
+        if (NT_SUCCESS(status)) {
+            //
+            // Initialize the I/O Package and any Queues
+            //
+            status = SysMonCharosQueueInitialize(device);
+        }
+
+		status = LocateW83627(deviceContext);
+    }
+
+	TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "%!FUNC! Exit");
+    return status;
+}
+
+

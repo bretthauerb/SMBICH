@@ -1,0 +1,83 @@
+;
+; SysMonCharos.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider=%ManufacturerName%
+CatalogFile=SysMonCharos.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+SysMonCharos.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%SysMonCharos.DeviceDesc%=SysMonCharos_Device, Root\SysMonCharos
+
+[SysMonCharos_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+SysMonCharos.sys
+
+;-------------- Service installation
+[SysMonCharos_Device.NT.Services]
+AddService = SysMonCharos,%SPSVCINST_ASSOCSERVICE%, SysMonCharos_Service_Inst
+
+; -------------- SysMonCharos driver install sections
+[SysMonCharos_Service_Inst]
+DisplayName    = %SysMonCharos.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\SysMonCharos.sys
+
+;
+;--- SysMonCharos_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+SysMonCharos_Device_CoInstaller_CopyFiles = 11
+
+[SysMonCharos_Device.NT.CoInstallers]
+AddReg=SysMonCharos_Device_CoInstaller_AddReg
+CopyFiles=SysMonCharos_Device_CoInstaller_CopyFiles
+
+[SysMonCharos_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[SysMonCharos_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+[SysMonCharos_Device.NT.Wdf]
+KmdfService =  SysMonCharos, SysMonCharos_wdfsect
+[SysMonCharos_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="Fujitsu"
+ClassName="System"
+DiskName = "SysMonCharos Installation Disk"
+SysMonCharos.DeviceDesc = "Fujitsu hardware monitoring driver"
+SysMonCharos.SVCDESC = "SysMonCharos Service"

@@ -29,7 +29,7 @@ SysMonCharos.sys  = 1,,
 %ManufacturerName%=Standard,NT$ARCH$
 
 [Standard.NT$ARCH$]
-%SysMonCharos.DeviceDesc%=SysMonCharos_Device, Root\SysMonCharos
+%SysMonCharos.DeviceDesc%=SysMonCharos_Device, Root\Charos
 
 [SysMonCharos_Device.NT]
 CopyFiles=Drivers_Dir

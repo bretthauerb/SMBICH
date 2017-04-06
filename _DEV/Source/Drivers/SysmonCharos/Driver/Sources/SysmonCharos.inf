@@ -12,6 +12,7 @@ DriverVer= ; TODO: set DriverVer in stampinf property pages
 
 [DestinationDirs]
 DefaultDestDir = 12
+SysMonCharos_Device_CoInstaller_CopyFiles = 11
 
 ; ================= Class section =====================
 
@@ -20,6 +21,7 @@ DefaultDestDir = 12
 
 [SourceDisksFiles]
 SysMonCharos.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
 ;*****************************************
 ; Install Section
@@ -53,9 +55,6 @@ ServiceBinary  = %12%\SysMonCharos.sys
 ;--- SysMonCharos_Device Coinstaller installation ------
 ;
 
-[DestinationDirs]
-SysMonCharos_Device_CoInstaller_CopyFiles = 11
-
 [SysMonCharos_Device.NT.CoInstallers]
 AddReg=SysMonCharos_Device_CoInstaller_AddReg
 CopyFiles=SysMonCharos_Device_CoInstaller_CopyFiles
@@ -65,9 +64,6 @@ HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfC
 
 [SysMonCharos_Device_CoInstaller_CopyFiles]
 WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
-
-[SourceDisksFiles]
-WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
 [SysMonCharos_Device.NT.Wdf]
 KmdfService =  SysMonCharos, SysMonCharos_wdfsect

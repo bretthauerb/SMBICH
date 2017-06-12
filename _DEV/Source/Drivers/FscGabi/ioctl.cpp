@@ -137,7 +137,8 @@ static Command_T Command(GabiGenericAPIHeader_T *r)
 			case 5: return WRITE_SYS_DATA;
 			default: return OTHERS;
 		}
-	if ((r->ServiceCategory == 7) || (r->ServiceCategory == 8)	|| // UEFI NVRAM data
+	if ((r->ServiceCategory == 7) ||  // UEFI NVRAM data
+		(r->ServiceCategory == 8 && (r->Service != 1 && r->Service != 2)) || // UEFI NVRAM data except Enter and Exit will be OTHE
 	   ((r->ServiceCategory & 0xfe00) == 0x8200))	// Assume these are all UEFI services
 			return OTHER_UEFI;		// All UEFI commands use buffer descriptors when more then 0x10 data.
 

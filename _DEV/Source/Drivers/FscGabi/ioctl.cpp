@@ -123,7 +123,8 @@ typedef	enum { FLASH_UPDATE, FLASH_ARCHIVE, READ_SYS_DATA, WRITE_SYS_DATA,
 			   OTHERS } Command_T;
 static Command_T Command(GabiGenericAPIHeader_T *r)
 {
-	if (r->ServiceCategory == 3)		// Japan FLASH
+	if (r->ServiceCategory == 3 || // Japan FLASH
+		r->ServiceCategory == 8)	// UEFI NVRAM data 
 		switch (r->Service)
 		{
 			case 3:	return FLASH_UPDATE;
@@ -138,7 +139,6 @@ static Command_T Command(GabiGenericAPIHeader_T *r)
 			default: return OTHERS;
 		}
 	if ((r->ServiceCategory == 7) ||  // UEFI NVRAM data
-		(r->ServiceCategory == 8 && (r->Service != 1 && r->Service != 2)) || // UEFI NVRAM data except Enter and Exit will be OTHE
 	   ((r->ServiceCategory & 0xfe00) == 0x8200))	// Assume these are all UEFI services
 			return OTHER_UEFI;		// All UEFI commands use buffer descriptors when more then 0x10 data.
 

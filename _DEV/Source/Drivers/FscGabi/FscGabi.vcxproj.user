@@ -3,4 +3,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <SignMode>Off</SignMode>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <SignMode>ProductionSign</SignMode>
+    <ProductionCertificate>CN=Fujitsu Technology Solutions GmbH, O=Fujitsu Technology Solutions GmbH, L=Muenchen, S=Bayern, C=DE | BC29C33507A517675721678FF8E0E0010FBB9D16</ProductionCertificate>
+  </PropertyGroup>
 </Project>

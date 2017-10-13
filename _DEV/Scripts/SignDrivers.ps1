@@ -153,10 +153,12 @@ function Start-Signing{
                     $sSourcePath = $_.FullName
                     $sTargetPath = $sServerPath + $_.FullName.Replace($BaseDir,'')
 
+					Write-Host "FullName: " $_.FullName
+					Write-Host "FullNameEdit: " $_.FullName.Replace($BaseDir,'')
 					Write-Host "sTargetPath: $sTargetPath"
-					Write-Host "BaseName: " + $_.BaseName
-					Write-Host "Extension: " + $_.Extension
-					Write-Host "Result: " + $sTargetPath.Replace('\' + $_.BaseName + $_.Extension, '')
+					Write-Host "BaseName: " $_.BaseName
+					Write-Host "Extension: " $_.Extension
+					Write-Host "Result: " $sTargetPath.Replace('\' + $_.BaseName + $_.Extension, '')
 
                     $pso = New-Object PSObject
                     $pso | Add-Member NoteProperty -Name 'Source' -Value $_.FullName.Replace('\' + $_.BaseName + $_.Extension, '')

@@ -154,6 +154,7 @@ function Start-Signing{
                     $sTargetPath = $sServerPath + $_.FullName.Replace($BaseDir,'')
 
 					Write-Host "FullName: " $_.FullName
+					Write-Host "BaseDir: " $BaseDir
 					Write-Host "FullNameEdit: " $_.FullName.Replace($BaseDir,'')
 					Write-Host "sTargetPath: $sTargetPath"
 					Write-Host "BaseName: " $_.BaseName

@@ -1,9 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8" ?> 
-<sections>
-  <section name="sign">
-    <file name="*.sys" timestamp="no" />	
-  </section>
-  
-  <section name="exclude">
-  </section>
-</sections>
+﻿<files>
+            <include>
+                        <file name="*.sys" />
+            </include>
+            <exclude></exclude>
+</files> 

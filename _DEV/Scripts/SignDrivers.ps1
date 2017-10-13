@@ -108,6 +108,7 @@ function Start-Signing{
                     $sTargetPath = $_.Target
 
                     if (-not (Test-Path $_.Target)) {
+						Write-Host "New-Item -ItemType directory -Path $($_.Target)"
                         New-Item -ItemType directory -Path $_.Target | Out-Null
                     }
                     Copy-Item -Path ($_.Source + '\' + $_.File) -Destination $_.Target -Force

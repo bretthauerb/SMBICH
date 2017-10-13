@@ -43,6 +43,8 @@ Write-Host "########################################"
 #                   #
 # ******************#
 
+Write-Host "BUILD_BINARIESDIRECTORY: $env:BUILD_BINARIESDIRECTORY"
+Write-Host "BUILD_SOURCESDIRECTORY: $env:BUILD_SOURCESDIRECTORY"
 
 # Build variables
 [String] $CollectionURL = “$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI“

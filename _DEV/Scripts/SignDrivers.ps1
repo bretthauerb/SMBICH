@@ -42,8 +42,7 @@ Write-Host "########################################"
 #                   #
 #                   #
 # ******************#
-$securePassword = $sUserPassword | ConvertTo-SecureString -AsPlainText -Force   
-$credential = New-Object System.Management.Automation.PSCredential($sUserName, $securePassword)
+
 
 # Build variables
 [String] $CollectionURL = “$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI“

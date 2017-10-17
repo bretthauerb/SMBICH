@@ -1,4 +1,4 @@
-
+K
 # ************************************************************
 #
 #
@@ -43,9 +43,6 @@ Write-Host "########################################"
 #                   #
 # ******************#
 
-Write-Host "BUILD_BINARIESDIRECTORY: $env:BUILD_BINARIESDIRECTORY"
-Write-Host "BUILD_SOURCESDIRECTORY: $env:BUILD_SOURCESDIRECTORY"
-
 # Build variables
 [String] $CollectionURL = “$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI“
 [String] $BuildUrl = “$env:BUILD_BUILDURI“
@@ -66,11 +63,6 @@ Write-Host "BUILD_SOURCESDIRECTORY: $env:BUILD_SOURCESDIRECTORY"
 
 # Misc variables
 [string] $LogfilePath = $sBinaryRoot + "\logs\signlog.txt"
-[string] $sPythonPath = "C:\Python\App\python.exe"
-[string] $sSignServer = "\\abg0636a.rdswlab.net\build\bin\signclient.py"
-
-
-
 
 function Start-Signing{
         param(
@@ -152,14 +144,6 @@ function Start-Signing{
 
                     $sSourcePath = $_.FullName
                     $sTargetPath = $sServerPath + $_.FullName.Replace($BaseDir,'')
-
-					Write-Host "FullName: " $_.FullName
-					Write-Host "BaseDir: " $BaseDir
-					Write-Host "FullNameEdit: " $_.FullName.Replace($BaseDir,'')
-					Write-Host "sTargetPath: $sTargetPath"
-					Write-Host "BaseName: " $_.BaseName
-					Write-Host "Extension: " $_.Extension
-					Write-Host "Result: " $sTargetPath.Replace('\' + $_.BaseName + $_.Extension, '')
 
                     $pso = New-Object PSObject
                     $pso | Add-Member NoteProperty -Name 'Source' -Value $_.FullName.Replace('\' + $_.BaseName + $_.Extension, '')

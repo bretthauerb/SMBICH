@@ -4,7 +4,7 @@ Class=System
 ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
 Provider=%MFGNAME%
 CatalogFile=FscGabi.cat
-DriverVer=03/02/2016,6.2.2.0
+DriverVer= ; TODO: set DriverVer in stampinf property pages
 
 [Manufacturer]
 %MFGNAME%=DeviceList, NT$ARCH$

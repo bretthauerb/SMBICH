@@ -70,7 +70,7 @@ Return Value:
         //
         // Initialize the context.
         //
-        deviceContext->PrivateDeviceData = 0;
+        deviceContext->byUseFirmwareMem = FIRMWARE_MEM_CHECK;
 
         //
         // Create a device interface so that applications can find and talk

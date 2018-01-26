@@ -64,7 +64,7 @@ Return Value:
 	//
 	WDF_IO_QUEUE_CONFIG_INIT_DEFAULT_QUEUE(
 		 &queueConfig,
-		WdfIoQueueDispatchParallel
+		WdfIoQueueDispatchSequential
 		);
 
 	queueConfig.EvtIoDeviceControl = GabiAcpiEvtIoDeviceControl;
@@ -121,30 +121,51 @@ Return Value:
 {
 	NTSTATUS status = STATUS_SUCCESS;
 	WDFDEVICE parent = WdfIoQueueGetDevice(Queue);
+	PDEVICE_CONTEXT devExt = DeviceGetContext(parent);
 
 	TraceEvents(TRACE_LEVEL_INFORMATION,
 		TRACE_QUEUE,
 		"!FUNC! Internal Queue 0x%p, Request 0x%p OutputBufferLength %d InputBufferLength %d IoControlCode %d",
 		Queue, Request, (int)OutputBufferLength, (int)InputBufferLength, IoControlCode);
 
-	switch (IoControlCode)
+	if (devExt->byUseFirmwareMem == FIRMWARE_MEM_CHECK)
 	{
-		case IOCTL_GABI_ACPI_CMD:
-			{
-				if (InputBufferLength != sizeof(GabiAcpiCmd))
+		TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "check acpi node caps\n");
+		status = CheckACPI_NodeCaps(parent, NULL, NULL);
+	}
+
+	if (NT_SUCCESS(status))
+	{
+		switch (IoControlCode)
+		{
+			case IOCTL_GABI_ACPI_CMD:
 				{
-					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "wrong buffer length\n");
-					status = STATUS_INVALID_PARAMETER_1;
-					break;
+					if (InputBufferLength != sizeof(GabiAcpiCmd))
+					{
+						TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "wrong buffer length\n");
+						status = STATUS_INVALID_PARAMETER_1;
+						break;
+					}
+
+					if (devExt->byUseFirmwareMem == FIRMWARE_MEM_KERNEL)
+					{
+						status = GabiAcpiCallAcpi(Request, parent, 0);
+					}
+					else if (devExt->byUseFirmwareMem == FIRNWARE_MEM_FIRMWARE)
+					{
+						status = GabiAcpiCallAcpiFirmwareMem(Request, parent, 0);
+					}
 				}
+				break;
 
-				status = GabiAcpiCallAcpi(Request, parent, 0);
-			}
-			break;
-
-		default:
-			status = STATUS_NOT_SUPPORTED;
-			break;
+			default:
+				status = STATUS_NOT_SUPPORTED;
+				break;
+		}
+	}
+	else
+	{
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "status != STATUS_SUCCESS\n");
 	}
 
 	WdfRequestComplete(Request, status);
@@ -188,30 +209,51 @@ Return Value:
 {
 	NTSTATUS status = STATUS_SUCCESS;
 	WDFDEVICE parent = WdfIoQueueGetDevice(Queue);
+	PDEVICE_CONTEXT devExt = DeviceGetContext(parent);
 
 	TraceEvents(TRACE_LEVEL_INFORMATION,
 		TRACE_QUEUE,
 		"!FUNC! Queue 0x%p, Request 0x%p OutputBufferLength %d InputBufferLength %d IoControlCode %d",
 		Queue, Request, (int)OutputBufferLength, (int)InputBufferLength, IoControlCode);
 
-	switch (IoControlCode)
+	if (devExt->byUseFirmwareMem == FIRMWARE_MEM_CHECK)
 	{
-		case IOCTL_GABI_ACPI_CMD:
-			{
-				if (InputBufferLength != sizeof(GabiAcpiCmd))
+		TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "check acpi node caps\n");
+		status = CheckACPI_NodeCaps(parent, NULL, NULL);
+	}
+
+	if (NT_SUCCESS(status))
+	{
+		switch (IoControlCode)
+		{
+			case IOCTL_GABI_ACPI_CMD:
 				{
-					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "wrong buffer length\n");
-					status = STATUS_INVALID_PARAMETER_1;
-					break;
+					if (InputBufferLength != sizeof(GabiAcpiCmd))
+					{
+						TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "wrong buffer length\n");
+						status = STATUS_INVALID_PARAMETER_1;
+						break;
+					}
+
+					if (devExt->byUseFirmwareMem == FIRMWARE_MEM_KERNEL)
+					{
+						status = GabiAcpiCallAcpi(Request, parent, 1);
+					}
+					else  if (devExt->byUseFirmwareMem == FIRNWARE_MEM_FIRMWARE)
+					{
+						status = GabiAcpiCallAcpiFirmwareMem(Request, parent, 1);
+					}
 				}
+				break;
 
-				status = GabiAcpiCallAcpi(Request, parent, 1);
-			}
-			break;
-
-		default:
-			status = STATUS_NOT_SUPPORTED;
-			break;
+			default:
+				status = STATUS_NOT_SUPPORTED;
+				break;
+		}
+	}
+	else
+	{
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "status != STATUS_SUCCESS\n");
 	}
 
 	WdfRequestComplete(Request, status);
@@ -324,8 +366,519 @@ PVOID AllocateContiguousMemory(SIZE_T NumberOfBytes, PHYSICAL_ADDRESS HighestAcc
 	}
 }
 
+NTSTATUS PrepareBuffers(PGabiAcpiCmd pCmd, PHYSICAL_ADDRESS firmwareMemoryBaseAddress, PHYSICAL_ADDRESS* pControlBuffer, PHYSICAL_ADDRESS* pRequestBuffer, PHYSICAL_ADDRESS* pResponseBuffer, UCHAR ucExternal)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+	ULONGLONG ullTotalLength = 0;
+
+	if (pCmd->ControlBufferLen == 0 && ucExternal == 0)
+	{
+		//ucExternal == 0 buffer provided by other kernel driver
+		//check structur to get size 
+		PUCHAR pSource;
+		UINT16 len;
+
+		pSource = (PUCHAR)MmMapIoSpace(pCmd->ControlBuffer, sizeof(len), MmNonCached);
+
+		memcpy(&len, pSource, sizeof(len));
+
+		MmUnmapIoSpace(pSource, sizeof(len));
+
+		pCmd->ControlBufferLen = len;
+	}
+
+	if (pCmd->RequestBufferLen == 0 && ucExternal == 0)
+	{
+		//ucExternal == 0 buffer provided by other kernel driver
+		//check structur to get size
+		PUCHAR pSource;
+		UINT16 len;
+
+		pSource = (PUCHAR)MmMapIoSpace(pCmd->RequestBuffer, sizeof(len), MmNonCached);
+
+		memcpy(&len, pSource, sizeof(len));
+
+		MmUnmapIoSpace(pSource, sizeof(len));
+
+		pCmd->RequestBufferLen = len;
+	}
+
+	if (pCmd->ResponseBufferLen == 0 && ucExternal == 0)
+	{
+		//ucExternal == 0 buffer provided by other kernel driver
+		//check structur to get size
+		PUCHAR pSource;
+		UINT16 len;
+
+		pSource = (PUCHAR)MmMapIoSpace(pCmd->ResponseBuffer, sizeof(len), MmNonCached);
+
+		memcpy(&len, pSource, sizeof(len));
+
+		MmUnmapIoSpace(pSource, sizeof(len));
+
+		pCmd->ResponseBufferLen = len;
+	}
+
+	if (ucExternal == 0)
+	{
+		//ucExternal == 0 buffer provided by other kernel driver
+		//check for sub pointer and get pointer size
+		UINT16 uiServiceCategory;
+		UINT16 uiServiceCode;
+		PUCHAR pSource;
+
+		pSource = (PUCHAR)MmMapIoSpace(pCmd->ResponseBuffer, 4 + sizeof(uiServiceCode), MmNonCached);
+
+		memcpy(&uiServiceCategory, pSource + 2, sizeof(uiServiceCategory));
+		memcpy(&uiServiceCode, pSource + 4, sizeof(uiServiceCode));
+
+		MmUnmapIoSpace(pSource, 4 + sizeof(uiServiceCode));
+
+		pCmd->AddressLength = 0;
+
+		switch (uiServiceCategory)
+		{
+			case 3: // Japan FLASH
+				if (uiServiceCode == 3 || uiServiceCode == 4)
+				{
+					pCmd->AddressLength = 8;
+				}
+				break;
+
+			case 0x8000:
+			case 0x5:	// Japan system data
+				if (uiServiceCode == 4 || uiServiceCode == 5)
+				{
+					pCmd->AddressLength = 4;
+				}
+				break;
+
+			case 0x7: // UEFI NVRAM data
+				pCmd->AddressLength = 8;
+				break;
+
+			case 0x8:
+				if (uiServiceCode != 1 && uiServiceCode != 2) // UEFI NVRAM data except Enter and Exit will be OTHE
+				{
+					pCmd->AddressLength = 8;
+				}
+				break;
+
+			default:
+				if ((uiServiceCategory & 0xfe00) == 0x8200)
+				{
+					pCmd->AddressLength = 8;
+				}
+				break;
+		}
+	}
+
+	pControlBuffer->QuadPart = firmwareMemoryBaseAddress.QuadPart;
+	ullTotalLength += pCmd->ControlBufferLen;
+	pResponseBuffer->QuadPart = firmwareMemoryBaseAddress.QuadPart + ullTotalLength;
+	ullTotalLength += pCmd->ResponseBufferLen;
+	pRequestBuffer->QuadPart = firmwareMemoryBaseAddress.QuadPart + ullTotalLength;
+	ullTotalLength += pCmd->RequestBufferLen;
+
+	return status;
+}
+
+NTSTATUS ReplaceMemoryBlocks(PHYSICAL_ADDRESS firmwareMemoryBaseAddress, UINT32 firmwareMemorySize, UINT32* puiOffset, PUCHAR pBufferSrc, ULONG ulBufferLen, ULONG ulPointerSize, ULONG ulOffsetSrc, UCHAR ucExternal)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+
+	if (pBufferSrc != NULL)
+	{
+		try
+		{
+			for (ULONG i = ulOffsetSrc; i < (ulBufferLen - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
+			{
+				PULONGLONG pAddr = (PULONGLONG)(pBufferSrc + i);
+
+				if (*pAddr != 0)
+				{
+					PUCHAR pDest;
+					PHYSICAL_ADDRESS nextFreeMem;
+					SIZE_T len = (SIZE_T)LENGHT_BUFFER(pBufferSrc + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
+					i += ulPointerSize; 
+
+					if (ucExternal != 0)
+					{
+#if defined(_AMD64_) || defined(_IA64_)
+						ProbeForRead((void*)*pAddr,
+#else
+						ProbeForRead((void*)(*((UINT32*)pAddr)),
+#endif
+							len,
+							sizeof(UCHAR));
+					}
+
+					if (*puiOffset + len > firmwareMemorySize)
+					{
+						status = STATUS_DATA_OVERRUN;
+						TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "buffer to small\n");
+						break;
+					}					
+
+					nextFreeMem.QuadPart = firmwareMemoryBaseAddress.QuadPart + *puiOffset;
+					*puiOffset = *puiOffset + (UINT32)len;
+
+#if defined(_AMD64_) || defined(_IA64_)
+					pDest = (PUCHAR)nextFreeMem.QuadPart;
+#else
+					pDest = (PUCHAR)nextFreeMem.LowPart;
+#endif
+					RtlCopyMemory(pAddr, &pDest, sizeof(PHYSICAL_ADDRESS));
+
+					pDest = (UCHAR*)MmMapIoSpace(nextFreeMem, len, MmNonCached);
+
+#if defined(_AMD64_) || defined(_IA64_)
+					RtlCopyMemory(pDest, (void*)*pAddr, len);
+#else
+					RtlCopyMemory(pDest, (void*)*((UINT32*)pAddr), len);
+#endif
+
+					MmUnmapIoSpace(pDest, len);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			status = STATUS_IN_PAGE_ERROR;
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffer1\n");
+		}
+	}
+
+	return status;
+}
+
+NTSTATUS GabiAcpiCallAcpiFirmwareMem(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+	WDFMEMORY inputMemory;
+	GabiAcpiCmd cmd;
+	PGabiAcpiCmd pCmd = &cmd;
+	PHYSICAL_ADDRESS controlBuffer;
+	PHYSICAL_ADDRESS requestBuffer;
+	PHYSICAL_ADDRESS responseBuffer;
+	PHYSICAL_ADDRESS firmwareMemoryBaseAddress;
+	UINT32 firmwareMemorySize;
+	PUCHAR pData;
+	PUCHAR pSource;
+	ULONG ulOffset = 0x10;
+
+	status = CheckACPI_NodeCaps(parent, &firmwareMemoryBaseAddress, &firmwareMemorySize);
+
+	if (!NT_SUCCESS(status))
+	{
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "EvaluateAcpiMethode FunctionIndex=2 failed: 0x%x\n", status);
+		return status;
+	}
+
+	status = WdfRequestRetrieveInputMemory(Request, &inputMemory);
+
+	if (!NT_SUCCESS(status))
+	{
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "WdfRequestRetrieveOutputMemory failed: 0x%x\n", status);
+		return status;
+	}
+
+	memcpy(pCmd, (PGabiAcpiCmd)WdfMemoryGetBuffer(inputMemory, NULL), sizeof(GabiAcpiCmd));
+
+	status = PrepareBuffers(pCmd, firmwareMemoryBaseAddress, &controlBuffer, &requestBuffer, &responseBuffer, ucExternal);
+
+	try
+	{
+		if (ucExternal != 0)
+		{
+#if defined(_AMD64_) || defined(_IA64_)
+			pSource = (PUCHAR)pCmd->ControlBuffer.QuadPart;
+#else
+			pSource = (PUCHAR)pCmd->ControlBuffer.LowPart;
+#endif
+
+			//Usermode buffers
+			ProbeForRead(pSource,
+				pCmd->ControlBufferLen,
+				sizeof(UCHAR));
+
+			pData = (UCHAR*)MmMapIoSpace(controlBuffer, pCmd->ControlBufferLen, MmNonCached);
+		}
+		else
+		{
+			pSource = (UCHAR*)MmMapIoSpace(pCmd->ControlBuffer, pCmd->ControlBufferLen, MmNonCached);
+			pData = (UCHAR*)MmMapIoSpace(controlBuffer, pCmd->ControlBufferLen, MmNonCached);
+		}
+
+		RtlCopyMemory(pData, pSource, pCmd->ControlBufferLen);
+
+		if (ucExternal != 0)
+		{
+			MmUnmapIoSpace(pData, pCmd->ControlBufferLen);
+
+#if defined(_AMD64_) || defined(_IA64_)
+			pSource = (PUCHAR)pCmd->RequestBuffer.QuadPart;
+#else
+			pSource = (PUCHAR)pCmd->RequestBuffer.LowPart;
+#endif
+
+			//Usermode buffers
+			ProbeForRead(pSource,
+				pCmd->RequestBufferLen,
+				sizeof(UCHAR));
+
+			pData = (UCHAR*)MmMapIoSpace(requestBuffer, pCmd->RequestBufferLen, MmNonCached);
+		}
+		else
+		{
+			MmUnmapIoSpace(pSource, pCmd->ControlBufferLen);
+			MmUnmapIoSpace(pData, pCmd->ControlBufferLen);
+
+			pSource = (UCHAR*)MmMapIoSpace(pCmd->RequestBuffer, pCmd->RequestBufferLen, MmNonCached);
+			pData = (UCHAR*)MmMapIoSpace(requestBuffer, pCmd->RequestBufferLen, MmNonCached);
+		}
+
+		RtlCopyMemory(pData, pSource, pCmd->RequestBufferLen);
+
+		if (ucExternal != 0)
+		{
+			MmUnmapIoSpace(pData, pCmd->ControlBufferLen);
+
+#if defined(_AMD64_) || defined(_IA64_)
+			pSource = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
+#else
+			pSource = (PUCHAR)pCmd->ResponseBuffer.LowPart;
+#endif
+
+			//Usermode buffers
+			ProbeForRead(pSource,
+				pCmd->ResponseBufferLen,
+				sizeof(UCHAR));
+
+			pData = (UCHAR*)MmMapIoSpace(responseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+		}
+		else
+		{
+			MmUnmapIoSpace(pSource, pCmd->RequestBufferLen);
+			MmUnmapIoSpace(pData, pCmd->RequestBufferLen);
+
+			pSource = (UCHAR*)MmMapIoSpace(pCmd->ResponseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+			pData = (UCHAR*)MmMapIoSpace(responseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+		}
+
+		RtlCopyMemory(pData, pSource, pCmd->ResponseBufferLen);
+
+		if (ucExternal == 0)
+		{
+			MmUnmapIoSpace(pSource, pCmd->ResponseBufferLen);
+			MmUnmapIoSpace(pData, pCmd->ResponseBufferLen);
+		}
+		else
+		{
+			MmUnmapIoSpace(pData, pCmd->ResponseBufferLen);
+		}
+
+		if (pCmd->AddressLength > 0)
+		{
+			UINT32 uiTotalLength = pCmd->ControlBufferLen;
+			uiTotalLength += pCmd->ResponseBufferLen;
+			uiTotalLength += pCmd->RequestBufferLen;
+
+			if (ucExternal != 0)
+			{
+#if defined(_AMD64_) || defined(_IA64_)
+				pData = (PUCHAR)requestBuffer.QuadPart;
+#else
+				pData = (PUCHAR)requestBuffer.LowPart;
+#endif
+			}
+			else
+			{
+				pData = (UCHAR*)MmMapIoSpace(requestBuffer, pCmd->RequestBufferLen, MmNonCached);
+			}
+
+			if (NT_SUCCESS(status))
+			{
+				status = ReplaceMemoryBlocks(firmwareMemoryBaseAddress, firmwareMemorySize, &uiTotalLength, pData, pCmd->RequestBufferLen, pCmd->AddressLength, ulOffset, ucExternal);
+			}
+			else
+			{
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "ReplaceMemoryBlocks1 failed: 0x%x\n", status);
+			}
+
+			if (ucExternal != 0)
+			{
+#if defined(_AMD64_) || defined(_IA64_)
+				pData = (PUCHAR)responseBuffer.QuadPart;
+#else
+				pData = (PUCHAR)responseBuffer.LowPart;
+#endif
+			}
+			else
+			{
+				MmUnmapIoSpace(pData, pCmd->RequestBufferLen);
+
+				pData = (UCHAR*)MmMapIoSpace(responseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+			}
+
+			if (NT_SUCCESS(status))
+			{
+				status = ReplaceMemoryBlocks(firmwareMemoryBaseAddress, firmwareMemorySize, &uiTotalLength, pData, pCmd->ResponseBufferLen, pCmd->AddressLength, ulOffset, ucExternal);
+			}
+			else
+			{
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "ReplaceMemoryBlocks2 failed: 0x%x\n", status);
+			}
+
+			if (ucExternal == 0)
+			{
+				MmUnmapIoSpace(pData, pCmd->ResponseBufferLen);
+			}
+		}
+	}
+	except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		status = STATUS_IN_PAGE_ERROR;
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception read user mode buffers\n");
+	}
+
+	if (NT_SUCCESS(status))
+	{
+		status = EvaluateAcpiMethode(WdfDeviceGetIoTarget(parent), pCmd->Revision, pCmd->FunctionIndex, controlBuffer, requestBuffer, responseBuffer, NULL, 0);
+	}
+
+	if (pCmd->AddressLength > 0)
+	{
+		if (ucExternal != 0)
+		{
+#if defined(_AMD64_) || defined(_IA64_)
+			pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
+#else
+			pData = (PUCHAR)pCmd->ResponseBuffer.LowPart;
+#endif
+			pSource = (UCHAR*)MmMapIoSpace(requestBuffer, pCmd->ResponseBufferLen, MmNonCached);
+		}
+		else
+		{
+			pData = (UCHAR*)MmMapIoSpace(pCmd->ResponseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+			pSource = (UCHAR*)MmMapIoSpace(requestBuffer, pCmd->ResponseBufferLen, MmNonCached);
+		}
+
+		if (NT_SUCCESS(status))
+		{
+			status = CopyMemoryBlocks((PVOID*)pSource, pData, pCmd->ResponseBufferLen, ucExternal, ulOffset, pCmd->AddressLength, 1);
+
+			if (!NT_SUCCESS(status))
+			{
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyMemoryBlocks(Res) failed: 0x%x\n", status);
+			}
+		}
+
+		if (ucExternal == 0)
+		{
+			MmUnmapIoSpace(pData, pCmd->ResponseBufferLen);
+			MmUnmapIoSpace(pSource, pCmd->ResponseBufferLen);
+		}
+		else
+		{
+			MmUnmapIoSpace(pSource, pCmd->ResponseBufferLen);
+		}
+	}
+	else
+	{
+		try
+		{
+			if (ucExternal != 0)
+			{
+#if defined(_AMD64_) || defined(_IA64_)
+				pData = (PUCHAR)pCmd->ResponseBuffer.QuadPart;
+#else
+				pData = (PUCHAR)pCmd->ResponseBuffer.LowPart;
+#endif
+
+				//Usermode buffers
+				ProbeForWrite(pData,
+					pCmd->ResponseBufferLen,
+					sizeof(UCHAR));
+
+				pSource = (UCHAR*)MmMapIoSpace(responseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+			}
+			else
+			{
+				pData = (UCHAR*)MmMapIoSpace(pCmd->ResponseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+				pSource = (UCHAR*)MmMapIoSpace(responseBuffer, pCmd->ResponseBufferLen, MmNonCached);
+			}
+
+			RtlCopyMemory(pData, pSource, pCmd->ResponseBufferLen);
+
+			if (ucExternal == 0)
+			{
+				MmUnmapIoSpace(pData, pCmd->ResponseBufferLen);
+				MmUnmapIoSpace(pSource, pCmd->ResponseBufferLen);
+			}
+			else
+			{
+				MmUnmapIoSpace(pSource, pCmd->ResponseBufferLen);
+			}
+		}
+		except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			status = STATUS_IN_PAGE_ERROR;
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception write user mode buffers\n");
+		}
+	}
+
+	try
+	{
+		if (ucExternal != 0)
+		{
+#if defined(_AMD64_) || defined(_IA64_)
+			pData = (PUCHAR)pCmd->ControlBuffer.QuadPart;
+#else
+			pData = (PUCHAR)pCmd->ControlBuffer.LowPart;
+#endif
+
+			//Usermode buffers
+			ProbeForWrite(pData,
+				pCmd->ControlBufferLen,
+				sizeof(UCHAR));
+
+			pSource = (UCHAR*)MmMapIoSpace(controlBuffer, pCmd->ControlBufferLen, MmNonCached);
+		}
+		else
+		{
+			pData = (UCHAR*)MmMapIoSpace(pCmd->ControlBuffer, pCmd->ControlBufferLen, MmNonCached);
+			pSource = (UCHAR*)MmMapIoSpace(controlBuffer, pCmd->ControlBufferLen, MmNonCached);
+		}
+
+		RtlCopyMemory(pData, pSource, pCmd->ControlBufferLen);
+
+		if (ucExternal == 0)
+		{
+			MmUnmapIoSpace(pData, pCmd->ControlBufferLen);
+			MmUnmapIoSpace(pSource, pCmd->ControlBufferLen);
+		}
+		else
+		{
+			MmUnmapIoSpace(pSource, pCmd->ControlBufferLen);
+		}
+	}
+	except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		status = STATUS_IN_PAGE_ERROR;
+		TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception write user mode buffers\n");
+	}
+
+	return status;
+}
+
 NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal)
 {
+	const ULONG ulOffset = 0x10;
 	NTSTATUS status = STATUS_SUCCESS;
 	PVOID controlBufferVirtual = NULL;
 	PVOID requestBufferVirtual = NULL;
@@ -428,15 +981,15 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 		if (pCmd->AddressLength > 0)
 		{
-			status = AllocateDriverBufferDescriptor(requestBufferVirtual, pCmd->RequestBufferLen, responseBufferVirtual, pCmd->ResponseBufferLen, &pBuffers);
+			status = AllocateDriverBufferDescriptor(requestBufferVirtual, pCmd->RequestBufferLen, responseBufferVirtual, pCmd->ResponseBufferLen, &pBuffers, ulOffset, pCmd->AddressLength);
 
 			if (!NT_SUCCESS(status))
 			{
-				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyAndAllocateMemoryBlocks(Req) failed: 0x%x\n", status);
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "AllocateDriverBufferDescriptor failed: 0x%x\n", status);
 			}
 			else
 			{
-				status = ReplaceAndAllocateMemoryBlocks(requestBufferVirtual, pCmd->RequestBufferLen, pBuffers);
+				status = ReplaceAndAllocateMemoryBlocks(requestBufferVirtual, pCmd->RequestBufferLen, pBuffers, ulOffset, pCmd->AddressLength);
 
 				if (!NT_SUCCESS(status))
 				{
@@ -444,7 +997,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 				}
 				else
 				{
-					status = ReplaceAndAllocateMemoryBlocks(responseBufferVirtual, pCmd->ResponseBufferLen, pBuffers);
+					status = ReplaceAndAllocateMemoryBlocks(responseBufferVirtual, pCmd->ResponseBufferLen, pBuffers, ulOffset, pCmd->AddressLength);
 
 					if (!NT_SUCCESS(status))
 					{
@@ -463,7 +1016,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 	if (NT_SUCCESS(status))
 	{
-		status = EvaluateAcpiMethode(WdfDeviceGetIoTarget(parent), pCmd->Revision, pCmd->FunctionIndex, controlBuffer, requestBuffer, responseBuffer);
+		status = EvaluateAcpiMethode(WdfDeviceGetIoTarget(parent), pCmd->Revision, pCmd->FunctionIndex, controlBuffer, requestBuffer, responseBuffer, NULL, 0);
 	}
 
 	if (ucExternal != 0)
@@ -481,7 +1034,7 @@ NTSTATUS GabiAcpiCallAcpi(WDFREQUEST Request, WDFDEVICE parent, UCHAR ucExternal
 
 			if (NT_SUCCESS(status))
 			{
-				status = CopyMemoryBlocks(responseBufferVirtual, pData, pCmd->ResponseBufferLen);
+				status = CopyMemoryBlocks(responseBufferVirtual, pData, pCmd->ResponseBufferLen, ucExternal, ulOffset, pCmd->AddressLength, 0);
 
 				if (!NT_SUCCESS(status))
 				{
@@ -625,16 +1178,82 @@ SendDownStreamIrp(
 }
 
 NTSTATUS
+CheckACPI_NodeCaps(
+	WDFDEVICE parent,
+	PHYSICAL_ADDRESS* pFirmwareMemoryBaseAddress,
+	PUINT32 pFirmwareMemorySize
+)
+{	
+	PHYSICAL_ADDRESS zero;
+	NTSTATUS status;		
+	
+	zero.QuadPart = 0;
+	
+	if (pFirmwareMemoryBaseAddress == NULL || pFirmwareMemorySize == NULL)
+	{
+		PDEVICE_CONTEXT devExt = DeviceGetContext(parent);
+		ULONGLONG ullFlags = 0;
+
+		status = EvaluateAcpiMethode(WdfDeviceGetIoTarget(parent), 0, 0, zero, zero, zero, (BYTE*)&ullFlags, sizeof(ullFlags));
+
+		if (NT_SUCCESS(status))
+		{			
+			TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "FunctionIndex=0 returns: 0x%I64X\n", ullFlags);
+
+			if ((ullFlags & 7) == 7)  //Function 0-2 supported?
+			{
+				devExt->byUseFirmwareMem = FIRNWARE_MEM_FIRMWARE;
+			}
+			else
+			{
+				devExt->byUseFirmwareMem = FIRMWARE_MEM_KERNEL;
+			}
+		}
+		else
+		{
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "EvaluateAcpiMethode failed: 0x%x\n", status);
+			devExt->byUseFirmwareMem = FIRMWARE_MEM_KERNEL;
+		}
+	}
+	else
+	{
+		const UINT32 bufferSize = 12;
+		BYTE bufferResponse[12];
+
+		status = EvaluateAcpiMethode(WdfDeviceGetIoTarget(parent), 0, 2, zero, zero, zero, bufferResponse, bufferSize);
+
+		if (NT_SUCCESS(status))
+		{
+			memcpy(pFirmwareMemoryBaseAddress, bufferResponse, 8);
+			memcpy(pFirmwareMemorySize, &bufferResponse[8], 4);
+
+			TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "FunctionIndex=2 returns address: 0x%I64X  size: 0x%x\n", pFirmwareMemoryBaseAddress->QuadPart, *pFirmwareMemorySize);			
+		}
+		else
+		{
+			TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "EvaluateAcpiMethode failed: 0x%x\n", status);			
+		}
+	}
+
+	return status;
+}
+
+NTSTATUS
 EvaluateAcpiMethode(
 	IN WDFIOTARGET		IoTarget,
 	IN ULONG            Revision,
 	IN ULONG            FunctionIndex,
 	IN PHYSICAL_ADDRESS	ControlBuffer,
 	IN PHYSICAL_ADDRESS	RequestBuffer,
-	IN PHYSICAL_ADDRESS	ResponseBuffer
+	IN PHYSICAL_ADDRESS	ResponseBuffer,
+	IN BYTE* pBuffer, 
+	IN UINT32 dwBufferLength
 	)
 {
-	const size_t acpiInBufferSize = sizeof(ACPI_EVAL_INPUT_BUFFER_COMPLEX) + 4 * sizeof(ACPI_METHOD_ARGUMENT) + sizeof(GUID) + 3 * sizeof(PHYSICAL_ADDRESS);
+	const ULONG gabiQueryFunc = 0;
+	const ULONG gabiBufferQuery = 2;
+	const ULONG argumentCount = 4;
+	const size_t acpiInBufferSize = sizeof(ACPI_EVAL_INPUT_BUFFER_COMPLEX) + argumentCount * sizeof(ACPI_METHOD_ARGUMENT) + sizeof(GUID) + 3 * sizeof(PHYSICAL_ADDRESS);
 	NTSTATUS status;
 	PACPI_EVAL_INPUT_BUFFER_COMPLEX pInputBuffer = NULL;
 	PACPI_METHOD_ARGUMENT pargument;
@@ -643,7 +1262,22 @@ EvaluateAcpiMethode(
 
 	TraceEvents(TRACE_LEVEL_INFORMATION,
 		TRACE_QUEUE,
-		"!FUNC! EvaluateAcpiMethode");
+		"!FUNC! EvaluateAcpiMethode argcount: 0x%x function: 0x%x", argumentCount, FunctionIndex);
+
+	if (FunctionIndex == gabiBufferQuery)
+	{
+		if (pBuffer == NULL || dwBufferLength < 12)
+		{
+			return STATUS_INVALID_PARAMETER;
+		}
+	}
+	else if (FunctionIndex == gabiQueryFunc)
+	{
+		if (pBuffer == NULL || dwBufferLength < 8)
+		{
+			return STATUS_INVALID_PARAMETER;
+		}
+	}
 
 	pInputBuffer = (PACPI_EVAL_INPUT_BUFFER_COMPLEX)ExAllocatePoolWithTag(PagedPool, acpiInBufferSize, MEM_TAG);
 
@@ -654,7 +1288,7 @@ EvaluateAcpiMethode(
 
 	// Fill in the input data
 	pInputBuffer->MethodNameAsUlong = (ULONG)('MSD_'); //little endian _DSM
-	pInputBuffer->ArgumentCount = 4;
+	pInputBuffer->ArgumentCount = argumentCount;
 	pInputBuffer->Signature = ACPI_EVAL_INPUT_BUFFER_COMPLEX_SIGNATURE;
 
 	pargument = pInputBuffer->Argument;
@@ -678,15 +1312,179 @@ EvaluateAcpiMethode(
 		"!FUNC! ACPI Buffer: Control 0x%llX, Physical 0x%llX Response 0x%llX",
 		ControlBuffer.QuadPart, RequestBuffer.QuadPart, ResponseBuffer.QuadPart);
 
-	// Send the request along
-	status = SendDownStreamIrp(
-		IoTarget,
-		IOCTL_ACPI_EVAL_METHOD,
-		pInputBuffer,
-		(ULONG)acpiInBufferSize,
-		NULL,
-		0
+	if (FunctionIndex != gabiBufferQuery && FunctionIndex != gabiQueryFunc)
+	{
+		// Send the request along
+		status = SendDownStreamIrp(
+			IoTarget,
+			IOCTL_ACPI_EVAL_METHOD,
+			pInputBuffer,
+			(ULONG)acpiInBufferSize,
+			NULL,
+			0
 		);
+	}
+	else
+	{
+		PACPI_EVAL_OUTPUT_BUFFER pOutputBuffer = NULL;
+		size_t outputBufferSize = FIELD_OFFSET(ACPI_EVAL_OUTPUT_BUFFER, Argument) + 24;
+
+		pOutputBuffer = (PACPI_EVAL_OUTPUT_BUFFER)ExAllocatePoolWithTag(PagedPool, outputBufferSize, MEM_TAG);
+
+		if (pOutputBuffer != NULL)
+		{
+			// Send the request along
+			status = SendDownStreamIrp(
+				IoTarget,
+				IOCTL_ACPI_EVAL_METHOD,
+				pInputBuffer,
+				(ULONG)acpiInBufferSize,
+				pOutputBuffer,
+				(ULONG)outputBufferSize
+			);
+		}
+		else
+		{
+			status = STATUS_NO_MEMORY;
+		}
+
+		if (NT_SUCCESS(status) && pOutputBuffer != NULL)
+		{
+			if (FunctionIndex == gabiBufferQuery)
+			{
+				if (pOutputBuffer->Signature != ACPI_EVAL_OUTPUT_BUFFER_SIGNATURE || pOutputBuffer->Count < 1 || pOutputBuffer->Argument[0].Type != ACPI_METHOD_ARGUMENT_INTEGER || pOutputBuffer->Argument[0].DataLength < 4)
+				{
+					if (pOutputBuffer->Signature != ACPI_EVAL_OUTPUT_BUFFER_SIGNATURE)
+					{
+						TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "Signature doesn't match Signature: 0x%x\n", pOutputBuffer->Signature);
+					}
+					else
+					{
+						if (pOutputBuffer->Count < 1)
+						{
+							TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "Count doesn't match Count: 0x%x\n", pOutputBuffer->Count);
+						}
+						else
+						{
+							TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "Count: 0x%x\n", pOutputBuffer->Count);
+							TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "Length: 0x%x\n", pOutputBuffer->Argument[0].DataLength);
+
+							if (pOutputBuffer->Argument[0].Type != ACPI_METHOD_ARGUMENT_INTEGER)
+							{
+								TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "Argument doesn't match Type: 0x%x\n", pOutputBuffer->Argument[0].Type);
+							}
+							else
+							{
+								if (pOutputBuffer->Argument[0].DataLength < 4)
+								{
+									for (int i = 0; i < pOutputBuffer->Argument[0].DataLength; i++)
+									{
+										TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "Data[0x%x] = 0x%x\n", i, pOutputBuffer->Argument[0].Data[i]);
+									}
+
+									TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "DataLength doesn't match DataLength: 0x%x\n", pOutputBuffer->Argument[0].DataLength);
+								}
+							}
+						}
+					}
+
+					status = STATUS_ACPI_INVALID_DATA;
+				}
+				else
+				{
+					UCHAR* pBufferSrc = NULL;
+					UINT32 returnAddr;
+					UINT64 returnAddr64;
+					PHYSICAL_ADDRESS pyAddress;
+
+					if (pOutputBuffer->Argument[0].DataLength == 4)
+					{
+						memcpy(&returnAddr, pOutputBuffer->Argument[0].Data, min(pOutputBuffer->Argument[0].DataLength, sizeof(returnAddr)));
+
+						TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "returnAddr: 0x%x\n", returnAddr);
+
+						pyAddress.QuadPart = returnAddr;
+					}
+					else
+					{
+						memcpy(&returnAddr64, pOutputBuffer->Argument[0].Data, min(pOutputBuffer->Argument[0].DataLength, sizeof(returnAddr64)));
+
+						TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "returnAddr64: 0x%llX\n", returnAddr64);
+
+						pyAddress.QuadPart = returnAddr64;
+					}
+
+					pBufferSrc = (UCHAR*)MmMapIoSpace(pyAddress, dwBufferLength, MmNonCached);
+
+					memcpy(pBuffer, pBufferSrc, dwBufferLength);
+
+					MmUnmapIoSpace(pBufferSrc, dwBufferLength);
+				}
+			}
+			else if (FunctionIndex == gabiQueryFunc)
+			{
+				if (pOutputBuffer->Signature != ACPI_EVAL_OUTPUT_BUFFER_SIGNATURE || pOutputBuffer->Count < 1 || pOutputBuffer->Argument[0].Type != ACPI_METHOD_ARGUMENT_BUFFER || pOutputBuffer->Argument[0].DataLength < 1)
+				{
+					if (pOutputBuffer->Signature != ACPI_EVAL_OUTPUT_BUFFER_SIGNATURE)
+					{
+						TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "Signature doesn't match Signature: 0x%x\n", pOutputBuffer->Signature);
+					}
+					else
+					{
+						if (pOutputBuffer->Count < 1)
+						{
+							TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "Count doesn't match Count: 0x%x\n", pOutputBuffer->Count);
+						}
+						else
+						{
+							TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "Count: 0x%x\n", pOutputBuffer->Count);
+							TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "Length: 0x%x\n", pOutputBuffer->Argument[0].DataLength);
+
+							if (pOutputBuffer->Argument[0].Type != ACPI_METHOD_ARGUMENT_BUFFER)
+							{
+								TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "Argument doesn't match Type: 0x%x\n", pOutputBuffer->Argument[0].Type);
+							}
+							else
+							{
+								if (pOutputBuffer->Argument[0].DataLength < 1)
+								{
+									for (int i = 0; i < pOutputBuffer->Argument[0].DataLength; i++)
+									{
+										TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "Data[0x%x] = 0x%x\n", i, pOutputBuffer->Argument[0].Data[i]);
+									}
+
+									TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "DataLength doesn't match DataLength: 0x%x\n", pOutputBuffer->Argument[0].DataLength);
+								}
+							}
+						}
+					}
+
+					status = STATUS_ACPI_INVALID_DATA;
+				}
+				else
+				{
+					BYTE returnV = 0;
+					UINT64 returnV64 = 0;
+
+					if (pOutputBuffer->Argument[0].DataLength == 1)
+					{
+						memcpy(&returnV, pOutputBuffer->Argument[0].Data, min(pOutputBuffer->Argument[0].DataLength, sizeof(returnV)));
+
+						TraceEvents(TRACE_LEVEL_INFORMATION, TRACE_DRIVER, "returnV: 0x%x\n", returnV);
+
+						returnV64 = returnV;
+					}
+
+					memcpy(pBuffer, &returnV64, sizeof(returnV64));
+				}
+			}
+		}
+
+		if (pOutputBuffer != NULL)
+		{
+			ExFreePoolWithTag(pOutputBuffer, MEM_TAG);
+		}
+	}
 
 	if (pInputBuffer != NULL)
 	{
@@ -696,7 +1494,7 @@ EvaluateAcpiMethode(
 	return status;
 }
 
-NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVOID* pBuffer2, ULONG ulLenBuffer2, PDriverBufferDescriptor* ppBufferDesc)
+NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVOID* pBuffer2, ULONG ulLenBuffer2, PDriverBufferDescriptor* ppBufferDesc, ULONG ulOffset, ULONG ulPointerSize)
 {
 	NTSTATUS status = STATUS_SUCCESS;
 	ULONG count = 0;
@@ -711,18 +1509,18 @@ NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVO
 	{
 		try
 		{
-			for (ULONG i = 0x10; i < (ulLenBuffer1 - 8); i += 8)
+			for (ULONG i = ulOffset; i < (ulLenBuffer1 - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
 			{
 				PULONGLONG pAddr = (PULONGLONG)(pBuffer1 + i);
 
 				ProbeForRead(pAddr,
-					8,
+					ulPointerSize,
 					sizeof(UCHAR));
 
 				if (*pAddr != 0)
 				{
 					count++;
-					i += 8; //skip length
+					i += ulPointerSize; //skip length
 				}
 				else
 				{
@@ -741,18 +1539,18 @@ NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVO
 	{
 		try
 		{
-			for (ULONG i = 0x10; i < (ulLenBuffer2 - 8); i += 8)
+			for (ULONG i = ulOffset; i < (ulLenBuffer2 - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
 			{
 				PULONGLONG pAddr = (PULONGLONG)(pBuffer2 + i);
 
 				ProbeForRead(pBuffer2 + i,
-					8,
+					ulPointerSize,
 					sizeof(UCHAR));
 
 				if (*pAddr != 0)
 				{
 					count++;
-					i += 8; //skip length
+					i += ulPointerSize; //skip length
 				}
 				else
 				{
@@ -816,7 +1614,7 @@ NTSTATUS FreeMemoryBlocks(PDriverBufferDescriptor pBufferDesc)
 	return status;
 }
 
-NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen)
+NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen, UCHAR ucExternal, ULONG ulOffset, ULONG ulPointerSize, BYTE phyMem)
 {
 	NTSTATUS status = STATUS_SUCCESS;
 
@@ -824,7 +1622,7 @@ NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 	{
 		try
 		{
-			for (ULONG i = 0x10; i < (ulBufferLen - 8); i += 8)
+			for (ULONG i = ulOffset; i < (ulBufferLen - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
 			{
 #if defined(_AMD64_) || defined(_IA64_)
 				PULONGLONG pAddrDest = (PULONGLONG)(pBufferDest + i);
@@ -834,20 +1632,60 @@ NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 				PULONG pAddrSrc = (PULONG)(pBufferSrc + i);
 #endif
 
-				ProbeForRead(pAddrDest,
-					16,
-					sizeof(UCHAR));
+				if (ucExternal != 0)
+				{
+					//Usermode buffers
+					ProbeForRead(pAddrDest,
+						sizeof(PHYSICAL_ADDRESS) + ulPointerSize,
+						sizeof(UCHAR));
+				}
 
 				if (*pAddrDest != 0) 
 				{
-					SIZE_T lenDest = (SIZE_T)*((PULONGLONG)(pBufferDest + i + 8));
-					SIZE_T lenSrc = (SIZE_T)*((PULONGLONG)(pBufferSrc + i + 8));
+					SIZE_T lenDest = (SIZE_T)LENGHT_BUFFER(pBufferDest + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
+					SIZE_T lenSrc = (SIZE_T)LENGHT_BUFFER(pBufferSrc + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
 
-					ProbeForWrite((void*)*pAddrDest,
-						lenDest,
-						sizeof(UCHAR));
+					if (ucExternal != 0)
+					{
+						//Usermode buffers
+						ProbeForWrite((void*)*pAddrDest,
+							lenDest,
+							sizeof(UCHAR));
+					}
 
-					RtlCopyMemory(pAddrDest, pAddrSrc, min(lenDest, lenSrc));
+					if (phyMem != 0)
+					{
+						PHYSICAL_ADDRESS phDest;
+						PHYSICAL_ADDRESS phSrc;
+						PUCHAR pAddrDestM;
+						PUCHAR pAddrSrcM;
+
+						phSrc.QuadPart = *pAddrSrc;
+						pAddrSrcM = (PUCHAR)MmMapIoSpace(phSrc, lenSrc, MmNonCached);
+
+						if (ucExternal == 0)
+						{
+							phDest.QuadPart = *pAddrDest;
+							pAddrDestM = (PUCHAR)MmMapIoSpace(phDest, lenDest, MmNonCached);
+						}
+						else
+						{
+							pAddrDestM = (PUCHAR)*pAddrDest;
+						}
+				
+						RtlCopyMemory(pAddrDestM, pAddrSrcM, min(lenDest, lenSrc));
+
+						MmUnmapIoSpace(pAddrSrc, lenSrc);
+
+						if (ucExternal == 0)
+						{
+							MmUnmapIoSpace(pAddrDest, lenDest);
+						}
+					}
+					else
+					{
+						RtlCopyMemory((void*)*pAddrDest, (void*)*pAddrSrc, min(lenDest, lenSrc));
+					}
 				}
 				else
 				{
@@ -865,7 +1703,7 @@ NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 	return status;
 }
 
-NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriverBufferDescriptor pBufferDesc)
+NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriverBufferDescriptor pBufferDesc, ULONG ulOffset, ULONG ulPointerSize)
 {
 	NTSTATUS status = STATUS_SUCCESS;
 
@@ -887,7 +1725,7 @@ NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriv
 
 	try
 	{
-		for (ULONG i = 0x10; i < (ulBufferLen - 8); i += 8)
+		for (ULONG i = ulOffset; i < (ulBufferLen - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
 		{
 #if defined(_AMD64_) || defined(_IA64_)
 			PULONGLONG pAddr = (PULONGLONG)(pBuffer + i);
@@ -896,12 +1734,12 @@ NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriv
 #endif
 
 			ProbeForRead(pAddr,
-				16,
+				ulPointerSize + sizeof(PHYSICAL_ADDRESS),
 				sizeof(UCHAR));
 
 			if (*pAddr != 0)
 			{
-				SIZE_T len = (SIZE_T)*((PULONGLONG)(pBuffer + i + 8));
+				SIZE_T len = (SIZE_T)LENGHT_BUFFER(pBuffer + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
 
 				ProbeForRead((void*)*pAddr,
 					len,
@@ -919,7 +1757,7 @@ NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriv
 				pBufferDesc->Physical = MmGetPhysicalAddress(pBufferDesc->pVirtual);
 				pBufferDesc->ullSize = len;
 
-				RtlCopyMemory(pAddr, &(pBufferDesc->Physical), 8);
+				RtlCopyMemory(pAddr, &(pBufferDesc->Physical), sizeof(PHYSICAL_ADDRESS));
 				pBufferDesc++;
 			}
 			else

@@ -32,6 +32,7 @@ WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with
 
 [Standard.NT$ARCH$]
 %GabiAcpi.DeviceDesc%=GabiAcpi_Device, ACPI\FUJ0420
+%GabiAcpi.DeviceDesc1%=GabiAcpi_Device, ACPI\VEN_FUJ&DEV_0430&REV_0001
 
 [GabiAcpi_Device.NT]
 CopyFiles=Drivers_Dir
@@ -74,4 +75,5 @@ SPSVCINST_ASSOCSERVICE= 0x00000002
 ManufacturerName="Fujitsu"
 DiskName = "FUJ0420 Installation Disk"
 GabiAcpi.DeviceDesc = "Fujitsu FUJ0420 Device"
+GabiAcpi.DeviceDesc1 = "Fujitsu FUJ0430 Device"
 GabiAcpi.SVCDESC = "FUJ0420 Service"

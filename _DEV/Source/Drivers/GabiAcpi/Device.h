@@ -2,15 +2,15 @@
 
 Module Name:
 
-    device.h
+	device.h
 
 Abstract:
 
-    This file contains the device definitions.
+	This file contains the device definitions.
 
 Environment:
 
-    Kernel-mode Driver Framework
+	Kernel-mode Driver Framework
 
 --*/
 
@@ -23,10 +23,16 @@ EXTERN_C_START
 // a WDM device extension in the driver frameworks
 //
 typedef struct _DEVICE_CONTEXT
-{
-    ULONG PrivateDeviceData;  // just a placeholder
-
+{	
+	BYTE byUseFirmwareMem;  // values:
+							//  0: need to initalize flag
+							//  1: alloc kernel mem
+							//  2: use firnware mem
 } DEVICE_CONTEXT, *PDEVICE_CONTEXT;
+
+#define FIRMWARE_MEM_CHECK		0  //  need to initalize flag
+#define FIRMWARE_MEM_KERNEL		1  //  alloc kernel mem
+#define FIRNWARE_MEM_FIRMWARE	2  //  use firnware mem
 
 //
 // This macro will generate an inline function called DeviceGetContext
@@ -40,7 +46,7 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(DEVICE_CONTEXT, DeviceGetContext)
 //
 NTSTATUS
 GabiAcpiCreateDevice(
-    _Inout_ PWDFDEVICE_INIT DeviceInit
-    );
+	_Inout_ PWDFDEVICE_INIT DeviceInit
+	);
 
 EXTERN_C_END

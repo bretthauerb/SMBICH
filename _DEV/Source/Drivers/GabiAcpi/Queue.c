@@ -445,6 +445,13 @@ NTSTATUS PrepareBuffers(PGabiAcpiCmd pCmd, PHYSICAL_ADDRESS firmwareMemoryBaseAd
 				}
 				break;
 
+			case 0x8002: // Japan FLASH
+				if (uiServiceCode == 3)
+				{
+					pCmd->AddressLength = 8;
+				}
+				break;
+
 			case 0x8000:
 			case 0x5:	// Japan system data
 				if (uiServiceCode == 4 || uiServiceCode == 5)
@@ -727,6 +734,11 @@ NTSTATUS GabiAcpiCallAcpiFirmwareMem(WDFREQUEST Request, WDFDEVICE parent, UCHAR
 
 			if (NT_SUCCESS(status))
 			{
+				if (pCmd->AddressLength == 4)
+				{
+					ulOffset = 0x14;  //offset of write structure
+				}
+
 				status = ReplaceMemoryBlocks(firmwareMemoryBaseAddress, firmwareMemorySize, &uiTotalLength, pData, pCmd->ResponseBufferLen, pCmd->AddressLength, ulOffset, ucExternal);
 			}
 			else
@@ -753,6 +765,11 @@ NTSTATUS GabiAcpiCallAcpiFirmwareMem(WDFREQUEST Request, WDFDEVICE parent, UCHAR
 
 	if (pCmd->AddressLength > 0)
 	{
+		if (pCmd->AddressLength == 4)
+		{
+			ulOffset = 0xC;  //offset of read structure
+		}
+
 		if (ucExternal != 0)
 		{
 #if defined(_AMD64_) || defined(_IA64_)

@@ -196,6 +196,7 @@
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -222,6 +223,7 @@
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -249,6 +251,7 @@
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -281,6 +284,7 @@
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>

@@ -103,6 +103,10 @@ eInterpreterReturn ExecuteInstruction(psInterpreterContext pContext, psInstructi
 			ret = ExecuteInstruction_OUT(pContext, pInstruction);
 			break;
 
+		case INTERPRETER_IN:
+			ret = ExecuteInstruction_IN(pContext, pInstruction);
+			break;
+
 		case INTERPRETER_CMP:
 			ret = ExecuteInstruction_CMP(pContext, pInstruction);
 			break;
@@ -1122,6 +1126,24 @@ eInterpreterReturn ExecuteInstruction_STI(psInterpreterContext pContext, psInstr
 	}
 
 	GET_STATE(pContext)->RFLAGS |= IF_MASK;
+
+	return ret;
+}
+
+eInterpreterReturn ExecuteInstruction_IN(psInterpreterContext pContext, psInstruction pInstruction)
+{
+	eInterpreterReturn ret = INTERPRETER_OK;
+	PHYSICAL_ADDRESS stackPointer;
+
+	if (pContext == NULL || pInstruction == NULL || pContext->pInterpreterState == NULL)
+	{
+		return INTERPRETER_E_ARGS;
+	}
+
+	stackPointer.QuadPart = (LONGLONG)STACK_TOP(pContext);
+
+	//call in assembler function
+	CallIN(stackPointer, GET_STATE(pContext), (pInstruction->u.OUT_ARGS.WithOperand) ? pInstruction->u.OUT_ARGS.Operand : 0xFFFFFFFF);
 
 	return ret;
 }

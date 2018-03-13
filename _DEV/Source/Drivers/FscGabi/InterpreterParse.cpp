@@ -275,6 +275,31 @@ eInterpreterReturn GetNextCommand(psInterpreterContext pContext, PUSHORT pwCurre
 				ucFinish = 1;
 				break;
 
+			case 0xE4:
+			case 0xE5:
+				//IN with operand
+				pInstruction->u.IN_ARGS.WithOperand = 1;
+			case 0xEC:
+			case 0xED:
+				pInstruction->u.IN_ARGS.AL = (pContext->pEntryPoint[*pwCurrentIndex] == 0xEE || pContext->pEntryPoint[*pwCurrentIndex] == 0xE6);
+				pInstruction->u.IN_ARGS.AX = (pContext->pEntryPoint[*pwCurrentIndex] == 0xEF || pContext->pEntryPoint[*pwCurrentIndex] == 0xE7);
+				pInstruction->Type = INTERPRETER_IN;
+
+				if (pInstruction->u.IN_ARGS.WithOperand != 0)
+				{
+					(*pwCurrentIndex)++;
+
+					if (pContext->wSize <= *pwCurrentIndex)
+					{
+						return INTERPRETER_E_EOF;
+					}
+
+					pInstruction->u.IN_ARGS.Operand = pContext->pEntryPoint[*pwCurrentIndex];
+				}
+
+				ucFinish = 1;
+				break;
+
 			case 0xE6:
 			case 0xE7:
 				//OUT with operand

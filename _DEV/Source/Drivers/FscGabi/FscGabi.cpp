@@ -347,5 +347,10 @@ VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN oktouch /* = FALSE */)
 			MmUnmapIoSpace(pdx->MappedBios, MAP_BIOS_SIZE);
 			pdx->MappedBios = NULL;
 		}
+		if (pdx->SyncEvent)
+		{
+			ZwClose(pdx->SyncEvent);
+			pdx->SyncEvent = NULL;
+		}
 	}
 }							// StopDevice

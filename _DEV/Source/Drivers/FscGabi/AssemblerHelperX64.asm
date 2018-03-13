@@ -1,6 +1,1318 @@
 _TEXT	SEGMENT
 
 PUBLIC	CallOUT
+PUBLIC	CallIN
+
+CallIN	PROC
+; new stack location is in rcx
+; Context is in rdx
+; in parameter is in r8
+	push rdx
+	push rcx
+
+	;routine is not reentrant, so lock it
+	lea rdx, CallINLock	
+	xor ecx, ecx
+	inc ecx
+
+@@:		
+	xor eax, eax
+	lock cmpxchg [rdx], ecx
+	jz @f
+
+	pause
+	jmp @b
+	
+@@:
+
+	pop rcx
+	lea rdx, CallINDxLocation	
+	mov [rdx], r8
+
+	lea rdx, SaveCallINContext
+	pop rax
+	mov [rdx], rax		
+
+	lea rdx, SaveCallINContextSP
+	mov [rdx], rsp
+	mov rdx, rax
+
+	;set virtual processore stack
+	mov rsp, rcx
+	
+	;set virtual processore register	
+	;swap flags
+	pushfq
+	pop rax
+	xchg  rax, [rdx +  1 * 8]
+	push rax
+	popfq
+
+	;swap registers
+	xchg rax, [rdx +  2 * 8]
+	xchg rbx, [rdx +  3 * 8]
+	xchg rcx, [rdx +  4 * 8]
+	xchg rsi, [rdx +  6 * 8]
+	xchg rdi, [rdx +  7 * 8]
+	xchg rbp, [rdx +  8 * 8]
+	xchg r8,  [rdx + 10 * 8]
+	xchg r9,  [rdx + 11 * 8]
+	xchg r10, [rdx + 12 * 8]
+	xchg r11, [rdx + 13 * 8]
+	xchg r12, [rdx + 14 * 8]
+	xchg r13, [rdx + 15 * 8]
+	xchg r14, [rdx + 16 * 8]
+	xchg r15, [rdx + 17 * 8]
+	;rdx last
+	xchg rdx, [rdx +  5 * 8]
+
+	;in dx parameter decision
+	push rdx
+	pushfq
+
+	lea rdx, CallDxLocation
+	mov rdx, [rdx]	
+	cmp edx, 0FFFFFFFFh
+	je inDefault
+
+	;offset calculation based on parameter to jmp to right in
+	push rax
+	movzx rax, dl
+	mov rdx, 9  ; popfq, pop, in and jmp  => 9 Bytes
+	mul dx	
+	lea rdx, inIm
+	add rdx, rax
+	pop rax
+	jmp rdx
+
+	;SMI trap
+inIm:
+	popfq
+	pop rdx
+	in al,0h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,1h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,2h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,3h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,4h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,5h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,6h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,7h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,8h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,9h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,10h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,11h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,12h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,13h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,14h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,15h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,16h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,17h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,18h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,19h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,1ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,1bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,1ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,1dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,1eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,1fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,20h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,21h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,22h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,23h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,24h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,25h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,26h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,27h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,28h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,29h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,2ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,2bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,2ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,2dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,2eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,2fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,30h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,31h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,32h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,33h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,34h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,35h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,36h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,37h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,38h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,39h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,3ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,3bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,3ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,3dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,3eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,3fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,40h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,41h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,42h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,43h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,44h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,45h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,46h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,47h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,48h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,49h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,4ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,4bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,4ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,4dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,4eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,4fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,50h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,51h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,52h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,53h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,54h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,55h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,56h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,57h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,58h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,59h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,5ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,5bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,5ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,5dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,5eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,5fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,60h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,61h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,62h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,63h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,64h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,65h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,66h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,67h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,68h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,69h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,6ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,6bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,6ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,6dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,6eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,6fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,70h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,71h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,72h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,73h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,74h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,75h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,76h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,77h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,78h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,79h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,7ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,7bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,7ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,7dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,7eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,7fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,80h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,81h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,82h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,83h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,84h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,85h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,86h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,87h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,88h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,89h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,8ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,8bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,8ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,8dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,8eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,8fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,90h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,91h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,92h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,93h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,94h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,95h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,96h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,97h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,98h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,99h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,9ah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,9bh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,9ch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,9dh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,9eh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,9fh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a0h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a1h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a2h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a3h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a4h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a5h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a6h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a7h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a8h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0a9h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0aah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0abh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ach
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0adh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0aeh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0afh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b0h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b1h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b2h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b3h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b4h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b5h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b6h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b7h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b8h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0b9h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0bah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0bbh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0bch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0bdh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0beh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0bfh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c0h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c1h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c2h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c3h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c4h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c5h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c6h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c7h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c8h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0c9h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0cah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0cbh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0cch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0cdh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ceh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0cfh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d0h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d1h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d2h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d3h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d4h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d5h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d6h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d7h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d8h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0d9h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0dah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0dbh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0dch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ddh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0deh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0dfh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e0h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e1h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e2h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e3h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e4h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e5h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e6h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e7h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e8h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0e9h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0eah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ebh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ech
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0edh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0eeh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0efh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f0h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f1h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f2h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f3h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f4h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f5h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f6h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f7h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f8h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0f9h
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0fah
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0fbh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0fch
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0fdh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0feh
+	jmp inwait
+	popfq
+	pop rdx
+	in al,0ffh
+	jmp inwait
+
+	; dummy nop. Will never be executed => force all jmps above to 16bit
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	
+inDefault:
+	popfq
+	pop rdx
+	in al, dx
+
+	;force second trap to force completion of first
+inWait:
+	out 0EDh, al
+
+	;save virtual processore register	
+	;save rcx and get context pointer
+	push rcx
+	lea rcx, SaveCallINContext
+	mov rcx, [rcx]
+	pop QWORD PTR [rcx +  4 * 8]
+
+	;swap flags
+	push rax
+	pushfq
+	pop rax
+	xchg  rax, [rcx +  1 * 8]
+	push rax
+	popfq
+	pop rax
+
+	;swap registers
+	xchg rax, [rcx +  2 * 8]
+	xchg rbx, [rcx +  3 * 8]
+	xchg rdx, [rcx +  5 * 8]
+	xchg rsi, [rcx +  6 * 8]
+	xchg rdi, [rcx +  7 * 8]
+	xchg rbp, [rcx +  8 * 8]
+	xchg r8,  [rcx + 10 * 8]
+	xchg r9,  [rcx + 11 * 8]
+	xchg r10, [rcx + 12 * 8]
+	xchg r11, [rcx + 13 * 8]
+	xchg r12, [rcx + 14 * 8]
+	xchg r13, [rcx + 15 * 8]
+	xchg r14, [rcx + 16 * 8]
+	xchg r15, [rcx + 17 * 8]
+
+	;get caller stack
+	lea rcx, SaveCallINContextSP
+	mov rsp, [rcx]
+
+	;release lock
+	lea rdx, CallINLock
+	mov eax, 0
+	lock xchg DWORD PTR [rdx], eax
+
+	ret
+
+CallIN	ENDP
 
 CallOUT	PROC
 ; new stack location is in rcx
@@ -1322,6 +2634,11 @@ _DATA SEGMENT
 	SaveCallOUTContext		DQ	0
 	SaveCallOUTContextSP	DQ	0
 	CallOUTLock				DD	0
+
+	CallINDxLocation		DQ	0
+	SaveCallINContext		DQ	0
+	SaveCallINContextSP		DQ	0
+	CallINLock				DD	0
 
 _DATA ENDS
 

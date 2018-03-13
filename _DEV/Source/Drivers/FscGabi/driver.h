@@ -9,6 +9,8 @@
 #define RELEASE		0
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
+#define GABI_SYNC L"\\GabiSmiSync"
+
 #pragma warning ( disable : 4390 )
 
 #ifdef _NTDDK_
@@ -64,6 +66,7 @@ typedef struct _DEVICE_EXTENSION
 	PVOID				pvNotificationEntry;
 	PFILE_OBJECT		ACPIFileObject;
 	PDEVICE_OBJECT		ACPIDevice;
+	PKEVENT				SyncEvent;
 
 	void (*GabiCallAddress)(PHYSICAL_ADDRESS,PHYSICAL_ADDRESS,PHYSICAL_ADDRESS);
 	psInterpreterContext pInterpreterContext;

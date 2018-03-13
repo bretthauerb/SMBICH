@@ -16,7 +16,8 @@ typedef enum
 	INTERPRETER_JUMP,
 	INTERPRETER_PUSH,
 	INTERPRETER_POP,
-	INTERPRETER_RET
+	INTERPRETER_RET,
+	INTERPRETER_IN,
 }eInstructionType;
 
 #define REXW_MASK 0x08
@@ -86,6 +87,14 @@ typedef struct
 			UCHAR Operand;
 		}
 		OUT_ARGS;
+		struct
+		{
+			UCHAR WithOperand : 1;
+			UCHAR AL : 1;
+			UCHAR AX : 1;
+			UCHAR Operand;
+		}
+		IN_ARGS;
 		struct
 		{
 			UCHAR M1 : 1;
@@ -260,6 +269,7 @@ eInterpreterReturn ExecuteInstruction_SUB(psInterpreterContext pContext, psInstr
 eInterpreterReturn ExecuteInstruction_CLI(psInterpreterContext pContext, psInstruction pInstruction);
 eInterpreterReturn ExecuteInstruction_STI(psInterpreterContext pContext, psInstruction pInstruction);
 eInterpreterReturn ExecuteInstruction_OUT(psInterpreterContext pContext, psInstruction pInstruction);
+eInterpreterReturn ExecuteInstruction_IN(psInterpreterContext pContext, psInstruction pInstruction);
 eInterpreterReturn ExecuteInstruction_CMP(psInterpreterContext pContext, psInstruction pInstruction);
 eInterpreterReturn ExecuteInstruction_JUMP(psInterpreterContext pContext, psInstruction pInstruction);
 eInterpreterReturn ExecuteInstruction_PUSH(psInterpreterContext pContext, psInstruction pInstruction);

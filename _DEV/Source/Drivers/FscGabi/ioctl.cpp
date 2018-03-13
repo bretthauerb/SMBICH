@@ -669,7 +669,30 @@ DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulS
 
 				if (r == INTERPRETER_OK)
 				{
-					r = ExecuteInterpreter(pDevExt->pInterpreterContext, pDevExt->InBuffer.Physical, pDevExt->OutBuffer.Physical, pDevExt->ControlBuffer.Physical);
+					if (pDevExt->SyncEvent == NULL)
+					{
+						HANDLE syncEventHandle = NULL;
+						UNICODE_STRING evtname;
+						RtlInitUnicodeString(&evtname, GABI_SYNC);
+						pDevExt->SyncEvent = IoCreateSynchronizationEvent(&evtname, &syncEventHandle);
+					}
+
+					if (pDevExt->SyncEvent == NULL)
+					{
+						DbgPrint(("IoCreateSynchronizationEvent SyncEvent failed"));
+						r = INTERPRETER_E_ARGS;
+					}
+					else
+					{
+						__try
+						{
+							r = ExecuteInterpreter(pDevExt->pInterpreterContext, pDevExt->InBuffer.Physical, pDevExt->OutBuffer.Physical, pDevExt->ControlBuffer.Physical);
+						}
+						__finally
+						{
+							KeSetEvent(pDevExt->SyncEvent, 0, FALSE);
+						}
+					}
 				}
 
 				if (r != INTERPRETER_OK)
@@ -683,10 +706,34 @@ DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulS
 			{
 				DbgPrint("---- ASM call ----");
 
-				BapiCall(pDevExt->GabiCallAddress,
-					pDevExt->InBuffer.Physical,
-					pDevExt->OutBuffer.Physical,
-					pDevExt->ControlBuffer.Physical);
+				if (pDevExt->SyncEvent == NULL)
+				{
+					HANDLE syncEventHandle = NULL;
+					UNICODE_STRING evtname;
+					RtlInitUnicodeString(&evtname, GABI_SYNC);
+					pDevExt->SyncEvent = IoCreateSynchronizationEvent(&evtname, &syncEventHandle);
+				}
+
+				if (pDevExt->SyncEvent == NULL)
+				{
+					DbgPrint(("IoCreateSynchronizationEvent SyncEvent failed"));
+				}
+				else
+				{
+					KeWaitForSingleObject(pDevExt->SyncEvent, Executive, KernelMode, FALSE, (PLARGE_INTEGER)NULL);
+
+					__try
+					{
+						BapiCall(pDevExt->GabiCallAddress,
+							pDevExt->InBuffer.Physical,
+							pDevExt->OutBuffer.Physical,
+							pDevExt->ControlBuffer.Physical);
+					}
+					__finally
+					{
+						KeSetEvent(pDevExt->SyncEvent, 0, FALSE);
+					}
+				}
 			}
 
 //x("Ctrl", pDevExt->ControlBuffer.pVirtual, 16);

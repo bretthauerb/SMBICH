@@ -427,7 +427,7 @@ NTSTATUS PrepareBuffers(PGabiAcpiCmd pCmd, PHYSICAL_ADDRESS firmwareMemoryBaseAd
 		UINT16 uiServiceCode;
 		PUCHAR pSource;
 
-		pSource = (PUCHAR)MmMapIoSpace(pCmd->ResponseBuffer, 4 + sizeof(uiServiceCode), MmNonCached);
+		pSource = (PUCHAR)MmMapIoSpace(pCmd->ControlBuffer, 4 + sizeof(uiServiceCode), MmNonCached);
 
 		memcpy(&uiServiceCategory, pSource + 2, sizeof(uiServiceCategory));
 		memcpy(&uiServiceCode, pSource + 4, sizeof(uiServiceCode));
@@ -478,6 +478,11 @@ NTSTATUS PrepareBuffers(PGabiAcpiCmd pCmd, PHYSICAL_ADDRESS firmwareMemoryBaseAd
 				}
 				break;
 		}
+
+		TraceEvents(TRACE_LEVEL_INFORMATION,
+			TRACE_QUEUE,
+			"!FUNC! ACPI Service category: 0x%X, code: 0x%X, len = 0x%X",
+			uiServiceCategory, uiServiceCode, pCmd->AddressLength);
 	}
 
 	pControlBuffer->QuadPart = firmwareMemoryBaseAddress.QuadPart;
@@ -504,9 +509,11 @@ NTSTATUS ReplaceMemoryBlocks(PHYSICAL_ADDRESS firmwareMemoryBaseAddress, UINT32 
 
 				if (*pAddr != 0)
 				{
-					PUCHAR pDest;
-					PHYSICAL_ADDRESS nextFreeMem;
+					PUCHAR pDest, pSrc = NULL;
+					PHYSICAL_ADDRESS nextFreeMem, sourceMem;
 					SIZE_T len = (SIZE_T)LENGHT_BUFFER(pBufferSrc + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
+					sourceMem.QuadPart = 0;
+
 					i += ulPointerSize; 
 
 					if (ucExternal != 0)
@@ -534,17 +541,40 @@ NTSTATUS ReplaceMemoryBlocks(PHYSICAL_ADDRESS firmwareMemoryBaseAddress, UINT32 
 					pDest = (PUCHAR)nextFreeMem.QuadPart;
 #else
 					pDest = (PUCHAR)nextFreeMem.LowPart;
+#endif					
+					TraceEvents(TRACE_LEVEL_INFORMATION,
+						TRACE_QUEUE,
+						"!FUNC! ACPI Next copy buffer: 0x%llX, offset: %d, 0x%llX",
+						nextFreeMem.QuadPart, i, *pAddr);					
+
+					if (ucExternal == 0)
+					{
+#if defined(_AMD64_) || defined(_IA64_)
+						sourceMem.QuadPart = *pAddr;
+#else
+						sourceMem.LowPart = *(UINT32*)pAddr;
 #endif
+					}
+					else
+					{
+						RtlCopyMemory(&pSrc, pAddr, sizeof(PHYSICAL_ADDRESS));
+					}
+
 					RtlCopyMemory(pAddr, &pDest, sizeof(PHYSICAL_ADDRESS));
 
 					pDest = (UCHAR*)MmMapIoSpace(nextFreeMem, len, MmNonCached);
 
-#if defined(_AMD64_) || defined(_IA64_)
-					RtlCopyMemory(pDest, (void*)*pAddr, len);
-#else
-					RtlCopyMemory(pDest, (void*)*((UINT32*)pAddr), len);
-#endif
+					if (ucExternal == 0)
+					{
+						pSrc = (UCHAR*)MmMapIoSpace(sourceMem, len, MmNonCached);
+					}
 
+					RtlCopyMemory(pDest, pSrc, len);
+
+					if (ucExternal == 0)
+					{
+						MmUnmapIoSpace(pSrc, len);
+					}
 					MmUnmapIoSpace(pDest, len);
 				}
 				else
@@ -710,6 +740,11 @@ NTSTATUS GabiAcpiCallAcpiFirmwareMem(WDFREQUEST Request, WDFDEVICE parent, UCHAR
 
 			if (NT_SUCCESS(status))
 			{
+				if (pCmd->AddressLength == 4)
+				{
+					ulOffset = 0x14;  //offset of write structure
+				}
+
 				status = ReplaceMemoryBlocks(firmwareMemoryBaseAddress, firmwareMemorySize, &uiTotalLength, pData, pCmd->RequestBufferLen, pCmd->AddressLength, ulOffset, ucExternal);
 			}
 			else
@@ -736,7 +771,7 @@ NTSTATUS GabiAcpiCallAcpiFirmwareMem(WDFREQUEST Request, WDFDEVICE parent, UCHAR
 			{
 				if (pCmd->AddressLength == 4)
 				{
-					ulOffset = 0x14;  //offset of write structure
+					ulOffset = 0xC;  //offset of read structure
 				}
 
 				status = ReplaceMemoryBlocks(firmwareMemoryBaseAddress, firmwareMemorySize, &uiTotalLength, pData, pCmd->ResponseBufferLen, pCmd->AddressLength, ulOffset, ucExternal);
@@ -759,7 +794,7 @@ NTSTATUS GabiAcpiCallAcpiFirmwareMem(WDFREQUEST Request, WDFDEVICE parent, UCHAR
 	}
 
 	if (NT_SUCCESS(status))
-	{
+	{		
 		status = EvaluateAcpiMethode(WdfDeviceGetIoTarget(parent), pCmd->Revision, pCmd->FunctionIndex, controlBuffer, requestBuffer, responseBuffer, NULL, 0);
 	}
 
@@ -777,21 +812,39 @@ NTSTATUS GabiAcpiCallAcpiFirmwareMem(WDFREQUEST Request, WDFDEVICE parent, UCHAR
 #else
 			pData = (PUCHAR)pCmd->ResponseBuffer.LowPart;
 #endif
-			pSource = (UCHAR*)MmMapIoSpace(requestBuffer, pCmd->ResponseBufferLen, MmNonCached);
+			pSource = (UCHAR*)MmMapIoSpace(responseBuffer, pCmd->ResponseBufferLen, MmNonCached);
 		}
 		else
 		{
 			pData = (UCHAR*)MmMapIoSpace(pCmd->ResponseBuffer, pCmd->ResponseBufferLen, MmNonCached);
-			pSource = (UCHAR*)MmMapIoSpace(requestBuffer, pCmd->ResponseBufferLen, MmNonCached);
+			pSource = (UCHAR*)MmMapIoSpace(responseBuffer, pCmd->ResponseBufferLen, MmNonCached);
 		}
 
 		if (NT_SUCCESS(status))
 		{
-			status = CopyMemoryBlocks((PVOID*)pSource, pData, pCmd->ResponseBufferLen, ucExternal, ulOffset, pCmd->AddressLength, 1);
-
-			if (!NT_SUCCESS(status))
+			try
 			{
-				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyMemoryBlocks(Res) failed: 0x%x\n", status);
+				if (ucExternal != 0)
+				{
+					//Usermode buffers
+					ProbeForWrite(pData,
+						ulOffset,
+						sizeof(UCHAR));
+				}
+
+				RtlCopyMemory(pData, pSource, ulOffset);
+
+				status = CopyMemoryBlocks(pSource, pData, pCmd->ResponseBufferLen, ucExternal, ulOffset, pCmd->AddressLength, 1);
+
+				if (!NT_SUCCESS(status))
+				{
+					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "CopyMemoryBlocks(Res) failed: 0x%x\n", status);
+				}
+			}
+			except(EXCEPTION_EXECUTE_HANDLER)
+			{
+				status = STATUS_IN_PAGE_ERROR;
+				TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "exception write user mode buffers\n");
 			}
 		}
 
@@ -1631,15 +1684,15 @@ NTSTATUS FreeMemoryBlocks(PDriverBufferDescriptor pBufferDesc)
 	return status;
 }
 
-NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen, UCHAR ucExternal, ULONG ulOffset, ULONG ulPointerSize, BYTE phyMem)
+NTSTATUS CopyMemoryBlocks(PUCHAR pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen, UCHAR ucExternal, ULONG ulOffset, ULONG ulPointerSize, BYTE phyMem)
 {
 	NTSTATUS status = STATUS_SUCCESS;
 
-	if (pBufferSrc != NULL && pBufferDest != NULL)
+	if (pBufferSrc != NULL && pBufferDest != NULL && ulBufferLen > ulPointerSize)
 	{
 		try
 		{
-			for (ULONG i = ulOffset; i < (ulBufferLen - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
+			for (ULONG i = ulOffset; i < (ulBufferLen - ulPointerSize); i += (sizeof(PHYSICAL_ADDRESS) + ulPointerSize))
 			{
 #if defined(_AMD64_) || defined(_IA64_)
 				PULONGLONG pAddrDest = (PULONGLONG)(pBufferDest + i);
@@ -1648,7 +1701,6 @@ NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 				PULONG pAddrDest = (PULONG)(pBufferDest + i);
 				PULONG pAddrSrc = (PULONG)(pBufferSrc + i);
 #endif
-
 				if (ucExternal != 0)
 				{
 					//Usermode buffers
@@ -1656,6 +1708,11 @@ NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 						sizeof(PHYSICAL_ADDRESS) + ulPointerSize,
 						sizeof(UCHAR));
 				}
+
+				TraceEvents(TRACE_LEVEL_INFORMATION,
+					TRACE_QUEUE,
+					"!FUNC! ACPI copyback buffer: 0x%llX, offset: %d",
+					*pAddrDest, i);
 
 				if (*pAddrDest != 0) 
 				{
@@ -1692,11 +1749,11 @@ NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 				
 						RtlCopyMemory(pAddrDestM, pAddrSrcM, min(lenDest, lenSrc));
 
-						MmUnmapIoSpace(pAddrSrc, lenSrc);
+						MmUnmapIoSpace(pAddrSrcM, lenSrc);
 
 						if (ucExternal == 0)
 						{
-							MmUnmapIoSpace(pAddrDest, lenDest);
+							MmUnmapIoSpace(pAddrDestM, lenDest);
 						}
 					}
 					else

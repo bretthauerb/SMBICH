@@ -60,7 +60,7 @@ DriverBufferDescriptor, *PDriverBufferDescriptor;
 
 NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVOID* pBuffer2, ULONG ulLenBuffer2, PDriverBufferDescriptor* ppBufferDesc, ULONG ulOffset, ULONG ulPointerSize);
 NTSTATUS FreeMemoryBlocks(PDriverBufferDescriptor pBufferDesc);
-NTSTATUS CopyMemoryBlocks(PVOID* pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen, UCHAR ucExternal, ULONG ulOffset, ULONG ulPointerSize, BYTE phyMem);
+NTSTATUS CopyMemoryBlocks(PUCHAR pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferLen, UCHAR ucExternal, ULONG ulOffset, ULONG ulPointerSize, BYTE phyMem);
 NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriverBufferDescriptor pBufferDesc, ULONG ulOffset, ULONG ulPointerSize);
 
 #define LENGHT_BUFFER(pointer, lengthSize) ((lengthSize == 8) ? (*((PULONGLONG)(pointer))) : (*((PUINT32)(pointer))))

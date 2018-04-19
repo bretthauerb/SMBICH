@@ -99,7 +99,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="gabi.rc">
+    <ResourceCompile Include="gabiW7.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

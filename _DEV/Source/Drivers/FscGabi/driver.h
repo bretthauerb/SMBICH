@@ -4,9 +4,15 @@
 #define DRIVER_DEVICE_NAME			L"\\Device\\FSC_GABI"
 #define DRIVER_LINK_NAME_L			L"\\DosDevices\\FSC_GABI"
 
+#ifndef NON_UNIVERSAL
 #define MAJOR_VERSION	7
 #define MINOR_VERSION	0
 #define RELEASE		1
+#else
+#define MAJOR_VERSION	6
+#define MINOR_VERSION	2
+#define RELEASE		3
+#endif
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
 #define GABI_SYNC L"\\GabiSmiSync"

@@ -232,6 +232,8 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 	pa.HighPart = 0;
 	pa.LowPart = 0xe0000;
 
+	pdx->ulGabiVersion = 0;
+
 	RegisterACPIInterfaceNotification(pdx);
 
 	// Map BIOS 0xe0000-0xfffff, size and addresses are fixed.
@@ -301,8 +303,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 	else
 	{
 		MmUnmapIoSpace(MappedBios, MAP_SIZE);
-		pdx->MappedBios = MappedBios = NULL;
-		pdx->ulGabiVersion = 0;
+		pdx->MappedBios = MappedBios = NULL;		
 	}
 
 	KeInitializeMutex( &(pdx->Mutex), 1 );

@@ -6,7 +6,7 @@
 
 #define MAJOR_VERSION	7
 #define MINOR_VERSION	0
-#define RELEASE		0
+#define RELEASE		1
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
 #define GABI_SYNC L"\\GabiSmiSync"

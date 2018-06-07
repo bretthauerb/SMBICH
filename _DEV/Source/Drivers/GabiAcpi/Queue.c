@@ -562,20 +562,23 @@ NTSTATUS ReplaceMemoryBlocks(PHYSICAL_ADDRESS firmwareMemoryBaseAddress, UINT32 
 
 					RtlCopyMemory(pAddr, &pDest, sizeof(PHYSICAL_ADDRESS));
 
-					pDest = (UCHAR*)MmMapIoSpace(nextFreeMem, len, MmNonCached);
-
-					if (ucExternal == 0)
+					if (len > 0)
 					{
-						pSrc = (UCHAR*)MmMapIoSpace(sourceMem, len, MmNonCached);
-					}
+						pDest = (UCHAR*)MmMapIoSpace(nextFreeMem, len, MmNonCached);
 
-					RtlCopyMemory(pDest, pSrc, len);
+						if (ucExternal == 0)
+						{
+							pSrc = (UCHAR*)MmMapIoSpace(sourceMem, len, MmNonCached);
+						}
 
-					if (ucExternal == 0)
-					{
-						MmUnmapIoSpace(pSrc, len);
+						RtlCopyMemory(pDest, pSrc, len);
+
+						if (ucExternal == 0)
+						{
+							MmUnmapIoSpace(pSrc, len);
+						}
+						MmUnmapIoSpace(pDest, len);
 					}
-					MmUnmapIoSpace(pDest, len);
 				}
 				else
 				{
@@ -1718,6 +1721,11 @@ NTSTATUS CopyMemoryBlocks(PUCHAR pBufferSrc, PUCHAR pBufferDest, ULONG ulBufferL
 				{
 					SIZE_T lenDest = (SIZE_T)LENGHT_BUFFER(pBufferDest + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
 					SIZE_T lenSrc = (SIZE_T)LENGHT_BUFFER(pBufferSrc + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
+
+					if (lenSrc == 0 || lenDest == 0)
+					{
+						continue;
+					}
 
 					if (ucExternal != 0)
 					{

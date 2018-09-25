@@ -7,7 +7,7 @@
 #ifndef NON_UNIVERSAL
 #define MAJOR_VERSION	7
 #define MINOR_VERSION	0
-#define RELEASE		1
+#define RELEASE		2
 #else
 #define MAJOR_VERSION	6
 #define MINOR_VERSION	2

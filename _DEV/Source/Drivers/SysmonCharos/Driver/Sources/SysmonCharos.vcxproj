@@ -185,7 +185,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>6.2.0.0</TimeStamp>
+      <TimeStamp>6.3.0.0</TimeStamp>
     </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -204,7 +204,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>6.2.0.0</TimeStamp>
+      <TimeStamp>6.3.0.0</TimeStamp>
     </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">

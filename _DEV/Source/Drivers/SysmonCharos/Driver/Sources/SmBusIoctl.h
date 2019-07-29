@@ -161,16 +161,26 @@ moved to FSCIoctl.h, now called IOCTL_FSC_GET_DRIVER_VERSION
 //_______typedefs________________________________________________________________________
 
 #pragma pack(push,1)
-
 typedef struct
 {
 	ULONG	Size;
 	ULONG	DMIStructCount;
 } DMI_SIZE_T;
-
 #pragma pack(pop)
 
 typedef ULONG SMBUS_HWID_T;
+
+#pragma pack(push,1)
+typedef struct
+{
+	UCHAR ConfigRegAdr;
+	UCHAR ConfigRegData;
+} GET_CONFIG_REG_T;
+#pragma pack(pop)
+
+#define IOCTL_GET_CONFIG_REG \
+	(ULONG) CTL_CODE(FILE_DEVICE_SNISMBDRV,FILE_FUNCTION_BASE | 0x9d,\
+	METHOD_BUFFERED,FILE_ANY_ACCESS)
 
 #ifdef _NTDDK_
 #ifndef DRIVER_NAME

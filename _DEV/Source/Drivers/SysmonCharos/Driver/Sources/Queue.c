@@ -85,6 +85,23 @@ Return Value:
     return status;
 }
 
+static UCHAR WB_CR_READ(PUCHAR Pnp_Port, UCHAR index)
+{
+	UCHAR CRReg;
+
+	// enter extended function mode 
+	WRITE_PORT_UCHAR(Pnp_Port, 0x87); WRITE_PORT_UCHAR(Pnp_Port, 0x87);
+	// select logical device B=HardwareMonitoring
+	WRITE_PORT_UCHAR(Pnp_Port, 0x07); WRITE_PORT_UCHAR(Pnp_Port + 1, 0x0B);
+
+	WRITE_PORT_UCHAR(Pnp_Port, index);
+	CRReg = (UCHAR) READ_PORT_UCHAR(Pnp_Port + 1);
+
+	WRITE_PORT_UCHAR(Pnp_Port, 0xAA);	// exit extended function mode
+
+	return CRReg;
+}
+
 static UCHAR WB_READ(PDEVICE_CONTEXT pdx, UCHAR index)
 {
 	WRITE_PORT_UCHAR(pdx->indexport, index);
@@ -205,6 +222,33 @@ Return Value:
 		  DevID = pDevContext->CRDeviceID;
 		  RtlCopyMemory(pOutBuffer, (void *) &DevID, sizeof(ULONG));
 		  status = STATUS_SUCCESS;
+	  }
+	  break;
+
+	  case IOCTL_GET_CONFIG_REG:
+	  {
+		  requiredSize = sizeof(GET_CONFIG_REG_T);
+		  status = WdfRequestRetrieveInputBuffer(Request, (size_t)requiredSize, &pInputBuffer, NULL);
+
+		  if (NT_SUCCESS(status))
+		  {
+			  GET_CONFIG_REG_T *pCFGRegInfo = (GET_CONFIG_REG_T *)pInputBuffer;
+
+			  pCFGRegInfo->ConfigRegData = WB_CR_READ(PnP_Port, (UCHAR)pCFGRegInfo->ConfigRegAdr);
+
+				requiredSize = sizeof(GET_CONFIG_REG_T);
+				status = WdfRequestRetrieveOutputBuffer(Request, (size_t)requiredSize, &pOutBuffer, NULL);
+				if (!NT_SUCCESS(status))
+				{
+					requiredSize = 0;
+					break;
+				}
+
+				RtlCopyMemory(pOutBuffer, (void *) pCFGRegInfo, sizeof(GET_CONFIG_REG_T));
+				status = STATUS_SUCCESS;
+		  }
+		  else
+			requiredSize = 0;
 	  }
 	  break;
 

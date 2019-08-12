@@ -22,7 +22,7 @@
     <ProjectGuid>{1FA570F4-A96F-45A7-94AC-BFA88A255147}</ProjectGuid>
     <RootNamespace>InTime</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>InFscTime</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

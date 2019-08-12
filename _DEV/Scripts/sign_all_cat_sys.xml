@@ -1,0 +1,9 @@
+<files>
+  <include>
+    <file name="*.cat" />
+    <file name="*.sys" />
+  </include>
+  <exclude>
+   
+  </exclude>
+</files>

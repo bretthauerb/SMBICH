@@ -202,7 +202,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
@@ -217,7 +217,7 @@
       <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
@@ -236,7 +236,7 @@
  
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
@@ -255,7 +255,7 @@
       <GuardEHContMetadata>true</GuardEHContMetadata>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
@@ -272,7 +272,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -287,7 +287,7 @@
       <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -302,7 +302,7 @@
       <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>
@@ -316,7 +316,7 @@
       <WppKernelMode>true</WppKernelMode>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.4</TimeStamp>
+      <TimeStamp>3.0.0.5</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>false</SpecifyDriverVerDirectiveDate>

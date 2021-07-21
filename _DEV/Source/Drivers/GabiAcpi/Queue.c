@@ -1352,7 +1352,7 @@ EvaluateAcpiMethode(
 		}
 	}
 
-	pInputBuffer = (PACPI_EVAL_INPUT_BUFFER_COMPLEX)ExAllocatePoolWithTag(PagedPool, acpiInBufferSize, MEM_TAG);
+	pInputBuffer = (PACPI_EVAL_INPUT_BUFFER_COMPLEX)ExAllocatePoolZero(PagedPool, acpiInBufferSize, MEM_TAG);
 
 	if (pInputBuffer == NULL)
 	{
@@ -1402,7 +1402,7 @@ EvaluateAcpiMethode(
 		PACPI_EVAL_OUTPUT_BUFFER pOutputBuffer = NULL;
 		size_t outputBufferSize = FIELD_OFFSET(ACPI_EVAL_OUTPUT_BUFFER, Argument) + 24;
 
-		pOutputBuffer = (PACPI_EVAL_OUTPUT_BUFFER)ExAllocatePoolWithTag(PagedPool, outputBufferSize, MEM_TAG);
+		pOutputBuffer = (PACPI_EVAL_OUTPUT_BUFFER)ExAllocatePoolZero(PagedPool, outputBufferSize, MEM_TAG);
 
 		if (pOutputBuffer != NULL)
 		{
@@ -1584,7 +1584,8 @@ NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVO
 		{
 			for (ULONG i = ulOffset; i < (ulLenBuffer1 - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
 			{
-				PULONGLONG pAddr = (PULONGLONG)(pBuffer1 + i);
+				PULONGLONG pAddr = (PULONGLONG)((char*)pBuffer1 +i);
+				
 
 				ProbeForRead(pAddr,
 					ulPointerSize,
@@ -1614,9 +1615,11 @@ NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVO
 		{
 			for (ULONG i = ulOffset; i < (ulLenBuffer2 - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
 			{
-				PULONGLONG pAddr = (PULONGLONG)(pBuffer2 + i);
+				PULONGLONG pAddr = (PULONGLONG)((char*)pBuffer2 +i);
+			
 
-				ProbeForRead(pBuffer2 + i,
+				// ProbeForRead(pBuffer2 + i,
+				ProbeForRead(  (volatile void*) (pAddr),
 					ulPointerSize,
 					sizeof(UCHAR));
 
@@ -1641,7 +1644,7 @@ NTSTATUS AllocateDriverBufferDescriptor(PVOID* pBuffer1, ULONG ulLenBuffer1, PVO
 	if (count > 0)
 	{
 		ULONG ulLen = (count + 1) * sizeof(DriverBufferDescriptor); //one free entry to mark end of list
-		*ppBufferDesc = ExAllocatePoolWithTag(PagedPool, ulLen, MEM_TAG);
+		*ppBufferDesc = ExAllocatePoolZero(PagedPool, ulLen, MEM_TAG);
 
 		if (*ppBufferDesc != NULL)
 		{
@@ -1810,9 +1813,10 @@ NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriv
 		for (ULONG i = ulOffset; i < (ulBufferLen - ulPointerSize); i += sizeof(PHYSICAL_ADDRESS))
 		{
 #if defined(_AMD64_) || defined(_IA64_)
-			PULONGLONG pAddr = (PULONGLONG)(pBuffer + i);
+			PULONGLONG pAddr = (PULONGLONG) ( (char*) pBuffer + i);
+			
 #else
-			PULONG pAddr = (PULONG)(pBuffer + i);
+			PULONG pAddr = (PULONG)((char*) pBuffer + i);
 #endif
 
 			ProbeForRead(pAddr,
@@ -1821,15 +1825,16 @@ NTSTATUS ReplaceAndAllocateMemoryBlocks(PVOID* pBuffer, ULONG ulBufferLen, PDriv
 
 			if (*pAddr != 0)
 			{
-				SIZE_T len = (SIZE_T)LENGHT_BUFFER(pBuffer + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
+				SIZE_T len = (SIZE_T)LENGHT_BUFFER((char*)pBuffer + i + sizeof(PHYSICAL_ADDRESS), ulPointerSize);
 
 				ProbeForRead((void*)*pAddr,
 					len,
 					sizeof(UCHAR));
 
-				pBufferDesc->pVirtual = AllocateContiguousMemory(len, Phys4GB);
+				if (pBufferDesc !=NULL)
+					pBufferDesc->pVirtual = AllocateContiguousMemory(len, Phys4GB);
 
-				if (pBufferDesc->pVirtual == NULL)
+				if (pBufferDesc==NULL||pBufferDesc->pVirtual == NULL)
 				{
 					TraceEvents(TRACE_LEVEL_ERROR, TRACE_DRIVER, "AllocateContiguousMemory failed\n");
 

@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/_DEV/Source/Drivers/FscGabi/sdv
+/_DEV/Source/Drivers/FscGabi/Universal
+/_DEV/Source/Drivers/GabiAcpi/sdv
+/_DEV/Source/Drivers/GabiAcpi/Universal/Debug
+/_DEV/Source/Drivers/GabiAcpi/Universal/x64
+/_DEV/Source/Drivers/Universal/x64
+/_DEV/Source/DriversUniversal/x64/Release

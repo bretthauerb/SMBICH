@@ -229,7 +229,11 @@
       <WppRecorderEnabled>true</WppRecorderEnabled>
       <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
+
       <GuardEHContMetadata>true</GuardEHContMetadata>
+
+      <TreatWarningAsError>false</TreatWarningAsError>
+ 
     </ClCompile>
     <Inf>
       <TimeStamp>3.0.0.4</TimeStamp>

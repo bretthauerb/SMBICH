@@ -27,7 +27,7 @@ WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with
 ;*****************************************
 ; Install Section
 ;*****************************************
-
+ 
 [Manufacturer]
 %ManufacturerName%=Standard,NT$ARCH$
 
@@ -73,7 +73,7 @@ KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
-ManufacturerName="Fujitsu"
+ManufacturerName="Fujitsu Client Computing Limited"
 DiskName = "FUJ0420 Installation Disk"
 GabiAcpi.DeviceDesc = "Fujitsu FUJ0420 Device"
 GabiAcpi.DeviceDesc1 = "Fujitsu FUJ0430 Device"

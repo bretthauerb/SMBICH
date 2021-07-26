@@ -40,6 +40,6 @@ ErrorControl   = 1
 ServiceBinary  = %12%\FscGabi.sys
 
 [Strings]
-MFGNAME="Fujitsu"
+MFGNAME="Fujitsu Client Computing Limited"
 INSTDISK="Fujitsu Installation Disc"
 DESCRIPTION="Fujitsu GABI BIOS Interface"

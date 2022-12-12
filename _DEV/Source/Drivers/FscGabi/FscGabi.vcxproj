@@ -125,7 +125,7 @@
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
       <SpecifyDriverVerDirectiveVersion>true</SpecifyDriverVerDirectiveVersion>
-      <TimeStamp>7.0.3.0</TimeStamp>
+      <TimeStamp>7.0.4.0</TimeStamp>
     </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,7 +139,7 @@
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
       <SpecifyDriverVerDirectiveVersion>true</SpecifyDriverVerDirectiveVersion>
-      <TimeStamp>7.0.3.0</TimeStamp>
+      <TimeStamp>7.0.4.0</TimeStamp>
       <DateStamp>*</DateStamp>
     </Inf>
   </ItemDefinitionGroup>
@@ -155,7 +155,7 @@
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
       <SpecifyDriverVerDirectiveVersion>true</SpecifyDriverVerDirectiveVersion>
-      <TimeStamp>7.0.3.0</TimeStamp>
+      <TimeStamp>7.0.4.0</TimeStamp>
     </Inf>
     <MASM>
       <ListAllAvailableInformation>true</ListAllAvailableInformation>
@@ -175,7 +175,7 @@
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
       <SpecifyDriverVerDirectiveVersion>true</SpecifyDriverVerDirectiveVersion>
-      <TimeStamp>7.0.3.0</TimeStamp>
+      <TimeStamp>7.0.4.0</TimeStamp>
       <DateStamp>*</DateStamp>
     </Inf>
   </ItemDefinitionGroup>

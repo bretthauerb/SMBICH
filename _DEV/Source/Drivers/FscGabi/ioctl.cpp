@@ -220,7 +220,7 @@ static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt,
 		ulSize -= s;
 		ulSegmentCount++;
 		// No space for more descriptors ?
-		if ((ulSegmentCount > ulMaxSegCount-1 && ulSize)
+		if ((ulSegmentCount > ulMaxSegCount-1) && ulSize)
 		{
 			FreeBuffers(pMyDescr);
 			return NULL;

@@ -167,7 +167,7 @@ static VOID FreeBuffers(DriverBufferDescriptor_T *p)
 //
 static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt, PUCHAR pInOutBuffer, ULONG ulSize, ULONG StupidSize)
 {
-	const ULONG ulMaxSegCount = PAGE_SIZE/16 - 2;		// max. # of descriptors in *pInOutBuffer (max.data is ~2Mbyte @ 4k page)
+	const ULONG ulMaxSegCount = 2 * PAGE_SIZE / 16 - 2;		// max. # of descriptors in *pInOutBuffer (max.data is ~2Mbyte @ 4k page)
 	ULONG ulSegmentCount = 0;
 
 	ULONG ulSegSize = ulSize;
@@ -220,7 +220,7 @@ static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt,
 		ulSize -= s;
 		ulSegmentCount++;
 		// No space for more descriptors ?
-		if ((ulSegmentCount > ulMaxSegCount) && ulSize)
+		if ((ulSegmentCount > ulMaxSegCount-1 && ulSize)
 		{
 			FreeBuffers(pMyDescr);
 			return NULL;

@@ -167,7 +167,7 @@ static VOID FreeBuffers(DriverBufferDescriptor_T *p)
 //
 static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt, PUCHAR pInOutBuffer, ULONG ulSize, ULONG StupidSize)
 {
-	const ULONG ulMaxSegCount = 2 * PAGE_SIZE / 16 - 2;		// max. # of descriptors in *pInOutBuffer (max.data is ~2Mbyte @ 4k page)
+	const ULONG ulMaxSegCount = PAGE_SIZE / 16 - 2;		// max. # of descriptors in *pInOutBuffer (max.data is ~2Mbyte @ 4k page)
 	ULONG ulSegmentCount = 0;
 
 	ULONG ulSegSize = ulSize;

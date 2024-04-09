@@ -187,10 +187,13 @@
     </ClCompile>
     <Inf>
       <TimeStamp>3.0.0.6</TimeStamp>
-    </Inf>
-    <Inf>
+	</Inf>
+
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
     </Inf>
+    <Inf>	
+		<Architecture>x64</Architecture>
+	</Inf>
     <Link>
       <CETCompat>true</CETCompat>
     </Link>

@@ -29,9 +29,9 @@ WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with
 ;*****************************************
  
 [Manufacturer]
-%ManufacturerName%=Standard,NT$ARCH$
+%ManufacturerName%=Standard,NTamd64
 
-[Standard.NT$ARCH$]
+[Standard.NTamd64]
 %GabiAcpi.DeviceDesc%=GabiAcpi_Device, ACPI\FUJ0420
 %GabiAcpi.DeviceDesc1%=GabiAcpi_Device, ACPI\VEN_FUJ&DEV_0430&REV_0001
 

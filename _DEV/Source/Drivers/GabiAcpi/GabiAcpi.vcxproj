@@ -125,6 +125,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <SignMode>Off</SignMode>
     <ExecutablePath>$(WDKContentRoot)tools\$(WDKBuildFolder)\x64;$(WDKBinRoot_x64);$(ExecutablePath)</ExecutablePath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <SignMode>Off</SignMode>

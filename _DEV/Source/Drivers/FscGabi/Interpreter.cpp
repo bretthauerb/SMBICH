@@ -3,12 +3,10 @@
 #include "InterpreterInternal.h"
 #include "AssemlerHelper.h"
 #ifdef USERMODE
-#include <stdlib.h>
-
 #define ALLOCATE_BUFFER(x) malloc(x)
 #define FREE_BUFFER(x) free(x)
 #else
-#define ALLOCATE_BUFFER(x) ExAllocatePoolWithTag(NonPagedPool, x, 'InBu');
+#define ALLOCATE_BUFFER(x) ExAllocatePool2(POOL_FLAG_NON_PAGED, x, 'InBu')
 #define FREE_BUFFER(x) ExFreePoolWithTag(x, 'InBu')
 #endif
 
@@ -22,7 +20,7 @@ psInterpreterContext InitInterpreter(UCHAR* pEntryPoint, USHORT wSize, UCHAR ucA
 	}
 
 	pContext = (psInterpreterContext)ALLOCATE_BUFFER(sizeof(sInterpreterContext));	
-
+   
 	if (pContext != NULL)
 	{
 		memset(pContext, 0, sizeof(sInterpreterContext));

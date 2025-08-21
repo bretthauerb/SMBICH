@@ -177,7 +177,12 @@ static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt,
 	ULONG ulAllocSize = ulMaxSegCount*sizeof DriverBufferDescriptor_T;
 
 	// Allocate array to hold descriptors
-	DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePool(NonPagedPool, ulAllocSize);
+	//DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePool(NonPagedPool, ulAllocSize);
+    DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePool2(
+    POOL_FLAG_NON_PAGED,
+    ulAllocSize,
+    'Gabi'
+    );
 	if (!pMyDescr) return NULL;
 
 	RtlZeroMemory(pMyDescr, ulAllocSize);
@@ -583,7 +588,7 @@ DbgPrint("ulIoctlInputLength=%x In.ulSize=%x  ulIoctlOutputLength=%x Out.ulSize=
 //x("In", pDevExt->InBuffer.pVirtual, pDevExt->InBuffer.ulSize);
 //x("Out", pDevExt->OutBuffer.pVirtual, 64);
 
-DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulSize,ulIoctlOutputLength,pDevExt->OutBuffer.ulSize);
+DbgPrint(" ----- GABI CALL ------- ulIoctlInputLength = %x In.ulSize = %x  ulIoctlOutputLength = %x Out.ulSize = %x\n", ulIoctlInputLength,pDevExt->InBuffer.ulSize,ulIoctlOutputLength,pDevExt->OutBuffer.ulSize);
 
 			if (pDevExt->ulUseACPI != 0 && pDevExt->ACPIDevice != NULL)
 			{
@@ -610,7 +615,16 @@ DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulS
 				nextStack->Parameters.DeviceIoControl.InputBufferLength = sizeof(GabiAcpiCmd);
 				nextStack->Parameters.DeviceIoControl.IoControlCode = IOCTL_GABI_ACPI_CMD;
 
-				Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolWithQuotaTag(NonPagedPool, sizeof(GabiAcpiCmd), 'AcGi');
+			
+                // Replace the following line in DriverIOCTL:
+                // Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolWithQuotaTag(NonPagedPool, sizeof(GabiAcpiCmd), 'AcGi');
+
+                // with ExAllocatePool2 (Windows 10+)
+                Irp->AssociatedIrp.SystemBuffer = ExAllocatePool2(
+                    POOL_FLAG_NON_PAGED | POOL_FLAG_USE_QUOTA,
+                    sizeof(GabiAcpiCmd),
+                    'AcGi'
+                );
 				pCmd = (PGabiAcpiCmd)Irp->AssociatedIrp.SystemBuffer;
 
 				if (Irp->AssociatedIrp.SystemBuffer == NULL)

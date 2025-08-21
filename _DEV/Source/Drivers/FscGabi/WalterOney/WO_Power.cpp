@@ -66,7 +66,7 @@ NTSTATUS DispatchPower(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	{						// handle set/query
 
 		{					// launch FSM
-			PPOWCONTEXT ctx = (PPOWCONTEXT)ExAllocatePool(NonPagedPool, sizeof(POWCONTEXT));
+            PPOWCONTEXT ctx = (PPOWCONTEXT)ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(POWCONTEXT), 'PowC');
 			if (!ctx)
 			{
 				KdPrint((DRIVER_NAME " - Can't allocate power context structure\n"));
@@ -259,7 +259,7 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 	///////////////////////////////////////////////////////////////////////
 	// TriageNewIrp is the first action for a newly receive query or set IRP
 
-		case TriageNewIrp:
+		/*case TriageNewIrp:
 		{					// TriageNewIrp
 			ASSERT(stack->MajorFunction == IRP_MJ_POWER);
 			ASSERT(stack->MinorFunction == IRP_MN_QUERY_POWER || stack->MinorFunction == IRP_MN_SET_POWER);
@@ -283,6 +283,8 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 			// device IRP finishes.
 
 			if (stack->Parameters.Power.Type == SystemPowerState)
+                    // Add a NULL check before dereferencing 'stack' in HandlePowerEvent, TriageNewIrp case
+                   
 			{				// system IRP
 				if (stack->Parameters.Power.State.SystemState < pdx->syspower)
 				{
@@ -343,7 +345,66 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 			}				// device IRP
 
 			continue;
-		}					// TriageNewIrp
+		}					// TriageNewIrp*/
+
+		case TriageNewIrp:
+		{
+			ASSERT(ctx->state == InitialState);
+
+			status = STATUS_PENDING;
+			IoMarkIrpPending(Irp);
+
+			IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
+
+			// Fix: Check for NULL before dereferencing 'stack'
+			if (!stack)
+			{
+				ctx->status = STATUS_INVALID_PARAMETER;
+				action = CompleteMainIrp;
+				continue;
+			}
+
+			if (stack->Parameters.Power.Type == SystemPowerState)
+			{   // system IRP
+				if (stack->Parameters.Power.State.SystemState < pdx->syspower)
+				{
+					action = ForwardMainIrp;
+					SETSTATE(SysPowerUpPending);
+				}
+				else
+				{
+					action = SelectDState;
+					SETSTATE(SubPowerDownPending);
+				}
+			}   // system IRP
+			else
+			{   // device IRP
+				SETSTATE(QueueStallPending);
+
+				if (!pdx->StalledForPower)
+				{   // stall request queue
+					ctx->UnstallQueue = TRUE;
+					pdx->StalledForPower = TRUE;
+
+					NTSTATUS qstatus = StallRequestsAndNotify(&pdx->dqReadWrite, SendAsyncNotification, ctx);
+					if (!NT_SUCCESS(qstatus))
+					{   // can't stall queue
+						ctx->status = qstatus;
+						action = CompleteMainIrp;
+						ctx->UnstallQueue = FALSE;
+						pdx->StalledForPower = FALSE;
+						continue;
+					}   // can't stall queue
+
+					if (qstatus == STATUS_PENDING)
+						break;  // wait for notification that device is idle
+				}   // stall request queue
+
+				action = QueueStallComplete;
+			}   // device IRP
+
+			continue;
+		}   // TriageNewIrp
 
 	///////////////////////////////////////////////////////////////////////
 	// QueueStallComplete is the action for an AsyncNotify event in the
@@ -498,7 +559,7 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 	// CompleteMainIrp is the penultimate action of the finite state machine.
 	// This is where we actually complete the power IRP we've been handling.
 
-		case CompleteMainIrp:
+		/*case CompleteMainIrp:
 		{					// CompleteMainIrp
 			PoStartNextPowerIrp(Irp);
 
@@ -531,7 +592,37 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 
 			action = DestroyContext;
 			continue;
+		}					// CompleteMainIrp*/
+		case CompleteMainIrp:
+		{					// CompleteMainIrp
+			if (Irp)
+				PoStartNextPowerIrp(Irp);
+
+			if (event == MainIrpComplete)
+				status = ctx->status;
+			else
+			{
+				ASSERT(ctx->status != STATUS_PENDING);
+				if (Irp)
+				{
+					Irp->IoStatus.Status = ctx->status;
+					IoCompleteRequest(Irp, IO_NO_INCREMENT);
+				}
+			}
+
+			IoReleaseRemoveLock(&pdx->RemoveLock, Irp);
+
+			if (ctx->UnstallQueue)
+			{
+				ASSERT(pdx->StalledForPower);
+				pdx->StalledForPower = FALSE;
+				RestartRequests(&pdx->dqReadWrite, pdx->DeviceObject);
+			}
+
+			action = DestroyContext;
+			continue;
 		}					// CompleteMainIrp
+	
 
 	///////////////////////////////////////////////////////////////////////
 	// DestroyContext is the last action for an IRP.

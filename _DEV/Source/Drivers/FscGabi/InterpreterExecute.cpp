@@ -2276,7 +2276,7 @@ void UpdateFlags(psInterpreterContext pContext, ULONGLONG value, UCHAR ucSize)
 	SET_SF(pContext, value & mask);
 	SET_ZF(pContext, value & bits);
 
-	for (UCHAR i = 0; i < ucSize * 8; i++)
+	for (int i = 0; i < ucSize * 8; i++)
 	{
 		if ((value >> i) & 1)
 		{

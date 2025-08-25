@@ -130,3 +130,8 @@
 /_DEV/Source/Drivers/SCH5627AMD/Driver/Sources/x64/Debug
 /_DEV/Source/_Build/.vs/Drv_Build/FileContentIndex
 /_DEV/Source/_Build/.vs/Drv_Build/v17
+/.vs
+/_DEV/.vs/ProjectSettings.json
+/_DEV/.vs
+/_DEV/Source/Drivers/FscTime/Driver/Sources/RCa09788
+/_DEV/Source/Drivers/SmbIch/Driver/Sources/RCa04200

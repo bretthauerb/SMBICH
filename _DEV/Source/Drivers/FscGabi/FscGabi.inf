@@ -8,7 +8,7 @@ DriverVer= ; TODO: set DriverVer in stampinf property pages
 PnpLockdown=1
 
 [Manufacturer]
-%MFGNAME%=DeviceList, NTamd64.10.0...10240
+%MFGNAME%=DeviceList, NTamd64.10.0...17134
 
 [DestinationDirs]
 DefaultDestDir=10,System32\Drivers
@@ -19,17 +19,17 @@ FscGabi.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,FscGabi.sys,,
 
-[DeviceList.NTamd64.10.0...10240]
-%DESCRIPTION% = DriverInstall.NTamd64.10.0...10240, Root\FscGabi
-%DESCRIPTION% = DriverInstall.NTamd64.10.0...10240, ACPI\IBAG
+[DeviceList.NTamd64.10.0...17134]
+%DESCRIPTION% = DriverInstall.NTamd64.10.0...17134, Root\FscGabi
+%DESCRIPTION% = DriverInstall.NTamd64.10.0...17134, ACPI\IBAG
 
-[DriverInstall.NTamd64.10.0...10240]
+[DriverInstall.NTamd64.10.0...17134]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
 FscGabi.sys,,,2
 
-[DriverInstall.NTamd64.10.0...10240.Services]
+[DriverInstall.NTamd64.10.0...17134.Services]
 AddService = FscGabi, 2, ServiceInstall
 
 [ServiceInstall]

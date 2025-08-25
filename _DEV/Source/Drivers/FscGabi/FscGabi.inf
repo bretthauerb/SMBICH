@@ -20,8 +20,8 @@ FscGabi.sys=1
 1=%INSTDISK%,FscGabi.sys,,
 
 [DeviceList.NTamd64.10.0...17134]
-%DESCRIPTION% = DriverInstall, Root\FscGabi
-%DESCRIPTION% = DriverInstall, ACPI\IBAG
+%DESCRIPTION% = DriverInstall.NTamd64.10.0...17134, Root\FscGabi
+%DESCRIPTION% = DriverInstall.NTamd64.10.0...17134, ACPI\IBAG
 
 [DriverInstall.NTamd64.10.0...17134]
 CopyFiles=DriverCopyFiles

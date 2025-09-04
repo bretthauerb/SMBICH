@@ -153,7 +153,7 @@ NTSTATUS ACPIInterfaceNotificationCallback(PVOID NotificationStructure, PVOID Co
 
 		workItem = IoAllocateWorkItem(pdx->DeviceObject);
 
-        pBase = (PUCHAR)ExAllocatePool2(POOL_FLAG_NON_PAGED, len, 'cWbD');
+        pBase = (PUCHAR)ExAllocatePoolZero(NonPagedPool, len, 'cWbD');
 		myWorkContext = (PMY_WORK_CONTEXT)pBase;
 
 		if (!myWorkContext) 

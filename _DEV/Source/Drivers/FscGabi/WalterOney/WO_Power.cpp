@@ -66,7 +66,7 @@ NTSTATUS DispatchPower(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 	{						// handle set/query
 
 		{					// launch FSM
-            PPOWCONTEXT ctx = (PPOWCONTEXT)ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(POWCONTEXT), 'PowC');
+            PPOWCONTEXT ctx = (PPOWCONTEXT)ExAllocatePoolZero(NonPagedPool, sizeof(POWCONTEXT), 'PowC');
 			if (!ctx)
 			{
 				KdPrint((DRIVER_NAME " - Can't allocate power context structure\n"));

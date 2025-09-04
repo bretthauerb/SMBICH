@@ -144,7 +144,7 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 #define xsize sizeof(DEVICE_EXTENSION)
 
 	UNICODE_STRING devname;
-	WCHAR namebuf[32];
+
 
   
    // _snwprintf(namebuf, arraysize(namebuf), DRIVER_DEVICE_NAME);
@@ -158,9 +158,8 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
     // namebuf[arraysize(namebuf) - 1] = L'\0';
 
     // After:
-    RtlStringCchPrintfW(namebuf, ARRAYSIZE(namebuf), L"%s", DRIVER_DEVICE_NAME);
-    namebuf[arraysize(namebuf) - 1] = L'\0';
-    RtlInitUnicodeString(&devname, namebuf);
+   
+    RtlInitUnicodeString(&devname, DRIVER_DEVICE_NAME);
 	status = IoCreateDevice(DriverObject, xsize, &devname,
 		FILE_DEVICE_UNKNOWN,
 		FILE_DEVICE_SECURE_OPEN,
@@ -204,8 +203,9 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		// Make a copy of the device name
 
 		//pdx->devname.Buffer = (PWCHAR)ExAllocatePool(NonPagedPool, devname.MaximumLength);
-        // Replace deprecated ExAllocatePool with ExAllocatePool2
-        pdx->devname.Buffer = (PWCHAR)ExAllocatePool2(POOL_FLAG_NON_PAGED, devname.MaximumLength, 'dNam');
+              
+        // With this line:
+        pdx->devname.Buffer = (PWCHAR)ExAllocatePoolZero(NonPagedPool, devname.MaximumLength, 'dNam');
 		if (!pdx->devname.Buffer)
 		{					// can't allocate buffer
 			status = STATUS_INSUFFICIENT_RESOURCES;
@@ -214,6 +214,8 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		}					// can't allocate buffer
 		pdx->devname.MaximumLength = devname.MaximumLength;
 		RtlCopyUnicodeString(&pdx->devname, &devname);
+
+		RtlZeroMemory(&pdx->devname, sizeof(pdx->devname));
 
 		// Link our device object into the stack leading to the PDO
 		if (pdo)

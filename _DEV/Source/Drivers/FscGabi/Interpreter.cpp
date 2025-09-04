@@ -6,7 +6,7 @@
 #define ALLOCATE_BUFFER(x) malloc(x)
 #define FREE_BUFFER(x) free(x)
 #else
-#define ALLOCATE_BUFFER(x) ExAllocatePool2(POOL_FLAG_NON_PAGED, x, 'InBu')
+#define ALLOCATE_BUFFER(x) ExAllocatePoolZero(NonPagedPool, x, 'InBu')
 #define FREE_BUFFER(x) ExFreePoolWithTag(x, 'InBu')
 #endif
 

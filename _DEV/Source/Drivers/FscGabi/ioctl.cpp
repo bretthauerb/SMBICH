@@ -178,8 +178,8 @@ static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt,
 
 	// Allocate array to hold descriptors
 	//DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePool(NonPagedPool, ulAllocSize);
-    DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePool2(
-    POOL_FLAG_NON_PAGED,
+    DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePoolZero(
+    NonPagedPool,
     ulAllocSize,
     'Gabi'
     );
@@ -619,9 +619,9 @@ DbgPrint(" ----- GABI CALL ------- ulIoctlInputLength = %x In.ulSize = %x  ulIoc
                 // Replace the following line in DriverIOCTL:
                 // Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolWithQuotaTag(NonPagedPool, sizeof(GabiAcpiCmd), 'AcGi');
 
-                // with ExAllocatePool2 (Windows 10+)
-                Irp->AssociatedIrp.SystemBuffer = ExAllocatePool2(
-                    POOL_FLAG_NON_PAGED | POOL_FLAG_USE_QUOTA,
+                // with ExAllocatePoolZero (Windows 10+)
+                Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolQuotaZero(
+                   NonPagedPool,
                     sizeof(GabiAcpiCmd),
                     'AcGi'
                 );

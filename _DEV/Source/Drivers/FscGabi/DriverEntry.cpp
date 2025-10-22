@@ -215,7 +215,7 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		pdx->devname.MaximumLength = devname.MaximumLength;
 		RtlCopyUnicodeString(&pdx->devname, &devname);
 
-		RtlZeroMemory(&pdx->devname, sizeof(pdx->devname));
+		
 
 		// Link our device object into the stack leading to the PDO
 		if (pdo)

@@ -96,6 +96,7 @@ NTSTATUS DispatchPower(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS DefaultPowerHandler(PDEVICE_EXTENSION pdx, IN PIRP Irp)
 {							// DefaultPowerHandler
+	PAGED_CODE();
 	PoStartNextPowerIrp(Irp);	// must be done while we own the IRP
 	IoSkipCurrentIrpStackLocation(Irp);
 	return PoCallDriver(pdx->LowerDeviceObject, Irp);
@@ -105,6 +106,7 @@ NTSTATUS DefaultPowerHandler(PDEVICE_EXTENSION pdx, IN PIRP Irp)
 
 VOID SendAsyncNotification(PVOID context)
 {							// SendAsyncNotification
+	PAGED_CODE();
 	HandlePowerEvent((PPOWCONTEXT)context, AsyncNotify);
 }							// SendAsyncNotification
 
@@ -166,9 +168,16 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 	ASSERT((ULONG)event < NUMPOWEVENTS);
 
 	PIRP Irp = ctx->irp;
+	
+	if (Irp == NULL)
+		return STATUS_INVALID_PARAMETER;
+	
 	PIO_STACK_LOCATION stack = Irp ? IoGetCurrentIrpStackLocation(Irp) : NULL;
 
 	PDEVICE_EXTENSION pdx = ctx->pdx;
+
+
+
 
 	enum POWACTION {
 		InvalidAction,			// code for invalid state/event combinations
@@ -251,7 +260,8 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 #define SETSTATE(s) ctx->state = s
 #endif
 
-	for (;;)
+
+	while (TRUE)
 	{						// handle this event
 		switch (action)
 		{					// perform next action
@@ -349,7 +359,10 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 
 		case TriageNewIrp:
 		{
+			ASSERT(stack->MajorFunction == IRP_MJ_POWER);
+			ASSERT(stack->MinorFunction == IRP_MN_QUERY_POWER || stack->MinorFunction == IRP_MN_SET_POWER);
 			ASSERT(ctx->state == InitialState);
+
 
 			status = STATUS_PENDING;
 			IoMarkIrpPending(Irp);

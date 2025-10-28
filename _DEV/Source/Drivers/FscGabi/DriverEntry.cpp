@@ -11,6 +11,7 @@ extern "C" {
 #include <ntstrsafe.h>
 
 #pragma warning ( default : 4201 )
+#pragma warning(disable: 28172) // False positive: RemoveDevice gibt Speicher frei
 
 #ifdef __cplusplus
 }
@@ -116,6 +117,7 @@ DriverEntry(
 
 NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchSystemControl
+	PAGED_CODE();
 	IoSkipCurrentIrpStackLocation(Irp);
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);

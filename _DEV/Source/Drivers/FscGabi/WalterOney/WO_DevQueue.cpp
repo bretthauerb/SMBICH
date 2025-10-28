@@ -30,13 +30,40 @@ NTSTATUS AreRequestsBeingAborted(PDEVQUEUE pdq)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
+//  warning C28167: The function 'CancelRequest' changes the IRQL and does not
+//  restore the IRQL before it exits. It should be annotated to reflect the
+//  change or the IRQL should be restored. IRQL was last set at line 44.
+//
+//  There is a similar warning C28166 ...
+//
+//  The "normal" compiler run shows no error/warning message here.
+//
+//  To avoid this overzealous remark of the analyzer, we just skip this
+//  warning for this function.
+//
+//==============================================================================
+#pragma warning ( push )
+#pragma warning ( disable: 28166 )
+#pragma warning ( disable: 28167 )
+
+//------------------------------------------------------------------------------
+//
+//  _IRQL_is_cancel_   <-- cannot use this recommended macro here,
+//                         expands to 'unexpected end of file'
+
+
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+_IRQL_requires_same_
+_IRQL_uses_cancel_
 VOID NTAPI CancelRequest(PREMOVE_LOCK lock, PDEVQUEUE pdq, PIRP Irp)
 	{							// CancelRequest
 	KIRQL oldirql = Irp->CancelIrql;
 
 	// Release the global cancel spin lock as soon as possible
 
-	IoReleaseCancelSpinLock(DISPATCH_LEVEL);
+	IoReleaseCancelSpinLock(oldirql);
 
 	// Acquire our queue-specific queue lock. Note that we stayed at DISPATCH_LEVEL
 	// when we released the cancel spin lock
@@ -49,10 +76,13 @@ VOID NTAPI CancelRequest(PREMOVE_LOCK lock, PDEVQUEUE pdq, PIRP Irp)
 	RemoveEntryList(&Irp->Tail.Overlay.ListEntry);
 	KeReleaseSpinLock(&pdq->lock, oldirql);
 
+	
 	Irp->IoStatus.Status = STATUS_CANCELLED;
 	ReleaseRemoveLock(lock, Irp);
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 	}							// CancelRequest
+
+#pragma warning (pop)
 
 ///////////////////////////////////////////////////////////////////////////////
 

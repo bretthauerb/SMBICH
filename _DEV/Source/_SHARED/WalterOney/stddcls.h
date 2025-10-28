@@ -1,6 +1,8 @@
 // stddcls.h -- Precompiled headers for WDM drivers
 // Copyright (C) 1999 by Walter Oney
 // All rights reserved
+#ifndef STDDCLS_H_INCLUDED
+#define STDDCLS_H_INCLUDED
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,13 +16,13 @@ extern "C" {
 	}
 #endif
 
-#define PAGEDCODE code_seg("page")
+#define PAGEDCODE code_seg("PAGE")
 #define LOCKEDCODE code_seg()
-#define INITCODE code_seg("init")
+#define INITCODE code_seg("INIT")
 
-#define PAGEDDATA data_seg("page")
+#define PAGEDDATA data_seg("PAGE")
 #define LOCKEDDATA data_seg()
-#define INITDATA data_seg("init")
+#define INITDATA data_seg("INIT")
 
 #define arraysize(p) (sizeof(p)/sizeof((p)[0]))
 
@@ -69,3 +71,5 @@ VOID ReleaseRemoveLockAndWait(PREMOVE_LOCK lock, PVOID tag);
 #define _IO_REMOVE_LOCK _REMOVE_LOCK
 #define IO_REMOVE_LOCK REMOVE_LOCK
 #define PIO_REMOVE_LOCK PREMOVE_LOCK
+
+#endif STDDCLS_H_INCLUDED

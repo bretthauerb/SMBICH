@@ -95,6 +95,14 @@ BOOLEAN CheckQueueStalled( PDEVICE_OBJECT fdo );
 NTSTATUS SendDeviceSetPower(PDEVICE_EXTENSION fdo, DEVICE_POWER_STATE state, BOOLEAN wait = FALSE);
 // I/O request handlers
 
+_Dispatch_type_(IRP_MJ_CREATE)          DRIVER_DISPATCH_PAGED DispatchCreate;
+_Dispatch_type_(IRP_MJ_CLOSE)           DRIVER_DISPATCH_PAGED DispatchClose;
+_Dispatch_type_(IRP_MJ_DEVICE_CONTROL)  DRIVER_DISPATCH_PAGED DispatchControl;
+_Dispatch_type_(IRP_MJ_CLEANUP)         DRIVER_DISPATCH_PAGED DispatchCleanup;
+_Dispatch_type_(IRP_MJ_POWER)           DRIVER_DISPATCH_PAGED DispatchPower;
+_Dispatch_type_(IRP_MJ_PNP)             DRIVER_DISPATCH_PAGED DispatchPnp;
+_Dispatch_type_(IRP_MJ_SYSTEM_CONTROL)  DRIVER_DISPATCH_PAGED DispatchSystemControl;
+
 NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchClose(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp);
@@ -105,6 +113,7 @@ NTSTATUS DispatchSystemControl(PDEVICE_OBJECT fdo, PIRP Irp);
 
 //extern UNICODE_STRING servkey;
 
+_Dispatch_type_(IRP_MJ_DEVICE_CONTROL)  DRIVER_DISPATCH_PAGED DriverIOCTL;
 NTSTATUS DriverIOCTL(PDEVICE_OBJECT fdo, PIRP Irp);
 
 

@@ -38,6 +38,7 @@ extern ULONG ulForceInterpreter;
 
 static UCHAR compute_cs(PUCHAR p, unsigned l)
 {
+	PAGED_CODE();
 	UCHAR rv = 0;
 	unsigned x = l;
 	while (l--)
@@ -51,7 +52,7 @@ BOOLEAN IsHyperVOn()
 	// cpuid
 	//   EAX=1 CPUID feature bits
 	//   ECX bit 31: Running on a hypervisor (always 0 on a real CPU, but also with some hypervisors)
-
+	PAGED_CODE();
 	const UINT32 hypervisorBit = 0x80000000u;
 
 	int cpuInfo[4] = { 0 };  // ret EAX, EBX, ECX, EDX
@@ -62,6 +63,7 @@ BOOLEAN IsHyperVOn()
 
 PVOID MapGabiEntryPoint(_In_ PDEVICE_EXTENSION pdx, _In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfBytes)
 {
+	PAGED_CODE();
 	typedef PVOID(*PFN_MmMapIoSpaceEx)(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfBytes, _In_ ULONG Protect);
 
 	static PFN_MmMapIoSpaceEx pfnMmMapIoSpaceEx = NULL;
@@ -117,6 +119,7 @@ MY_WORK_CONTEXT, *PMY_WORK_CONTEXT;
 
 VOID ArrivalWorker(PVOID IoObject, PVOID Context, PIO_WORKITEM IoWorkItem)
 {	
+	PAGED_CODE();
 	PMY_WORK_CONTEXT workItem = (PMY_WORK_CONTEXT)Context;
 
 	UNREFERENCED_PARAMETER(IoObject);
@@ -139,6 +142,7 @@ VOID ArrivalWorker(PVOID IoObject, PVOID Context, PIO_WORKITEM IoWorkItem)
 
 NTSTATUS ACPIInterfaceNotificationCallback(PVOID NotificationStructure, PVOID Context)
 {
+	PAGED_CODE();
 	PDEVICE_INTERFACE_CHANGE_NOTIFICATION notify = (PDEVICE_INTERFACE_CHANGE_NOTIFICATION)NotificationStructure;
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)Context;
 
@@ -194,6 +198,7 @@ NTSTATUS ACPIInterfaceNotificationCallback(PVOID NotificationStructure, PVOID Co
 
 NTSTATUS RegisterACPIInterfaceNotification(PDEVICE_EXTENSION pdx)
 {
+	PAGED_CODE();
 	NTSTATUS status = IoRegisterPlugPlayNotification(
 							EventCategoryDeviceInterfaceChange,
 							PNPNOTIFY_DEVICE_INTERFACE_INCLUDE_EXISTING_INTERFACES,
@@ -208,6 +213,7 @@ NTSTATUS RegisterACPIInterfaceNotification(PDEVICE_EXTENSION pdx)
 
 NTSTATUS UnregisterACPIInterfaceNotification(PDEVICE_EXTENSION pdx)
 {
+	PAGED_CODE();
 	NTSTATUS status = STATUS_SUCCESS;
 
 	if (pdx != NULL && pdx->pvNotificationEntry != NULL)
@@ -220,6 +226,7 @@ NTSTATUS UnregisterACPIInterfaceNotification(PDEVICE_EXTENSION pdx)
 
 NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PARTIAL_RESOURCE_LIST translated)
 {							// StartDevice
+	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 
 	UNREFERENCED_PARAMETER(translated);
@@ -317,6 +324,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 
 VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN oktouch /* = FALSE */)
 {							// StopDevice
+	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 
 	UNREFERENCED_PARAMETER(oktouch);

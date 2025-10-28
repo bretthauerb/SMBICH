@@ -22,6 +22,9 @@ typedef struct _DEVQUEUE {
 VOID NTAPI InitializeQueue(PDEVQUEUE pdq, PDRIVER_STARTIO StartIo);
 VOID NTAPI StartPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo, PIRP Irp, PDRIVER_CANCEL cancel);
 PIRP NTAPI StartNextPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo);
+_IRQL_requires_max_(DISPATCH_LEVEL)
+_IRQL_requires_same_
+_IRQL_uses_cancel_
 VOID NTAPI CancelRequest(PREMOVE_LOCK lock, PDEVQUEUE pdq, PIRP Irp);
 VOID NTAPI CleanupRequests(PREMOVE_LOCK lock, PDEVQUEUE pdq, PFILE_OBJECT fop, NTSTATUS status);
 VOID NTAPI StallRequests(PDEVQUEUE pdq);

@@ -174,7 +174,7 @@
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
       <SpecifyDriverVerDirectiveVersion>true</SpecifyDriverVerDirectiveVersion>
-      <TimeStamp>8.0.0.0</TimeStamp>
+      <TimeStamp>8.0.0.1</TimeStamp>
       <DateStamp>*</DateStamp>
     </Inf>
   </ItemDefinitionGroup>

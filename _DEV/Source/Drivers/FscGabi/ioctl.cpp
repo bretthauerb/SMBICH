@@ -167,7 +167,7 @@ static VOID FreeBuffers(DriverBufferDescriptor_T *p)
 //
 static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt, PUCHAR pInOutBuffer, ULONG ulSize, ULONG StupidSize)
 {
-	const ULONG ulMaxSegCount = PAGE_SIZE/16 - 2;		// max. # of descriptors in *pInOutBuffer (max.data is ~2Mbyte @ 4k page)
+	const ULONG ulMaxSegCount = PAGE_SIZE / 16 - 2;		// max. # of descriptors in *pInOutBuffer (max.data is ~2Mbyte @ 4k page)
 	ULONG ulSegmentCount = 0;
 
 	ULONG ulSegSize = ulSize;
@@ -177,7 +177,12 @@ static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt,
 	ULONG ulAllocSize = ulMaxSegCount*sizeof DriverBufferDescriptor_T;
 
 	// Allocate array to hold descriptors
-	DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePool(NonPagedPool, ulAllocSize);
+	//DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePool(NonPagedPool, ulAllocSize);
+    DriverBufferDescriptor_T *pMyDescr = (DriverBufferDescriptor_T*)ExAllocatePoolZero(
+    NonPagedPool,
+    ulAllocSize,
+    'Gabi'
+    );
 	if (!pMyDescr) return NULL;
 
 	RtlZeroMemory(pMyDescr, ulAllocSize);
@@ -220,7 +225,7 @@ static DriverBufferDescriptor_T * BuildDescriptorList(DEVICE_EXTENSION *pDevExt,
 		ulSize -= s;
 		ulSegmentCount++;
 		// No space for more descriptors ?
-		if ((ulSegmentCount > ulMaxSegCount) && ulSize)
+		if ((ulSegmentCount > ulMaxSegCount-1) && ulSize)
 		{
 			FreeBuffers(pMyDescr);
 			return NULL;
@@ -583,7 +588,7 @@ DbgPrint("ulIoctlInputLength=%x In.ulSize=%x  ulIoctlOutputLength=%x Out.ulSize=
 //x("In", pDevExt->InBuffer.pVirtual, pDevExt->InBuffer.ulSize);
 //x("Out", pDevExt->OutBuffer.pVirtual, 64);
 
-DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulSize,ulIoctlOutputLength,pDevExt->OutBuffer.ulSize);
+DbgPrint(" ----- GABI CALL ------- ulIoctlInputLength = %x In.ulSize = %x  ulIoctlOutputLength = %x Out.ulSize = %x\n", ulIoctlInputLength,pDevExt->InBuffer.ulSize,ulIoctlOutputLength,pDevExt->OutBuffer.ulSize);
 
 			if (pDevExt->ulUseACPI != 0 && pDevExt->ACPIDevice != NULL)
 			{
@@ -610,7 +615,16 @@ DbgPrint(" ----- GABI CALL ------- \n", ulIoctlInputLength,pDevExt->InBuffer.ulS
 				nextStack->Parameters.DeviceIoControl.InputBufferLength = sizeof(GabiAcpiCmd);
 				nextStack->Parameters.DeviceIoControl.IoControlCode = IOCTL_GABI_ACPI_CMD;
 
-				Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolWithQuotaTag(NonPagedPool, sizeof(GabiAcpiCmd), 'AcGi');
+			
+                // Replace the following line in DriverIOCTL:
+                // Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolWithQuotaTag(NonPagedPool, sizeof(GabiAcpiCmd), 'AcGi');
+
+                // with ExAllocatePoolZero (Windows 10+)
+                Irp->AssociatedIrp.SystemBuffer = ExAllocatePoolQuotaZero(
+                   NonPagedPool,
+                    sizeof(GabiAcpiCmd),
+                    'AcGi'
+                );
 				pCmd = (PGabiAcpiCmd)Irp->AssociatedIrp.SystemBuffer;
 
 				if (Irp->AssociatedIrp.SystemBuffer == NULL)

@@ -8,8 +8,10 @@ extern "C" {
 #include <stdio.h>
 #include <stdarg.h>			// for variable argument list in DebugPrint function
 #include <ntddk.h>
+#include <ntstrsafe.h>
 
 #pragma warning ( default : 4201 )
+#pragma warning(disable: 28172) // False positive: RemoveDevice gibt Speicher frei
 
 #ifdef __cplusplus
 }
@@ -33,11 +35,20 @@ ULONG ulForceInterpreter = 0;
 
 #pragma INITCODE
 
-extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
-	IN PUNICODE_STRING RegistryPath)
-{
-	UNREFERENCED_PARAMETER(RegistryPath);
+extern "C"
+DRIVER_INITIALIZE DriverEntry;
 
+
+NTSTATUS
+DriverEntry(
+	_In_ PDRIVER_OBJECT DriverObject,
+	_In_ PUNICODE_STRING RegistryPath
+)
+{
+	// Your driver initialization code here
+	UNREFERENCED_PARAMETER(DriverObject);
+	UNREFERENCED_PARAMETER(RegistryPath);
+	
 	// Insist that OS support at least the WDM level of the DDK we use
 	if (!IoIsWdmVersionAvailable(1, 0))
 	{
@@ -106,6 +117,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 
 NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchSystemControl
+	PAGED_CODE();
 	IoSkipCurrentIrpStackLocation(Irp);
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);
@@ -134,16 +146,29 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 #define xsize sizeof(DEVICE_EXTENSION)
 
 	UNICODE_STRING devname;
-	WCHAR namebuf[32];
-	_snwprintf(namebuf, arraysize(namebuf), DRIVER_DEVICE_NAME);
-	RtlInitUnicodeString(&devname, namebuf);
 
+
+  
+   // _snwprintf(namebuf, arraysize(namebuf), DRIVER_DEVICE_NAME);
+    // Replace _snwprintf with RtlStringCchPrintfW for secure string formatting
+   
+
+    // ...
+
+    // Before:
+    // _snwprintf(namebuf, arraysize(namebuf), DRIVER_DEVICE_NAME);
+    // namebuf[arraysize(namebuf) - 1] = L'\0';
+
+    // After:
+   
+    RtlInitUnicodeString(&devname, DRIVER_DEVICE_NAME);
 	status = IoCreateDevice(DriverObject, xsize, &devname,
 		FILE_DEVICE_UNKNOWN,
 		FILE_DEVICE_SECURE_OPEN,
 		FALSE, &fdo);
+	
 	if (!NT_SUCCESS(status))
-	{						// can't create device object
+    {						// can't create device object
 		KdPrint((DRIVER_NAME " - IoCreateDevice failed - %X\n", status));
 		return status;
 	}						// can't create device object
@@ -179,7 +204,10 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 
 		// Make a copy of the device name
 
-		pdx->devname.Buffer = (PWCHAR)ExAllocatePool(NonPagedPool, devname.MaximumLength);
+		//pdx->devname.Buffer = (PWCHAR)ExAllocatePool(NonPagedPool, devname.MaximumLength);
+              
+        // With this line:
+        pdx->devname.Buffer = (PWCHAR)ExAllocatePoolZero(NonPagedPool, devname.MaximumLength, 'dNam');
 		if (!pdx->devname.Buffer)
 		{					// can't allocate buffer
 			status = STATUS_INSUFFICIENT_RESOURCES;
@@ -188,6 +216,8 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		}					// can't allocate buffer
 		pdx->devname.MaximumLength = devname.MaximumLength;
 		RtlCopyUnicodeString(&pdx->devname, &devname);
+
+		
 
 		// Link our device object into the stack leading to the PDO
 		if (pdo)

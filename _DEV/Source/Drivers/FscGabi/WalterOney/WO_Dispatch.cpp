@@ -8,6 +8,7 @@
 #pragma LOCKEDCODE
 
 // Cancel routine for Irps managed by StartIo
+_IRQL_uses_cancel_
 static VOID OnCancelIrp(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// OnCancelReadWrite
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -16,12 +17,13 @@ static VOID OnCancelIrp(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 #pragma PAGEDCODE
 
-NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp)
+NTSTATUS DispatchControl( IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {
+	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	NTSTATUS status = IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
 
-	PAGED_CODE();
+	
 
 	if (!NT_SUCCESS(status))
 		return CompleteRequest(Irp, status, 0);
@@ -35,7 +37,7 @@ NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp)
 
 #pragma PAGEDCODE
 
-NTSTATUS DispatchCleanup(PDEVICE_OBJECT fdo, PIRP Irp)
+NTSTATUS DispatchCleanup(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchCleanup
 	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -51,7 +53,7 @@ NTSTATUS DispatchCleanup(PDEVICE_OBJECT fdo, PIRP Irp)
 
 #pragma PAGEDCODE
 
-NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp)
+NTSTATUS DispatchCreate(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchCreate
 	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -81,7 +83,7 @@ NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp)
 
 #pragma PAGEDCODE
 
-NTSTATUS DispatchClose(PDEVICE_OBJECT fdo, PIRP Irp)
+NTSTATUS DispatchClose(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchClose
 	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;

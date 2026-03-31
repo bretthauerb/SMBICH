@@ -73,8 +73,8 @@ KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
-ManufacturerName="Fujitsu Client Computing Limited"
+ManufacturerName="Kontron Europe GmbH"
 DiskName = "FUJ0420 Installation Disk"
-GabiAcpi.DeviceDesc = "Fujitsu FUJ0420 Device"
-GabiAcpi.DeviceDesc1 = "Fujitsu FUJ0430 Device"
+GabiAcpi.DeviceDesc = "Kontron FUJ0420 Device"
+GabiAcpi.DeviceDesc1 = "Kontron FUJ0430 Device"
 GabiAcpi.SVCDESC = "FUJ0420 Service"

@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="17.0"
+<Project DefaultTargets="Build"
+         ToolsVersion="17.0"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- ========================================================= -->
-  <!-- Project configurations                                   -->
-  <!-- ========================================================= -->
+  <!-- ===================================================== -->
+  <!-- Configurations                                        -->
+  <!-- ===================================================== -->
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -16,9 +17,9 @@
     </ProjectConfiguration>
   </ItemGroup>
 
-  <!-- ========================================================= -->
-  <!-- Source files                                              -->
-  <!-- ========================================================= -->
+  <!-- ===================================================== -->
+  <!-- Sources                                               -->
+  <!-- ===================================================== -->
   <ItemGroup>
     <ClCompile Include="Device.c" />
     <ClCompile Include="Driver.c" />
@@ -26,100 +27,70 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ClInclude Include="..\..\_SHARED\inc\AcpiGabi.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Driver.h" />
     <ClInclude Include="Queue.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Trace.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
 
   <ItemGroup>
     <Inf Include="GabiAcpi.inf" />
   </ItemGroup>
 
-  <!-- ========================================================= -->
-  <!-- Globals                                                   -->
-  <!-- ========================================================= -->
+  <!-- ===================================================== -->
+  <!-- Globals                                               -->
+  <!-- ===================================================== -->
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8CF74B16-2EFC-45AB-833C-3987CDE67171}</ProjectGuid>
-    <TemplateGuid>{497e31cb-056b-4f31-abb8-447fd55ee5a5}</TemplateGuid>
-    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
-    <Configuration>Debug</Configuration>
-    <Platform Condition="'$(Platform)' == ''">x64</Platform>
     <RootNamespace>GabiAcpi</RootNamespace>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <Platform Condition="'$(Platform)' == ''">x64</Platform>
   </PropertyGroup>
 
-  <!-- ========================================================= -->
-  <!-- Disable obsolete InfVerif (WDK 26100+)                    -->
-  <!-- ========================================================= -->
+  <!-- ===================================================== -->
+  <!-- IMPORTANT: disable obsolete InfVerif                  -->
+  <!-- ===================================================== -->
   <PropertyGroup>
+    <!-- WDK 26100: InfVerif.dll/exe is removed from MSBuild -->
     <RunInfVerif>false</RunInfVerif>
   </PropertyGroup>
 
-  <!-- ========================================================= -->
-  <!-- Standard C++ props                                        -->
-  <!-- ========================================================= -->
+  <!-- ===================================================== -->
+  <!-- Standard C++ targets                                  -->
+  <!-- ===================================================== -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
-  <!-- ========================================================= -->
-  <!-- Configurations                                            -->
-  <!-- ========================================================= -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <!-- ===================================================== -->
+  <!-- Driver configuration                                  -->
+  <!-- ===================================================== -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"
+                 Label="Configuration">
+    <ConfigurationType>Driver</ConfigurationType>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
-    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'"
+                 Label="Configuration">
+    <ConfigurationType>Driver</ConfigurationType>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
-    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
 
-  <!-- ========================================================= -->
-  <!-- Standard C++ props                                        -->
-  <!-- ========================================================= -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
 
-  <!-- ========================================================= -->
-  <!-- *** REQUIRED WDK DRIVERKIT PROPS (26100) ***               -->
-  <!-- ========================================================= -->
-  <Import Project="$(WDKContentRoot)build\$(WindowsTargetPlatformVersion)\Microsoft.Windows.DriverKit.props" />
-
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
-            Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
-  </ImportGroup>
-
-  <!-- ========================================================= -->
-  <!-- Build settings                                            -->
-  <!-- ========================================================= -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
-    <SignMode>Off</SignMode>
-  </PropertyGroup>
-
-  <!-- ========================================================= -->
-  <!-- Compilation                                               -->
-  <!-- ========================================================= -->
+  <!-- ===================================================== -->
+  <!-- Build settings                                        -->
+  <!-- ===================================================== -->
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WppEnabled>true</WppEnabled>
       <WppKernelMode>true</WppKernelMode>
-      <GuardEHContMetadata>true</GuardEHContMetadata>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -129,18 +100,13 @@
       <WppEnabled>true</WppEnabled>
       <WppKernelMode>true</WppKernelMode>
       <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
-      <GuardEHContMetadata>true</GuardEHContMetadata>
     </ClCompile>
   </ItemDefinitionGroup>
 
-  <!-- ========================================================= -->
-  <!-- Targets                                                   -->
-  <!-- ========================================================= -->
+  <!-- ===================================================== -->
+  <!-- Final targets                                         -->
+  <!-- ===================================================== -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 
-  <!-- ========================================================= -->
-  <!-- *** REQUIRED WDK DRIVERKIT TARGETS (26100) ***             -->
-  <!-- ========================================================= -->
-  <Import Project="$(WDKContentRoot)build\$(WindowsTargetPlatformVersion)\Microsoft.Windows.DriverKit.targets" />
-
 </Project>
+``

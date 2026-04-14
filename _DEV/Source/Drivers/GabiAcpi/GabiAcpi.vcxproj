@@ -47,6 +47,13 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
   </PropertyGroup>
+  
+<PropertyGroup>
+  <!-- WDK 26100: InfVerif is removed from MSBuild -->
+  <DisableInfVerification>true</DisableInfVerification>
+</PropertyGroup>
+
+  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <TargetVersion>

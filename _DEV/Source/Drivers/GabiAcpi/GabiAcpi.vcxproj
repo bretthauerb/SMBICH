@@ -188,7 +188,7 @@
       <GuardEHContMetadata>true</GuardEHContMetadata>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.6</TimeStamp>
+      <TimeStamp>8.5.0.0</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>

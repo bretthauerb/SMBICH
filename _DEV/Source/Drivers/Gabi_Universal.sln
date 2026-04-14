@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37111.16 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GabiAcpiTest", "GabiAcpiTest\GabiAcpiTest.vcxproj", "{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}"
 EndProject
@@ -11,44 +11,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FscGabi", "FscGabi\FscGabi.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		
 		Debug|UniversalX64 = Debug|UniversalX64
-		Debug|UniversalX86 = Debug|UniversalX86
 		Release|UniversalX64 = Release|UniversalX64
-		Release|UniversalX86 = Release|UniversalX86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|UniversalX64.ActiveCfg = Debug|x64
-		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Debug|UniversalX86.ActiveCfg = Debug|Win32
 		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|UniversalX64.ActiveCfg = Release|x64
-		{11DA5FBE-40AE-4ACD-8AC3-864AC47D7492}.Release|UniversalX86.ActiveCfg = Release|Win32
 		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|UniversalX64.ActiveCfg = Debug|x64
 		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|UniversalX64.Build.0 = Debug|x64
-		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|UniversalX86.ActiveCfg = Debug|Win32
-		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Debug|UniversalX86.Build.0 = Debug|Win32
 		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|UniversalX64.ActiveCfg = Release|x64
 		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|UniversalX64.Build.0 = Release|x64
-		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|UniversalX86.ActiveCfg = Release|Win32
-		{8CF74B16-2EFC-45AB-833C-3987CDE67171}.Release|UniversalX86.Build.0 = Release|Win32
 		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|UniversalX64.ActiveCfg = Debug|x64
 		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|UniversalX64.Build.0 = Debug|x64
-		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|UniversalX86.ActiveCfg = Debug|Win32
-		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Debug|UniversalX86.Build.0 = Debug|Win32
 		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|UniversalX64.ActiveCfg = Release|x64
 		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|UniversalX64.Build.0 = Release|x64
-		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|UniversalX86.ActiveCfg = Release|Win32
-		{4B93D971-5896-4C7B-8AF7-1FF709607B79}.Release|UniversalX86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://g02deas01tfoun.g02.fujitsu.local:8080/tfs/tpc1
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = GabiAcpiTest\\GabiAcpiTest.vcxproj
-		SccProjectName1 = GabiAcpiTest
-		SccLocalPath1 = GabiAcpiTest
 	EndGlobalSection
 EndGlobal

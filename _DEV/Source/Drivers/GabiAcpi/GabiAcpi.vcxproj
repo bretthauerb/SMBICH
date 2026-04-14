@@ -62,6 +62,7 @@
     <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(WDKTargetsPath)\Microsoft.Windows.DriverKit.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
@@ -136,6 +137,7 @@
     <ResourceCompile Include="GabiAcpi.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(WDKTargetsPath)\Microsoft.Windows.DriverKit.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

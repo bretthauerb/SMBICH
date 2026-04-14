@@ -56,6 +56,16 @@
     <RunInfVerif>false</RunInfVerif>
   </PropertyGroup>
 
+
+
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+</PropertyGroup>
+
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
+</PropertyGroup>
+
   <!-- ===================================================== -->
   <!-- Standard C++ targets                                  -->
   <!-- ===================================================== -->

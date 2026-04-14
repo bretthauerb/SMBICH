@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="17.0"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- ========================================================= -->
+  <!-- Project configurations                                   -->
+  <!-- ========================================================= -->
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -10,11 +15,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+
+  <!-- ========================================================= -->
+  <!-- Source files                                              -->
+  <!-- ========================================================= -->
   <ItemGroup>
     <ClCompile Include="Device.c" />
     <ClCompile Include="Driver.c" />
     <ClCompile Include="Queue.c" />
   </ItemGroup>
+
   <ItemGroup>
     <ClInclude Include="..\..\_SHARED\inc\AcpiGabi.h" />
     <ClInclude Include="Device.h" />
@@ -23,27 +33,39 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Trace.h" />
   </ItemGroup>
+
   <ItemGroup>
     <Inf Include="GabiAcpi.inf" />
   </ItemGroup>
+
+  <!-- ========================================================= -->
+  <!-- Globals                                                   -->
+  <!-- ========================================================= -->
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8CF74B16-2EFC-45AB-833C-3987CDE67171}</ProjectGuid>
     <TemplateGuid>{497e31cb-056b-4f31-abb8-447fd55ee5a5}</TemplateGuid>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
     <Configuration>Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">x64</Platform>
     <RootNamespace>GabiAcpi</RootNamespace>
-    <SccProjectName>SAK</SccProjectName>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccProvider>SAK</SccProvider>
-    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
+
+  <!-- ========================================================= -->
+  <!-- Disable obsolete InfVerif (WDK 26100+)                    -->
+  <!-- ========================================================= -->
+  <PropertyGroup>
+    <RunInfVerif>false</RunInfVerif>
+  </PropertyGroup>
+
+  <!-- ========================================================= -->
+  <!-- Standard C++ props                                        -->
+  <!-- ========================================================= -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <!-- ========================================================= -->
+  <!-- Configurations                                            -->
+  <!-- ========================================================= -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <TargetVersion>
-    </TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Driver</ConfigurationType>
@@ -51,9 +73,8 @@
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
     <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <TargetVersion>
-    </TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Driver</ConfigurationType>
@@ -61,83 +82,65 @@
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
     <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
+
+  <!-- ========================================================= -->
+  <!-- Standard C++ props                                        -->
+  <!-- ========================================================= -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(WDKTargetsPath)\Microsoft.Windows.DriverKit.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
+
+  <!-- ========================================================= -->
+  <!-- *** REQUIRED WDK DRIVERKIT PROPS (26100) ***               -->
+  <!-- ========================================================= -->
+  <Import Project="$(WDKContentRoot)build\$(WindowsTargetPlatformVersion)\Microsoft.Windows.DriverKit.props" />
+
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+            Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+
+  <!-- ========================================================= -->
+  <!-- Build settings                                            -->
+  <!-- ========================================================= -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
-    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
-    <OutDir>$(SolutionDir)$(DriverTargetPlatform)\$(Platform)\$(ConfigurationName)\</OutDir>
-    <IntDir>$(DriverTargetPlatform)\$(Platform)\$(ConfigurationName)\</IntDir>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>..\..\_SHARED\inc;$(IncludePath)</IncludePath>
-    <TimeStampServer>http://timestamp.globalsign.com/scripts/timstamp.dll</TimeStampServer>
-    <OutDir>$(SolutionDir)$(DriverTargetPlatform)\$(Platform)\$(ConfigurationName)\</OutDir>
-    <IntDir>$(DriverTargetPlatform)\$(Platform)\$(ConfigurationName)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <SignMode>Off</SignMode>
-    <ExecutablePath>$(WDKContentRoot)tools\$(WDKBuildFolder)\x64;$(WDKBinRoot_x64);$(ExecutablePath)</ExecutablePath>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
+
+  <!-- ========================================================= -->
+  <!-- Compilation                                               -->
+  <!-- ========================================================= -->
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WppEnabled>true</WppEnabled>
-      <WppRecorderEnabled>true</WppRecorderEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
       <GuardEHContMetadata>true</GuardEHContMetadata>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
-    <Inf>
-      <TimeStamp>3.0.0.6</TimeStamp>
-    </Inf>
-    <Inf>
-      <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
-    </Inf>
-    <Link>
-      <CETCompat>true</CETCompat>
-    </Link>
   </ItemDefinitionGroup>
+
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WppEnabled>true</WppEnabled>
-      <WppRecorderEnabled>true</WppRecorderEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile.ScanConfigurationData)' == ''">trace.h</WppScanConfigurationData>
       <WppKernelMode>true</WppKernelMode>
       <AdditionalOptions>/Qspectre %(AdditionalOptions)</AdditionalOptions>
       <GuardEHContMetadata>true</GuardEHContMetadata>
     </ClCompile>
-    <Inf>
-      <TimeStamp>8.5.0.0</TimeStamp>
-    </Inf>
-    <Inf>
-      <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
-    </Inf>
-    <Inf>
-      <Architecture>x64</Architecture>
-    </Inf>
-    <Link>
-      <CETCompat>true</CETCompat>
-    </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <FilesToPackage Include="$(TargetPath)" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="GabiAcpi.rc" />
-  </ItemGroup>
+
+  <!-- ========================================================= -->
+  <!-- Targets                                                   -->
+  <!-- ========================================================= -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Import Project="$(WDKTargetsPath)\Microsoft.Windows.DriverKit.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+
+  <!-- ========================================================= -->
+  <!-- *** REQUIRED WDK DRIVERKIT TARGETS (26100) ***             -->
+  <!-- ========================================================= -->
+  <Import Project="$(WDKContentRoot)build\$(WindowsTargetPlatformVersion)\Microsoft.Windows.DriverKit.targets" />
+
 </Project>

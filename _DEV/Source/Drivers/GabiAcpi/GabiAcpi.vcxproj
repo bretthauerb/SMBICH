@@ -50,7 +50,8 @@
   
 <PropertyGroup>
   <!-- WDK 26100: InfVerif is removed from MSBuild -->
-  <DisableInfVerification>true</DisableInfVerification>
+  
+  <SkipPackageVerification>true</SkipPackageVerification>
 </PropertyGroup>
 
   

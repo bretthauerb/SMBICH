@@ -103,13 +103,13 @@ _Dispatch_type_(IRP_MJ_POWER)           DRIVER_DISPATCH_PAGED DispatchPower;
 _Dispatch_type_(IRP_MJ_PNP)             DRIVER_DISPATCH_PAGED DispatchPnp;
 _Dispatch_type_(IRP_MJ_SYSTEM_CONTROL)  DRIVER_DISPATCH_PAGED DispatchSystemControl;
 
-NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp);
+/*NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchClose(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchCleanup(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchPower(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchPnp(PDEVICE_OBJECT fdo, PIRP Irp);
-NTSTATUS DispatchSystemControl(PDEVICE_OBJECT fdo, PIRP Irp);
+NTSTATUS DispatchSystemControl(PDEVICE_OBJECT fdo, PIRP Irp);*/
 
 //extern UNICODE_STRING servkey;
 

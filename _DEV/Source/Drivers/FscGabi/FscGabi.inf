@@ -42,4 +42,4 @@ ServiceBinary  = %12%\FscGabi.sys
 [Strings]
 MFGNAME="Kontron Europe GmbH"
 INSTDISK="Kontron Installation Disc"
-DESCRIPTION="´Kontron GABI BIOS Interface"
+DESCRIPTION="Kontron GABI BIOS Interface"

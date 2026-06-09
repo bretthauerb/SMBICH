@@ -47,14 +47,10 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
   </PropertyGroup>
-  
-<PropertyGroup>
-  <!-- WDK 26100: InfVerif is removed from MSBuild -->
-  
-  <SkipPackageVerification>true</SkipPackageVerification>
-</PropertyGroup>
-
-  
+  <PropertyGroup>
+    <!-- WDK 26100: InfVerif is removed from MSBuild -->
+    <SkipPackageVerification>true</SkipPackageVerification>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <TargetVersion>
@@ -177,7 +173,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.6</TimeStamp>
+      <TimeStamp>8.5.0.0</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>
@@ -196,7 +192,7 @@
       <GuardEHContMetadata>true</GuardEHContMetadata>
     </ClCompile>
     <Inf>
-      <TimeStamp>3.0.0.6</TimeStamp>
+      <TimeStamp>8.5.0.0</TimeStamp>
     </Inf>
     <Inf>
       <SpecifyDriverVerDirectiveDate>true</SpecifyDriverVerDirectiveDate>

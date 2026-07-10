@@ -206,7 +206,36 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 					status = STATUS_PENDING;
 				}
 			}
+			break;
 
+		case IOCTL_SMBus_WordDataRead:
+			if (NT_SUCCESS(status)) {
+				pdx->SMBusInfo.Status       = status;
+				pdx->SMBusInfo.DataByteHigh = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA1_REGISTER );
+				pdx->SMBusInfo.DataByteLow  = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA0_REGISTER );
+				RtlCopyMemory( SystemBuffer, &pdx->SMBusInfo, sizeof(SMB_INFO) );
+				info = sizeof(SMB_INFO);
+//				KdPrint(("IOCTL_SMBus_ByteDataRead: %x\n", pdx->SMBusInfo.DataByteLow));
+			}
+			else
+			{
+				// BUS error, retry access assuming arbitration was lost
+				if ((HostStatus & SMBUS_HST_STA_BUS_ERR) && pdx->TimeOutCounter > 1)
+				{
+					SMBus_ClearStatus( pdx );
+#if DBG
+					pdx->RetryCount++;
+#endif
+					// Write Slave Address
+					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_ADDRESS_REGISTER, (UCHAR) ((pdx->SMBusInfo.SlaveAddress<<1) | 1) );
+					// Write Command
+					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
+					// Write Control (Command Protocol)
+					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BYTE_DATA | pdx->StartCommand );
+
+					status = STATUS_PENDING;
+				}
+			}
 			break;
 
 		default:
@@ -487,6 +516,26 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
 				// Write Data Byte
 				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_DATA0_REGISTER, (UCHAR) pdx->SMBusInfo.DataByteLow );
+				// Write Control (Command Protocol)
+				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BYTE_DATA | pdx->StartCommand );
+
+				status = STATUS_PENDING;
+			}
+			break;
+
+		case IOCTL_SMBus_WordDataRead:
+			if (CheckAndCopyIn(cbin ,cbout, &pdx->SMBusInfo, SystemBuffer, sizeof(SMB_INFO)))
+			{
+				SMBus_AcquireSemaphore(pdx);
+
+				SMBus_ClearStatus( pdx );
+#if DBG
+				pdx->RetryCount = 0;
+#endif
+				// Write Slave Address
+				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_ADDRESS_REGISTER, (UCHAR) ((pdx->SMBusInfo.SlaveAddress<<1) | 1) );
+				// Write Command
+				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
 				// Write Control (Command Protocol)
 				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BYTE_DATA | pdx->StartCommand );
 

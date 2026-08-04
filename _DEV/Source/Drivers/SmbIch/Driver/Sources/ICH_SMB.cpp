@@ -43,7 +43,7 @@ PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfB
 
 	if (pfnMmMapIoSpaceEx != NULL)
 	{
-		return pfnMmMapIoSpaceEx(PhysicalAddress, NumberOfBytes, PAGE_READONLY | PAGE_NOCACHE);
+		return pfnMmMapIoSpaceEx(PhysicalAddress, NumberOfBytes, PAGE_READWRITE | PAGE_NOCACHE);
 	}
 	else
 	{
@@ -140,6 +140,10 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 	NTSTATUS status;
 	PDEVICE_EXTENSION pdx = static_cast<PDEVICE_EXTENSION>(pVoid);
 	PIRP Irp = GetCurrentIrp(&pdx->dqReadWrite);
+	if (Irp == NULL) {
+		DbgPrint(SMBUS_DRIVER_NAME" ERROR: DpcForIsr called with no current IRP\n");
+		return;
+	}
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	PVOID SystemBuffer = Irp->AssociatedIrp.SystemBuffer;
 	PUCHAR portbase = pdx->portbase;

@@ -4,13 +4,14 @@ Class=System
 ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
 Provider=%MFGNAME%
 CatalogFile=SmbIch.cat
-DriverVer=07/24/2020,6.4.0.0
+DriverVer=07/7/2026,6.4.0.0
+PnpLockdown=1
 
 [Manufacturer]
-%MFGNAME%=DeviceList,NT$ARCH$
+%MFGNAME%=DeviceList, NTamd64.10.0...17163
 
 [DestinationDirs]
-DefaultDestDir=10,System32\Drivers
+DefaultDestDir=13
 
 [SourceDisksFiles]
 SmbIch.sys=1
@@ -18,7 +19,7 @@ SmbIch.sys=1
 [SourceDisksNames]
 1=%INSTDISK%,SmbIch.sys,,
 
-[DeviceList.NT$ARCH$]
+[DeviceList.NTamd64.10.0...17163]
 %DESCRIPTION_ICH%=DriverInstall,PCI\VEN_8086&DEV_2413
 %DESCRIPTION_ICH0%=DriverInstall,PCI\VEN_8086&DEV_2423
 %DESCRIPTION_ICH2%=DriverInstall,PCI\VEN_8086&DEV_2443
@@ -38,23 +39,27 @@ SmbIch.sys=1
 %DES_SMB_INTEL_GEMINILAKE%=DriverInstall,PCI\VEN_8086&DEV_31D4
 %DESCRIPTION_COM%=DriverInstall,PCI\VEN_8086&DEV_06A3
 %DESCRIPTION_COM2%=DriverInstall,PCI\VEN_8086&DEV_A3A3
+%DESCRIPTION_ADL%=DriverInstall,PCI\VEN_8086&DEV_7AA3
+%DESCRIPTION_ADLN%=DriverInstall,PCI\VEN_8086&DEV_54A3
 
-[DriverInstall.NT$ARCH$]
+[DriverInstall.NT]
 CopyFiles=DriverCopyFiles
 
 [DriverCopyFiles]
-SmbIch.sys,,,2
+SmbIch.sys
 
-[DriverInstall.NT$ARCH$.Services]
+;-------------- Service installation
+[DriverInstall.NT.Services]
 AddService=SmbIch,2,DriverService
 
 [DriverService]
+DisplayName=%SVCDESC%
 ServiceType=1
 StartType=3
 ErrorControl=1
-ServiceBinary=%10%\system32\drivers\SmbIch.sys
+ServiceBinary=%13%\SmbIch.sys
 
-[DriverInstall.NT$ARCH$.hw]
+[DriverInstall.NT.hw]
 AddReg=DriverHwAddReg
 
 [DriverHwAddReg]
@@ -86,6 +91,8 @@ DESCRIPTION_COF="Intel(r) B350/Q350/Q370/H310 SMBUS Controller"
 DES_SMB_INTEL_GEMINILAKE="Intel(r) Geminilake SMBUS Controller"
 DESCRIPTION_COM="Intel(r) Q470/H470/Z490/W480 SMBUS Controller"
 DESCRIPTION_COM2="Intel(r) Q470/H470/Z490/W480 SMBUS Controller"
-
+DESCRIPTION_ADL="Intel(r) Q670/W680/R680/B660 SMBUS Controller"
+DESCRIPTION_ADLN="Intel(r) Alderlake-N SMBUS Controller"
 
 FRIENDLYNAME="SMBus Controller"
+SVCDESC="SMBus Controller Service"

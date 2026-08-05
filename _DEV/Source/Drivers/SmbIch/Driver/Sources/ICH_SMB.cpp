@@ -215,11 +215,11 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 		case IOCTL_SMBus_WordDataRead:
 			if (NT_SUCCESS(status)) {
 				pdx->SMBusInfo.Status       = status;
-				pdx->SMBusInfo.DataByteHigh = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA1_REGISTER );
 				pdx->SMBusInfo.DataByteLow  = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA0_REGISTER );
+				pdx->SMBusInfo.DataByteHigh = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA1_REGISTER );
 				RtlCopyMemory( SystemBuffer, &pdx->SMBusInfo, sizeof(SMB_INFO) );
 				info = sizeof(SMB_INFO);
-//				KdPrint(("IOCTL_SMBus_ByteDataRead: %x\n", pdx->SMBusInfo.DataByteLow));
+				KdPrint(("IOCTL_SMBus_WordDataRead: High = 0x%X, Low = 0x%X\n", pdx->SMBusInfo.DataByteHigh, pdx->SMBusInfo.DataByteLow));
 			}
 			else
 			{
@@ -247,17 +247,21 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
                 constexpr const size_t BlockBufSize = sizeof(SMB_INFO::BlockBuf)/sizeof(SMB_INFO::BlockBuf[0]);
 
 				pdx->SMBusInfo.Status = status;
+				KdPrint(("IOCTL_SMBus_BlockRead: Status = 0x%X\n", pdx->SMBusInfo.Status));
 				pdx->SMBusInfo.Count  = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA0_REGISTER );
+				KdPrint(("IOCTL_SMBus_BlockRead: Count = 0x%X\n", pdx->SMBusInfo.Count));
                 for ( size_t i = 0 ; i < pdx->SMBusInfo.Count && i < BlockBufSize ; ++i )
                 {
                     pdx->SMBusInfo.BlockBuf[i] = READ_PORT_UCHAR( portbase + SMBUS_HOST_BLOCKDATA_REGISTER );
+                    KdPrint(("IOCTL_SMBus_BlockRead: BlockBuf[%d] = 0x%X\n", i, pdx->SMBusInfo.BlockBuf[i]));
                 }
 				RtlCopyMemory( SystemBuffer, &pdx->SMBusInfo, sizeof(SMB_INFO) );
 				info = sizeof(SMB_INFO);
-//				KdPrint(("IOCTL_SMBus_ByteDataRead: %x\n", pdx->SMBusInfo.DataByteLow));
+				KdPrint(("IOCTL_SMBus_BlockRead: at eof\n"));
 			}
 			else
 			{
+				KdPrint(("IOCTL_SMBus_BlockRead: after BUS error\n"));
 				// BUS error, retry access assuming arbitration was lost
 				if ((HostStatus & SMBUS_HST_STA_BUS_ERR) && pdx->TimeOutCounter > 1)
 				{
@@ -270,7 +274,7 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 					// Write Command
 					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
 					// Write Control (Command Protocol)
-					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BYTE_DATA | pdx->StartCommand );
+					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BLOCK | pdx->StartCommand );
 
 					status = STATUS_PENDING;
 				}
@@ -583,8 +587,11 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 			break;
 
 		case IOCTL_SMBus_BlockRead:
+            KdPrint(("IOCTL_SMBus_BlockRead: StartIo\n"));
 			if (CheckAndCopyIn(cbin ,cbout, &pdx->SMBusInfo, SystemBuffer, sizeof(SMB_INFO)))
 			{
+                KdPrint(("IOCTL_SMBus_BlockRead: CheckAndCopyIn() succeeded\n"));
+
 				SMBus_AcquireSemaphore(pdx);
 
 				SMBus_ClearStatus( pdx );

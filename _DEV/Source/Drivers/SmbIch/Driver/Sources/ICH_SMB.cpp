@@ -118,7 +118,7 @@ VOID DpcForPoll(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PVOID, PVOID)
 	}
 }
 
-#ifdef _USED_
+#if DBG
 static void e2t(UCHAR ucHostStatus)
 {
 	if (ucHostStatus & SMBUS_HST_STA_INTR)

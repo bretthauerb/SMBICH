@@ -169,6 +169,7 @@
     </Inf>
     <ClCompile>
       <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

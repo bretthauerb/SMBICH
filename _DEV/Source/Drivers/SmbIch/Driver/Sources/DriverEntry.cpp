@@ -11,7 +11,7 @@ static VOID DriverUnload(IN PDRIVER_OBJECT fdo);
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev);
 
 #if 0
-	UNICODE_STRING servkey;
+UNICODE_STRING servkey;
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT
 #pragma INITCODE
 
 extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
-								IN PUNICODE_STRING RegistryPath)
+	IN PUNICODE_STRING RegistryPath)
 {
 	RegistryPath;  // prevent compiler warning "'RegistryPath': unreferenced formal parameter" which is treated as error.
 
@@ -35,7 +35,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 
 #if 0
 	// Save the name of the service key
-	servkey.Buffer = (PWSTR) ExAllocatePool(PagedPool, RegistryPath->Length + sizeof(WCHAR));
+	servkey.Buffer = (PWSTR)ExAllocatePoolWithTag(PagedPool, RegistryPath->Length + sizeof(WCHAR), 'SMBS');
 	if (!servkey.Buffer)
 	{
 		KdPrint((SMBUS_DRIVER_NAME " - Unable to allocate %d bytes for copy of service key name\n", RegistryPath->Length + sizeof(WCHAR)));
@@ -57,32 +57,32 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	DriverObject->MajorFunction[IRP_MJ_POWER] = DispatchPower;
 	DriverObject->MajorFunction[IRP_MJ_PNP] = DispatchPnp;
 	DriverObject->MajorFunction[IRP_MJ_SYSTEM_CONTROL] = DispatchSystemControl;
-	
+
 	return STATUS_SUCCESS;
 }							// DriverEntry
 
 extern NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// DispatchSystemControl
+{							// DispatchSystemControl
 	IoSkipCurrentIrpStackLocation(Irp);
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);
-	}							// DispatchSystemControl
+}							// DispatchSystemControl
 
 ///////////////////////////////////////////////////////////////////////////////
 #pragma PAGEDCODE
 
 static VOID DriverUnload(IN PDRIVER_OBJECT /*DriverObject*/)
-	{							// WdmDriverUnload
+{							// WdmDriverUnload
 	PAGED_CODE();
 #if 0
 	RtlFreeUnicodeString(&servkey);
 #endif
-	}							// WdmDriverUnload
+}							// WdmDriverUnload
 
 #pragma PAGEDCODE
 
 static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
-	{							// AddDevice
+{							// AddDevice
 	PAGED_CODE();
 
 	NTSTATUS status;
@@ -90,8 +90,8 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 	// Create a functional device object to represent the hardware we're managing.
 
 	PDEVICE_OBJECT fdo;
-	#define xsize sizeof(DEVICE_EXTENSION)
-	
+#define xsize sizeof(DEVICE_EXTENSION)
+
 	UNICODE_STRING devname;
 	WCHAR namebuf[32];
 	_snwprintf(namebuf, arraysize(namebuf), L"\\Device\\" SMBUS_DRIVER_NAME_L);
@@ -102,32 +102,32 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		FILE_DEVICE_SECURE_OPEN,
 		FALSE, &fdo);
 	if (!NT_SUCCESS(status))
-		{						// can't create device object
+	{						// can't create device object
 		KdPrint((SMBUS_DRIVER_NAME " - IoCreateDevice failed - %X\n", status));
 		return status;
-		}						// can't create device object
-	
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	}						// can't create device object
+
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	pdx->bIoInitializeTimerCalled = FALSE;
-	KeInitializeTimer( &pdx->Timer );
-	KeInitializeDpc( &pdx->PollDpc, (PKDEFERRED_ROUTINE)DpcForPoll, fdo );
+	KeInitializeTimer(&pdx->Timer);
+	KeInitializeDpc(&pdx->PollDpc, (PKDEFERRED_ROUTINE)DpcForPoll, fdo);
 
 	// From this point forward, any error will have side effects that need to
 	// be cleaned up. Using a try-finally block allows us to modify the program
 	// easily without losing track of the side effects.
 
 	__try
-		{						// finish initialization
-		RtlInitUnicodeString(&(pdx->uniSymbolicLinkName), L"\\DosDevices\\" SMBUS_DRIVER_NAME_L );
+	{						// finish initialization
+		RtlInitUnicodeString(&(pdx->uniSymbolicLinkName), L"\\DosDevices\\" SMBUS_DRIVER_NAME_L);
 
 		status = IoCreateSymbolicLink(&(pdx->uniSymbolicLinkName), &devname);
-		if ( !NT_SUCCESS(status) ) {
+		if (!NT_SUCCESS(status)) {
 			KdPrint((SMBUS_DRIVER_NAME " - Unable to create symbolic link\n"));
 			pdx->uniSymbolicLinkName.Buffer = NULL;
 			__leave;
 		}
-		
+
 		pdx->DeviceObject = fdo;
 		pdx->Pdo = pdo;
 
@@ -138,13 +138,13 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 
 		// Make a copy of the device name
 
-		pdx->devname.Buffer = (PWCHAR) ExAllocatePool(NonPagedPool, devname.MaximumLength);
+		pdx->devname.Buffer = (PWCHAR)ExAllocatePoolWithTag(NonPagedPool, devname.MaximumLength, 'SMBN');
 		if (!pdx->devname.Buffer)
-			{					// can't allocate buffer
+		{					// can't allocate buffer
 			status = STATUS_INSUFFICIENT_RESOURCES;
 			KdPrint((SMBUS_DRIVER_NAME " - Unable to allocate %d bytes for copy of name\n", devname.MaximumLength));
 			__leave;
-			}					// can't allocate buffer
+		}					// can't allocate buffer
 		pdx->devname.MaximumLength = devname.MaximumLength;
 		RtlCopyUnicodeString(&pdx->devname, &devname);
 
@@ -157,12 +157,12 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		{
 			pdx->LowerDeviceObject = IoAttachDeviceToDeviceStack(fdo, pdo);
 			if (!pdx->LowerDeviceObject)
-				{						// can't attach device
+			{						// can't attach device
 				KdPrint((SMBUS_DRIVER_NAME " - IoAttachDeviceToDeviceStack failed\n"));
 				status = STATUS_DEVICE_REMOVED;
 				__leave;
-				}						// can't attach device
-			// Set power management flags in the device object
+			}						// can't attach device
+		// Set power management flags in the device object
 
 			fdo->Flags |= DO_POWER_PAGABLE;
 
@@ -182,22 +182,22 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 	}
 
 	__finally
-		{						// cleanup side effects
+	{						// cleanup side effects
 		if (!NT_SUCCESS(status))
-			{					// need to cleanup
+		{					// need to cleanup
 			if (pdx->uniSymbolicLinkName.Buffer)
-				IoDeleteSymbolicLink( &(pdx->uniSymbolicLinkName) );
+				IoDeleteSymbolicLink(&(pdx->uniSymbolicLinkName));
 			if (pdx->devname.Buffer)
 				RtlFreeUnicodeString(&pdx->devname);
 			if (pdx->LowerDeviceObject)
 				IoDetachDevice(pdx->LowerDeviceObject);
 			IoDeleteDevice(fdo);
-			}					// need to cleanup
+		}					// need to cleanup
 		else
 			KdPrint(("AddDevice SUCCESS\n"));
-		}
-		// cleanup side effects
-	
+	}
+	// cleanup side effects
+
 	return status;
 }							// AddDevice
 
@@ -206,77 +206,77 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 #pragma LOCKEDCODE
 
 NTSTATUS CompleteRequest(IN PIRP Irp, IN NTSTATUS status, IN ULONG_PTR info)
-	{							// CompleteRequest
+{							// CompleteRequest
 	Irp->IoStatus.Status = status;
 	Irp->IoStatus.Information = info;
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 	return status;
-	}							// CompleteRequest
+}							// CompleteRequest
 
 NTSTATUS CompleteRequest(IN PIRP Irp, IN NTSTATUS status)
-	{							// CompleteRequest
+{							// CompleteRequest
 	Irp->IoStatus.Status = status;
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
 	return status;
-	}							// CompleteRequest
+}							// CompleteRequest
 
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma PAGEDCODE
 
 NTSTATUS ForwardAndWait(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
-	{							// ForwardAndWait
+{							// ForwardAndWait
 	ASSERT(KeGetCurrentIrql() == PASSIVE_LEVEL);
 	PAGED_CODE();
-	
+
 	KEVENT event;
 	KeInitializeEvent(&event, NotificationEvent, FALSE);
 
 	IoCopyCurrentIrpStackLocationToNext(Irp);
-	IoSetCompletionRoutine(Irp, (PIO_COMPLETION_ROUTINE) OnRequestComplete,
-		(PVOID) &event, TRUE, TRUE, TRUE);
+	IoSetCompletionRoutine(Irp, (PIO_COMPLETION_ROUTINE)OnRequestComplete,
+		(PVOID)&event, TRUE, TRUE, TRUE);
 
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	IoCallDriver(pdx->LowerDeviceObject, Irp);
 	KeWaitForSingleObject(&event, Executive, KernelMode, FALSE, NULL);
 	return Irp->IoStatus.Status;
-	}							// ForwardAndWait
+}							// ForwardAndWait
 
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma LOCKEDCODE
 
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT /*fdo*/, IN PIRP /*Irp*/, IN PKEVENT pev)
-	{							// OnRequestComplete
+{							// OnRequestComplete
 	KeSetEvent(pev, 0, FALSE);
 	return STATUS_MORE_PROCESSING_REQUIRED;
-	}							// OnRequestComplete
+}							// OnRequestComplete
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID EnableAllInterfaces(PDEVICE_EXTENSION /*pdx*/, BOOLEAN /*enable*/)
-	{							// EnableAllInterfaces
-	}							// EnableAllInterfaces
+{							// EnableAllInterfaces
+}							// EnableAllInterfaces
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID DeregisterAllInterfaces(PDEVICE_EXTENSION /*pdx*/)
-	{							// DeregisterAllInterfaces
-	}							// DeregisterAllInterfaces
+{							// DeregisterAllInterfaces
+}							// DeregisterAllInterfaces
 
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma PAGEDCODE
 
 VOID RemoveDevice(IN PDEVICE_OBJECT fdo)
-	{							// RemoveDevice
+{							// RemoveDevice
 	PAGED_CODE();
-	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
+	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	if (pdx->uniSymbolicLinkName.Buffer)
-	 IoDeleteSymbolicLink( &(pdx->uniSymbolicLinkName) );
-	
+		IoDeleteSymbolicLink(&(pdx->uniSymbolicLinkName));
+
 	if (pdx->devname.Buffer)
-	 RtlFreeUnicodeString(&pdx->devname);
+		RtlFreeUnicodeString(&pdx->devname);
 
 	if (pdx->LowerDeviceObject)
 	{
@@ -285,8 +285,8 @@ VOID RemoveDevice(IN PDEVICE_OBJECT fdo)
 	}
 
 	if (fdo)
-	 IoDeleteDevice(fdo);
-	}							// RemoveDevice
+		IoDeleteDevice(fdo);
+}							// RemoveDevice
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -294,11 +294,11 @@ VOID RemoveDevice(IN PDEVICE_OBJECT fdo)
 #pragma LOCKEDCODE
 
 extern "C" void __declspec(naked) __cdecl _chkesp()
-	{
+{
 	_asm je okay
 	ASSERT(!SMBUS_DRIVER_NAME " - Stack pointer mismatch!");
 okay:
 	_asm ret
-	}
+}
 
 #endif // DBG

@@ -634,8 +634,12 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 
 				SMBus_AcquireSemaphore(pdx);
 
-				[[maybe_unused]] BOOLEAN Cleared = SMBus_ClearStatus( pdx );
+#if DBG
+				BOOLEAN Cleared = SMBus_ClearStatus( pdx );
                 KdPrint(("IOCTL_SMBus_BlockRead: SMBus_ClearStatus() returned 0x%X\n",Cleared));
+#else
+                SMBus_ClearStatus( pdx );
+#endif
 
 #if DBG
 				pdx->RetryCount = 0;

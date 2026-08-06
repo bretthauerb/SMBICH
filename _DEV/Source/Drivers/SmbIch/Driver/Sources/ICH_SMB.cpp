@@ -149,7 +149,9 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 	PUCHAR portbase = pdx->portbase;
 
 	UCHAR HostStatus = READ_PORT_UCHAR(portbase + SMBUS_HOST_STATUS_REGISTER);
+    KdPrint(("DpcForIsr: HostStatus = 0%X\n", HostStatus));
 	status = HostStatus2NtStatus(HostStatus);
+    KdPrint(("DpcForIsr:     Status = 0%X\n", status));
 
 	info = 0;
 
@@ -594,7 +596,8 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 
 				SMBus_AcquireSemaphore(pdx);
 
-				SMBus_ClearStatus( pdx );
+				BOOLEAN Cleared = SMBus_ClearStatus( pdx );
+                KdPrint(("IOCTL_SMBus_BlockRead: SMBus_ClearStatus() returned 0x%X\n",Cleared));
 #if DBG
 				pdx->RetryCount = 0;
 #endif
@@ -683,6 +686,7 @@ VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 	}
 	pdx->StartCommand = (pdx->UseInterrupt) ? (SMBUS_HST_CNT_START | SMBUS_HST_CNT_INTREN) : SMBUS_HST_CNT_START;
 	DebugPrint(DEBUGLEVEL_DEBUG, "bPIIX4 = %x;  UseInterrupt = %x\n", pdx->bPIIX4, pdx->UseInterrupt);
+	KdPrint("ICH_Initialize: bPIIX4 = 0x%X;  UseInterrupt = 0x%X\n", pdx->bPIIX4, pdx->UseInterrupt);
 }
 
 #pragma PAGEDCODE

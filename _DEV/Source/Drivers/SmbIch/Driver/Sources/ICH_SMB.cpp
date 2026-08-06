@@ -136,6 +136,33 @@ static void e2t(UCHAR ucHostStatus)
 }
 #endif //#ifdef _USED_
 
+
+BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
+{
+    ULONG Retries = 100;
+	UCHAR HostStatus = READ_PORT_UCHAR(portbase + SMBUS_HOST_STATUS_REGISTER);
+    KdPrint(("WaitForNextByte: HostStatus = 0x%X\n",HostStatus));
+
+    // Clear the BYTE DONE bit
+    WRITE_PORT_UCHAR( pdx->portbase + SMBUS_HOST_STATUS_REGISTER, SMBUS_HST_STA_BYTE_DONE_STS );
+
+    // Wait for the bit coming up again ...
+    while ( Retries-- )
+    {
+        HostStatus = READ_PORT_UCHAR(portbase + SMBUS_HOST_STATUS_REGISTER);
+        KdPrint(("WaitForNextByte: HostStatus = 0x%X\n",HostStatus));
+        if ( HostStatus & SMBUS_HST_STA_BYTE_DONE_STS )
+        {
+            KdPrint(("WaitForNextByte: returning TRUE\n"));
+            return TRUE;
+        }
+    }
+
+    KdPrint(("WaitForNextByte: returning FALSE\n"));
+    return FALSE;
+}
+
+
 VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 {		
 	ULONG info;
@@ -258,6 +285,7 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
                 {
                     pdx->SMBusInfo.BlockBuf[i] = READ_PORT_UCHAR( portbase + SMBUS_HOST_BLOCKDATA_REGISTER );
                     KdPrint(("IOCTL_SMBus_BlockRead: BlockBuf[%d] = 0x%X\n", i, pdx->SMBusInfo.BlockBuf[i]));
+                    WaitForNextByte( pdx );
                 }
 				RtlCopyMemory( SystemBuffer, &pdx->SMBusInfo, sizeof(SMB_INFO) );
 				info = sizeof(SMB_INFO);

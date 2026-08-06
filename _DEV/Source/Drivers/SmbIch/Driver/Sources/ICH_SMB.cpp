@@ -87,7 +87,7 @@ static VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
 
 static NTSTATUS HostStatus2NtStatus( IN UCHAR ucHostStatus )
 {
-    if (ucHostStatus & SMBUS_HST_STA_BYTE_DONE_STS )
+    if (ucHostStatus & SMBUS_HST_STA_BYTE_DONE_STS )    // this happens for a Block Read
         return STATUS_SUCCESS;
 	if (ucHostStatus & SMBUS_HST_STA_INTR)
 		return STATUS_SUCCESS;
@@ -137,6 +137,7 @@ static void e2t(UCHAR ucHostStatus)
 #endif //#ifdef _USED_
 
 
+// TRUE: next byte ready;  FALSE: all work done
 BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
 {
     ULONG Retries = 100;
@@ -145,6 +146,13 @@ BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
 
     // Clear the BYTE DONE bit
     WRITE_PORT_UCHAR( pdx->portbase + SMBUS_HOST_STATUS_REGISTER, SMBUS_HST_STA_BYTE_DONE_STS );
+
+    // Check whether the host is still busy or already done
+    if ( 0 == (HostStatus & SMBUS_HST_STA_HOST_BUSY) &&  (HostStatus & SMBUS_HST_STA_INTR) )
+    {
+        KdPrint(("WaitForNextByte: returning FALSE (shortcut)\n"));
+        return FALSE;
+    }
 
     // Wait for the bit coming up again ...
     while ( Retries-- )

@@ -686,7 +686,7 @@ VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 	}
 	pdx->StartCommand = (pdx->UseInterrupt) ? (SMBUS_HST_CNT_START | SMBUS_HST_CNT_INTREN) : SMBUS_HST_CNT_START;
 	DebugPrint(DEBUGLEVEL_DEBUG, "bPIIX4 = %x;  UseInterrupt = %x\n", pdx->bPIIX4, pdx->UseInterrupt);
-	KdPrint("ICH_Initialize: bPIIX4 = 0x%X;  UseInterrupt = 0x%X\n", pdx->bPIIX4, pdx->UseInterrupt);
+	KdPrint(("ICH_Initialize: bPIIX4 = 0x%X;  UseInterrupt = 0x%X\n", pdx->bPIIX4, pdx->UseInterrupt));
 }
 
 #pragma PAGEDCODE

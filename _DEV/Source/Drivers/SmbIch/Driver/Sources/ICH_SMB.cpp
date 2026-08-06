@@ -87,6 +87,8 @@ static VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
 
 static NTSTATUS HostStatus2NtStatus( IN UCHAR ucHostStatus )
 {
+    if (ucHostStatus & SMBUS_HST_STA_BYTE_DONE_STS )
+        return STATUS_SUCCESS;
 	if (ucHostStatus & SMBUS_HST_STA_INTR)
 		return STATUS_SUCCESS;
 	if (ucHostStatus & SMBUS_HST_STA_DEV_ERR)
@@ -149,9 +151,9 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 	PUCHAR portbase = pdx->portbase;
 
 	UCHAR HostStatus = READ_PORT_UCHAR(portbase + SMBUS_HOST_STATUS_REGISTER);
-    KdPrint(("DpcForIsr: HostStatus = 0%X\n", HostStatus));
+    KdPrint(("DpcForIsr: HostStatus = 0x%X\n", HostStatus));
 	status = HostStatus2NtStatus(HostStatus);
-    KdPrint(("DpcForIsr:     Status = 0%X\n", status));
+    KdPrint(("DpcForIsr:     Status = 0x%X\n", status));
 
 	info = 0;
 

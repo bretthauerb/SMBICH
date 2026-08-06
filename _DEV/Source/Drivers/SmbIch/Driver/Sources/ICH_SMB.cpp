@@ -281,6 +281,12 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 			}
 			break;
 
+        //
+        // SMBus Block Read is byte-driven.
+        // BYTE_DONE must be acknowledged after each byte read,
+        // otherwise the host controller keeps presenting the same
+        // BLOCK_DATA value repeatedly.
+        //
 		case IOCTL_SMBus_BlockRead:
 			if (NT_SUCCESS(status)) {
                 constexpr const size_t BlockBufSize = sizeof(SMB_INFO::BlockBuf)/sizeof(SMB_INFO::BlockBuf[0]);

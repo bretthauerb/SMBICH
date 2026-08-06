@@ -777,6 +777,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 
 	// Do some HW initialisation
 	ICH_Initialize( pdx );
+    KdPrint(("StartDevice: pdx->portbase = 0x%X\n",pdx->portbase));
 
 	if (pdx->UseInterrupt)
 		{

@@ -140,7 +140,7 @@ static void e2t(UCHAR ucHostStatus)
 BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
 {
     ULONG Retries = 100;
-	UCHAR HostStatus = READ_PORT_UCHAR(portbase + SMBUS_HOST_STATUS_REGISTER);
+	UCHAR HostStatus = READ_PORT_UCHAR(pdx->portbase + SMBUS_HOST_STATUS_REGISTER);
     KdPrint(("WaitForNextByte: HostStatus = 0x%X\n",HostStatus));
 
     // Clear the BYTE DONE bit
@@ -149,7 +149,7 @@ BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
     // Wait for the bit coming up again ...
     while ( Retries-- )
     {
-        HostStatus = READ_PORT_UCHAR(portbase + SMBUS_HOST_STATUS_REGISTER);
+        HostStatus = READ_PORT_UCHAR(pdx->portbase + SMBUS_HOST_STATUS_REGISTER);
         KdPrint(("WaitForNextByte: HostStatus = 0x%X\n",HostStatus));
         if ( HostStatus & SMBUS_HST_STA_BYTE_DONE_STS )
         {

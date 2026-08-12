@@ -70,8 +70,8 @@ HKR,,FriendlyName,,%FRIENDLYNAME%
 ;------------------------------------------------------------------------------
 
 [Strings]
-MFGNAME="Fujitsu"
-INSTDISK="Fujitsu Installation Disc"
+MFGNAME="Kontron"
+INSTDISK="Kontron Installation Disc"
 DESCRIPTION_ICH="Intel(r) 82801AA SMBus Controller"
 DESCRIPTION_ICH0="Intel(r) 82801AB SMBus Controller"
 DESCRIPTION_ICH2="Intel(r) 82801BA SMBus Controller"

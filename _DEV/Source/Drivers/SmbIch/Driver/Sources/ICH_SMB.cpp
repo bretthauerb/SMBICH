@@ -100,6 +100,7 @@ static NTSTATUS HostStatus2NtStatus( IN UCHAR ucHostStatus )
 //
 // The interrupt stuff.
 //
+_Use_decl_annotations_
 VOID DpcForPoll(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PVOID, PVOID)
 {
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -167,7 +168,8 @@ BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
 }
 
 
-VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT /*fdo*/, PIRP /*junk*/, PVOID pVoid)
+_Use_decl_annotations_
+VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 {		
 	ULONG info;
 	NTSTATUS status;

@@ -121,7 +121,7 @@ static NTSTATUS AddDevice(PDRIVER_OBJECT DriverObject, PDEVICE_OBJECT pdo)
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	KeInitializeTimer(&pdx->Timer);
-	KeInitializeDpc(&pdx->PollDpc, (PKDEFERRED_ROUTINE)DpcForPoll, fdo);
+	KeInitializeDpc(&pdx->PollDpc, DpcForPoll, fdo);
 
 	// From this point forward, any error will have side effects that need to
 	// be cleaned up. Using a try-finally block allows us to modify the program

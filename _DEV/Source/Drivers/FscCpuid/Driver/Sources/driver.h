@@ -12,7 +12,7 @@
 
 #pragma pack(pop)
 
-#ifdef _NTDDK_
+#if defined(_NTDDK_) || defined(_WDMDDK_)
 #include "devqueue.h"
 
 enum DEVSTATE {

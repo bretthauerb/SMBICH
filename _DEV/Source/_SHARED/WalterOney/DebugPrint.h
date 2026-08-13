@@ -8,9 +8,6 @@
 #pragma warning ( disable : 4115 )
 
 
-#include <stdio.h>
-#include <stdarg.h>			// for variable argument list in DebugPrint function
-
 #define DEBUGLEVEL_OFF						0x0		// 0 ==> No debugging messages
 #define DEBUGLEVEL_DEBUG					0x1		// 0001b
 #define DEBUGLEVEL_INFO						0x2		// 0010b

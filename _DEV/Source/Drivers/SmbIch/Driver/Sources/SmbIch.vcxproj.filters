@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="removelock.cpp">
+    <ClCompile Include="RemoveLock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DebugPrint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="devqueue.cpp">
+    <ClCompile Include="DevQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dispatch.cpp">
+    <ClCompile Include="Dispatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dmi.cpp">
@@ -19,13 +19,13 @@
     <ClCompile Include="DriverEntry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ICH_SMB.cpp ">
+    <ClCompile Include="ICH_SMB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="plugplay.cpp">
+    <ClCompile Include="PlugPlay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="power.cpp">
+    <ClCompile Include="Power.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ReadWritePCISpace.cpp">

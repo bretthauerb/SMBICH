@@ -161,6 +161,7 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		// Initialize DPC object
 
 		IoInitializeDpcRequest(fdo, DpcForIsr);
+#pragma warning(suppress:28133)
 		IoInitializeTimer(fdo, IoTimer, NULL);
 
 		// Link our device object into the stack leading to the PDO

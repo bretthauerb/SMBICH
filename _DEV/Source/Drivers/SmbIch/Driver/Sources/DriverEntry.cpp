@@ -7,8 +7,7 @@
 #include <ntstrsafe.h>
 
 static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo);
-static VOID WdmDriverUnload(IN PDRIVER_OBJECT fdo);
-static VOID DriverUnload(IN PDRIVER_OBJECT fdo);
+static DRIVER_UNLOAD DriverUnload;
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev);
 
 extern "C" DRIVER_INITIALIZE DriverEntry;
@@ -29,7 +28,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	RegistryPath;  // prevent compiler warning "'RegistryPath': unreferenced formal parameter" which is treated as error.
 
 	// Insist that OS support at least the WDM level of the DDK we use
-	if (!IoIsWdmVersionAvailable(1, 0))
+	if (!RtlIsNtDdiVersionAvailable(NTDDI_WIN2K))
 	{
 		KdPrint((SMBUS_DRIVER_NAME " - Expected version of WDM (%d.%2.2d) not available\n", 1, 0));
 		return STATUS_UNSUCCESSFUL;
@@ -76,7 +75,8 @@ extern NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 ///////////////////////////////////////////////////////////////////////////////
 #pragma PAGEDCODE
 
-static VOID DriverUnload(IN PDRIVER_OBJECT /*DriverObject*/)
+_Use_decl_annotations_
+static VOID DriverUnload(PDRIVER_OBJECT /*DriverObject*/)
 {							// WdmDriverUnload
 	PAGED_CODE();
 #if 0

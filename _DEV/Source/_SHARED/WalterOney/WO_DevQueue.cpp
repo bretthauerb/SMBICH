@@ -31,6 +31,7 @@ NTSTATUS AreRequestsBeingAborted(PDEVQUEUE pdq)
 ///////////////////////////////////////////////////////////////////////////////
 
 _Use_decl_annotations_
+#pragma warning(suppress:28167)
 VOID NTAPI CancelRequest(PREMOVE_LOCK lock, PDEVQUEUE pdq, PIRP Irp)
 	{							// CancelRequest
 	KIRQL cancelirql = Irp->CancelIrql;

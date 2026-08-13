@@ -6,7 +6,7 @@
 #include "driver.h"
 #include <ntstrsafe.h>
 
-static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo);
+static DRIVER_ADD_DEVICE AddDevice;
 static DRIVER_UNLOAD DriverUnload;
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev);
 
@@ -86,7 +86,8 @@ static VOID DriverUnload(PDRIVER_OBJECT /*DriverObject*/)
 
 #pragma PAGEDCODE
 
-static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
+_Use_decl_annotations_
+static NTSTATUS AddDevice(PDRIVER_OBJECT DriverObject, PDEVICE_OBJECT pdo)
 {							// AddDevice
 	PAGED_CODE();
 

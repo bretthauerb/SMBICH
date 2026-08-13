@@ -37,8 +37,8 @@ NTSTATUS ReadWritePCISpace(IN PDEVICE_OBJECT pdo, IN BOOLEAN Write, IN OUT PVOID
 	stack->Parameters.ReadWriteConfig.Buffer = Buffer;
 	stack->Parameters.ReadWriteConfig.Offset = Offset;
 	stack->Parameters.ReadWriteConfig.Length = Length;
-	IoSetCompletionRoutine( pIrp, ReadWritePCISpace_OnComplete, &event, TRUE, TRUE, TRUE);
 	KeInitializeEvent( &event, NotificationEvent, FALSE );
+	IoSetCompletionRoutine( pIrp, ReadWritePCISpace_OnComplete, &event, TRUE, TRUE, TRUE);
 
 	IoCallDriver( pdo, pIrp);
 	KeWaitForSingleObject(&event, Executive, KernelMode, FALSE, NULL);

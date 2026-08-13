@@ -11,6 +11,8 @@ static VOID WdmDriverUnload(IN PDRIVER_OBJECT fdo);
 static VOID DriverUnload(IN PDRIVER_OBJECT fdo);
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev);
 
+extern "C" DRIVER_INITIALIZE DriverEntry;
+
 #if 0
 UNICODE_STRING servkey;
 #endif
@@ -20,6 +22,7 @@ UNICODE_STRING servkey;
 
 #pragma INITCODE
 
+_Use_decl_annotations_
 extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	IN PUNICODE_STRING RegistryPath)
 {
@@ -62,6 +65,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	return STATUS_SUCCESS;
 }							// DriverEntry
 
+_Use_decl_annotations_
 extern NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchSystemControl
 	IoSkipCurrentIrpStackLocation(Irp);
@@ -115,7 +119,6 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
-	pdx->bIoInitializeTimerCalled = FALSE;
 	KeInitializeTimer(&pdx->Timer);
 	KeInitializeDpc(&pdx->PollDpc, (PKDEFERRED_ROUTINE)DpcForPoll, fdo);
 
@@ -158,6 +161,7 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 		// Initialize DPC object
 
 		IoInitializeDpcRequest(fdo, DpcForIsr);
+		IoInitializeTimer(fdo, IoTimer, NULL);
 
 		// Link our device object into the stack leading to the PDO
 		if (pdo)

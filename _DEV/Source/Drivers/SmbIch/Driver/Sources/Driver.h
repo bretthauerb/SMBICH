@@ -76,8 +76,6 @@ typedef struct _DEVICE_EXTENSION {
 	PUCHAR	pucDMI;
 	ULONG	ulDMISize;
 	ULONG	ulDMIStructCount;
-
-	BOOLEAN bIoInitializeTimerCalled;
 	} DEVICE_EXTENSION, *PDEVICE_EXTENSION;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,6 +92,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST raw, PCM_PART
 VOID StopDevice(PDEVICE_OBJECT fdo, BOOLEAN oktouch = FALSE);
 VOID DpcForIsr(PKDPC Dpc, PDEVICE_OBJECT fdo, PIRP junk, PVOID pdx);
 VOID DpcForPoll(PKDPC Dpc, PDEVICE_OBJECT fdo, PVOID, PVOID);
+VOID IoTimer(PDEVICE_OBJECT fdo, PVOID Context);
 VOID DisableInterrupt( PDEVICE_EXTENSION );
 BOOLEAN OnInterrupt(PKINTERRUPT, PDEVICE_EXTENSION);
 VOID ICH_Initialize(PDEVICE_EXTENSION pdx);
@@ -103,13 +102,13 @@ BOOLEAN CheckQueueStalled( PDEVICE_OBJECT fdo );
 NTSTATUS SendDeviceSetPower(PDEVICE_EXTENSION fdo, DEVICE_POWER_STATE state, BOOLEAN wait = FALSE);
 // I/O request handlers
 
-NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp);
-NTSTATUS DispatchClose(PDEVICE_OBJECT fdo, PIRP Irp);
-NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp);
-NTSTATUS DispatchCleanup(PDEVICE_OBJECT fdo, PIRP Irp);
-NTSTATUS DispatchPower(PDEVICE_OBJECT fdo, PIRP Irp);
-NTSTATUS DispatchPnp(PDEVICE_OBJECT fdo, PIRP Irp);
-NTSTATUS DispatchSystemControl(PDEVICE_OBJECT fdo, PIRP Irp);
+_Dispatch_type_(IRP_MJ_CREATE) DRIVER_DISPATCH DispatchCreate;
+_Dispatch_type_(IRP_MJ_CLOSE) DRIVER_DISPATCH DispatchClose;
+_Dispatch_type_(IRP_MJ_DEVICE_CONTROL) DRIVER_DISPATCH DispatchControl;
+_Dispatch_type_(IRP_MJ_CLEANUP) DRIVER_DISPATCH DispatchCleanup;
+_Dispatch_type_(IRP_MJ_POWER) DRIVER_DISPATCH DispatchPower;
+_Dispatch_type_(IRP_MJ_PNP) DRIVER_DISPATCH DispatchPnp;
+_Dispatch_type_(IRP_MJ_SYSTEM_CONTROL) DRIVER_DISPATCH DispatchSystemControl;
 
 extern UNICODE_STRING servkey;
 

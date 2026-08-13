@@ -30,18 +30,19 @@ NTSTATUS AreRequestsBeingAborted(PDEVQUEUE pdq)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+_Use_decl_annotations_
 VOID NTAPI CancelRequest(PREMOVE_LOCK lock, PDEVQUEUE pdq, PIRP Irp)
 	{							// CancelRequest
-	KIRQL oldirql = Irp->CancelIrql;
+	KIRQL cancelirql = Irp->CancelIrql;
 
 	// Release the global cancel spin lock as soon as possible
 
-	IoReleaseCancelSpinLock(DISPATCH_LEVEL);
+	IoReleaseCancelSpinLock(cancelirql);
 
-	// Acquire our queue-specific queue lock. Note that we stayed at DISPATCH_LEVEL
-	// when we released the cancel spin lock
+	// Acquire our queue-specific queue lock
 
-	KeAcquireSpinLockAtDpcLevel(&pdq->lock);
+	KIRQL oldirql;
+	KeAcquireSpinLock(&pdq->lock, &oldirql);
 
 	// (After Hanrahan & Peretz) The IRP is guaranteed to be on *some* queue (maybe a degenerate one),
 	// so we unconditionally remove it and complete it.

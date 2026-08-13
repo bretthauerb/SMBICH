@@ -56,7 +56,7 @@ PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfB
 //
 // Timeout timer.
 //
-static VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
+VOID IoTimer(PDEVICE_OBJECT fdo, PVOID)
 {
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	if (pdx->TimeOutCounter) {
@@ -68,10 +68,6 @@ static VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
 		//
 		DisableInterrupt( pdx );
 		KeCancelTimer(&pdx->Timer);
-
-//		KeAcquireSpinLock( &pdx->TimeoutLock, &oldirql);
-		KeRemoveQueueDpc( &fdo->Dpc );
-//		KeReleaseSpinLock( &pdx->TimeoutLock, oldirql );
 
 		SMBus_ReleaseSemaphore( pdx );
 		PIRP Irp = GetCurrentIrp(&pdx->dqReadWrite);
@@ -116,7 +112,7 @@ VOID DpcForPoll(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PVOID, PVOID)
 		KeSetTimer( &pdx->Timer, liInterval, &pdx->PollDpc );
 	} else {
 		// Polling done: run DpcForIsr
-		KeInsertQueueDpc( &fdo->Dpc, NULL, pdx );
+		IoRequestDpc(fdo, NULL, pdx);
 	}
 }
 
@@ -728,11 +724,6 @@ VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 		}
 	}
 #endif
-	if (!pdx->bIoInitializeTimerCalled)
-	{
-		IoInitializeTimer(pdx->DeviceObject, IoTimer, NULL);
-		pdx->bIoInitializeTimerCalled = TRUE;
-	}
 	pdx->StartCommand = (pdx->UseInterrupt) ? (SMBUS_HST_CNT_START | SMBUS_HST_CNT_INTREN) : SMBUS_HST_CNT_START;
 	DebugPrint(DEBUGLEVEL_DEBUG, "bPIIX4 = %x;  UseInterrupt = %x\n", pdx->bPIIX4, pdx->UseInterrupt);
 	KdPrint(("ICH_Initialize: bPIIX4 = 0x%X;  UseInterrupt = 0x%X\n", pdx->bPIIX4, pdx->UseInterrupt));
@@ -742,6 +733,7 @@ VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 
 NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_PARTIAL_RESOURCE_LIST translated)
 	{							// StartDevice
+	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 	NTSTATUS status;
 
@@ -857,6 +849,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 
 VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN /*oktouch = FALSE */)
 	{							// StopDevice
+	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 
 	if (pdx->InterruptObject)

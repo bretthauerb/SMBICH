@@ -49,6 +49,7 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event);
 
 #pragma PAGEDCODE
 
+_Use_decl_annotations_
 NTSTATUS DispatchPower(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchPower
 	PAGED_CODE();
@@ -95,6 +96,7 @@ NTSTATUS DispatchPower(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS DefaultPowerHandler(PDEVICE_EXTENSION pdx, IN PIRP Irp)
 {							// DefaultPowerHandler
+	PAGED_CODE();
 	PoStartNextPowerIrp(Irp);	// must be done while we own the IRP
 	IoSkipCurrentIrpStackLocation(Irp);
 	return PoCallDriver(pdx->LowerDeviceObject, Irp);
@@ -104,6 +106,7 @@ NTSTATUS DefaultPowerHandler(PDEVICE_EXTENSION pdx, IN PIRP Irp)
 
 VOID SendAsyncNotification(PVOID context)
 {							// SendAsyncNotification
+	PAGED_CODE();
 	HandlePowerEvent((PPOWCONTEXT)context, AsyncNotify);
 }							// SendAsyncNotification
 
@@ -165,7 +168,11 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event)
 	ASSERT((ULONG)event < NUMPOWEVENTS);
 
 	PIRP Irp = ctx->irp;
-	PIO_STACK_LOCATION stack = Irp ? IoGetCurrentIrpStackLocation(Irp) : NULL;
+	if (!Irp)
+		return STATUS_INVALID_PARAMETER;
+	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
+	if (!stack)
+		return STATUS_INVALID_PARAMETER;
 
 	PDEVICE_EXTENSION pdx = ctx->pdx;
 

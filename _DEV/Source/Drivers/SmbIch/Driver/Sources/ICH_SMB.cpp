@@ -167,7 +167,7 @@ BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
 }
 
 
-VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
+VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT /*fdo*/, PIRP /*junk*/, PVOID pVoid)
 {		
 	ULONG info;
 	NTSTATUS status;

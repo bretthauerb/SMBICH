@@ -4,6 +4,7 @@
 
 #include "stddcls.h"
 #include "driver.h"
+#include <ntstrsafe.h>
 
 static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo);
 static VOID WdmDriverUnload(IN PDRIVER_OBJECT fdo);
@@ -94,7 +95,12 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 
 	UNICODE_STRING devname;
 	WCHAR namebuf[32];
-	_snwprintf(namebuf, arraysize(namebuf), L"\\Device\\" SMBUS_DRIVER_NAME_L);
+	status = RtlStringCchPrintfW(namebuf, ARRAYSIZE(namebuf), L"\\Device\\" SMBUS_DRIVER_NAME_L);
+	if (!NT_SUCCESS(status))
+	{
+		KdPrint((SMBUS_DRIVER_NAME " - Unable to format device name - %X\n", status));
+		return status;
+	}
 	RtlInitUnicodeString(&devname, namebuf);
 
 	status = IoCreateDevice(DriverObject, xsize, &devname,
@@ -138,7 +144,8 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 
 		// Make a copy of the device name
 
-		pdx->devname.Buffer = (PWCHAR)ExAllocatePoolWithTag(NonPagedPool, devname.MaximumLength, 'SMBN');
+		pdx->devname.Buffer = static_cast<PWCHAR>(
+			ExAllocatePoolZero(NonPagedPoolNx, devname.MaximumLength, 'SMBN'));
 		if (!pdx->devname.Buffer)
 		{					// can't allocate buffer
 			status = STATUS_INSUFFICIENT_RESOURCES;
@@ -188,7 +195,12 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 			if (pdx->uniSymbolicLinkName.Buffer)
 				IoDeleteSymbolicLink(&(pdx->uniSymbolicLinkName));
 			if (pdx->devname.Buffer)
-				RtlFreeUnicodeString(&pdx->devname);
+			{
+				ExFreePoolWithTag(pdx->devname.Buffer, 'SMBN');
+				pdx->devname.Buffer = NULL;
+				pdx->devname.Length = 0;
+				pdx->devname.MaximumLength = 0;
+			}
 			if (pdx->LowerDeviceObject)
 				IoDetachDevice(pdx->LowerDeviceObject);
 			IoDeleteDevice(fdo);
@@ -276,7 +288,12 @@ VOID RemoveDevice(IN PDEVICE_OBJECT fdo)
 		IoDeleteSymbolicLink(&(pdx->uniSymbolicLinkName));
 
 	if (pdx->devname.Buffer)
-		RtlFreeUnicodeString(&pdx->devname);
+	{
+		ExFreePoolWithTag(pdx->devname.Buffer, 'SMBN');
+		pdx->devname.Buffer = NULL;
+		pdx->devname.Length = 0;
+		pdx->devname.MaximumLength = 0;
+	}
 
 	if (pdx->LowerDeviceObject)
 	{

@@ -298,7 +298,7 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
                 for ( size_t i = 0 ; i < pdx->SMBusInfo.Count && i < BlockBufSize ; ++i )
                 {
                     pdx->SMBusInfo.BlockBuf[i] = READ_PORT_UCHAR( portbase + SMBUS_HOST_BLOCKDATA_REGISTER );
-                    KdPrint(("IOCTL_SMBus_BlockRead: BlockBuf[%d] = 0x%X\n", i, pdx->SMBusInfo.BlockBuf[i]));
+                    KdPrint(("IOCTL_SMBus_BlockRead: BlockBuf[%Iu] = 0x%X\n", i, pdx->SMBusInfo.BlockBuf[i]));
                     WaitForNextByte( pdx );
                 }
 				RtlCopyMemory( SystemBuffer, &pdx->SMBusInfo, sizeof(SMB_INFO) );
@@ -674,7 +674,7 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 		case IOCTL_GET_SMBIOS:
 			if (pdx->pucDMI && pdx->ulDMISize && (cbout >= pdx->ulDMISize))
 			{
-					memcpy(SystemBuffer, pdx->pucDMI, pdx->ulDMISize);
+					RtlCopyMemory(SystemBuffer, pdx->pucDMI, pdx->ulDMISize);
 					info = pdx->ulDMISize;
 					status = STATUS_SUCCESS;
 			}
@@ -752,7 +752,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 	ULONG vector = 0;
 	KIRQL irql = 0;
 	KINTERRUPT_MODE mode = KINTERRUPT_MODE::Latched;
-	KAFFINITY affinity = NULL;
+	KAFFINITY affinity = 0;
 	BOOLEAN irqshare = FALSE;
 	BOOLEAN gotport = FALSE;
 	PHYSICAL_ADDRESS portbase = { 0 };
@@ -826,7 +826,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 
 	// Do some HW initialisation
 	ICH_Initialize( pdx );
-    KdPrint(("StartDevice: pdx->portbase = 0x%X\n",pdx->portbase));
+    KdPrint(("StartDevice: pdx->portbase = %p\n", pdx->portbase));
 
 	if (pdx->UseInterrupt)
 		{

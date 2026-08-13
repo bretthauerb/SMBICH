@@ -10,7 +10,7 @@
 #define RELEASE			2
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
-#ifdef _NTDDK_
+#if defined(_NTDDK_) || defined(_WDMDDK_)
 
 #include "SmBusIoctl.h"
 #include "devqueue.h"
@@ -97,6 +97,6 @@ enum
     SMSCECHM_CRDEVICEID_5636  = 0xC7, // SMsC SCH5636 (Theseus)
     };
 
-#endif // _NTDDK_
+#endif // defined(_NTDDK_) || defined(_WDMDDK_)
 
 #endif // DRIVER_H

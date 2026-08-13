@@ -8,9 +8,7 @@
 extern "C" {
 #endif
 
-//#include <wdm.h>
-#include <ntddk.h>
-#include <stdio.h>
+#include <wdm.h>
 
 #ifdef __cplusplus
 	}
@@ -72,4 +70,4 @@ VOID ReleaseRemoveLockAndWait(PREMOVE_LOCK lock, PVOID tag);
 #define IO_REMOVE_LOCK REMOVE_LOCK
 #define PIO_REMOVE_LOCK PREMOVE_LOCK
 
-#endif STDDCLS_H_INCLUDED
+#endif // STDDCLS_H_INCLUDED

@@ -7,9 +7,9 @@
 	extern "C" {
 #endif
 
-#include <ntddk.h>
-#include <stdio.h>
+#include "stddcls.h"
 #include <stdarg.h>			// for variable argument list in DebugPrint function
+#include <ntstrsafe.h>
 #include "DebugPrint.h"
 
 //#pragma LOCKEDCODE
@@ -40,37 +40,46 @@ void DebugPrint(int	 DebugPrintLevel,
 	va_start(ap, DebugMessage);
 
 	if ( DebugPrintLevel == DEBUGLEVEL_OFF || DebugLevel == DEBUGLEVEL_OFF )
+	{
+		va_end(ap);
 		return;
+	}
 
 	if ( DebugPrintLevel & DebugLevel )
 	{
 		char	DebugBuffer[256];
 		char	NewDebugMessage[256];
+		NTSTATUS status = STATUS_SUCCESS;
 
-		strcpy((char *)NewDebugMessage, "SMBus");
+		status = RtlStringCbCopyA(NewDebugMessage, sizeof(NewDebugMessage), "SMBus");
 		switch ( DebugPrintLevel )
 		{
 		case DEBUGLEVEL_DEBUG:
-			strcat((char *)NewDebugMessage, " (DEBUG)   ");
+			if (NT_SUCCESS(status))
+				status = RtlStringCbCatA(NewDebugMessage, sizeof(NewDebugMessage), " (DEBUG)   ");
 			break;
 		case DEBUGLEVEL_INFO:
-			strcat((char *)NewDebugMessage, " (INFO)    ");
+			if (NT_SUCCESS(status))
+				status = RtlStringCbCatA(NewDebugMessage, sizeof(NewDebugMessage), " (INFO)    ");
 			break;
 		case DEBUGLEVEL_WARNING:
-			strcat((char *)NewDebugMessage, " (WARNING) ");
+			if (NT_SUCCESS(status))
+				status = RtlStringCbCatA(NewDebugMessage, sizeof(NewDebugMessage), " (WARNING) ");
 			break;
 		case DEBUGLEVEL_ERROR:
-			strcat((char *)NewDebugMessage, " (ERROR)   ");
+			if (NT_SUCCESS(status))
+				status = RtlStringCbCatA(NewDebugMessage, sizeof(NewDebugMessage), " (ERROR)   ");
 			break;
 		}
-		strcat((char *)NewDebugMessage, (char *)DebugMessage);
+		if (NT_SUCCESS(status))
+			status = RtlStringCbCatA(NewDebugMessage, sizeof(NewDebugMessage), DebugMessage);
+		if (NT_SUCCESS(status))
+			status = RtlStringCbVPrintfA(DebugBuffer, sizeof(DebugBuffer), NewDebugMessage, ap);
+		if (NT_SUCCESS(status))
+			status = RtlStringCbCatA(DebugBuffer, sizeof(DebugBuffer), "\n");
 
-		_vsnprintf((char *)DebugBuffer, 256, (char *)NewDebugMessage, ap);
-
-			// append the newline
-		strcat((char *)DebugBuffer, "\n");
-
-		DbgPrint((char *)DebugBuffer);
+		if (NT_SUCCESS(status))
+			DbgPrint("%s", DebugBuffer);
 	}
 
 	va_end(ap);

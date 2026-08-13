@@ -11,7 +11,7 @@
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
 
-#ifdef _NTDDK_
+#if defined(_NTDDK_) || defined(_WDMDDK_)
 
 #define SMBUS_DRIVER_ID SMBUS_HWID_SmbIch
 
@@ -113,6 +113,6 @@ NTSTATUS DispatchSystemControl(PDEVICE_OBJECT fdo, PIRP Irp);
 
 extern UNICODE_STRING servkey;
 
-#endif // _NTDDK_
+#endif // defined(_NTDDK_) || defined(_WDMDDK_)
 
 #endif // DRIVER_H

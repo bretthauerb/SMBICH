@@ -707,7 +707,7 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 
 VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 {
-	PAGED_CODE();
+
 
 	if (!pdx->bPIIX4)
 		SMBus_ReleaseSemaphore( pdx );

@@ -703,11 +703,11 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 		IoStartTimer( fdo );
 	}
 }
-#pragma PAGEDCODE
+#pragma INITCODE
 
 VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 {
-	PAGED_CODE();
+	
 
 	if (!pdx->bPIIX4)
 		SMBus_ReleaseSemaphore( pdx );

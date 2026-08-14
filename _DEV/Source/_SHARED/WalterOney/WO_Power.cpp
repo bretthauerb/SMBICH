@@ -53,7 +53,7 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event);
 _Use_decl_annotations_
 NTSTATUS DispatchPower(PDEVICE_OBJECT fdo, PIRP Irp)
 {							// DispatchPower
-	PAGED_CODE();
+	PAGED_CODE()
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	NTSTATUS status = IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
 	if (!NT_SUCCESS(status))
@@ -98,7 +98,7 @@ NTSTATUS DispatchPower(PDEVICE_OBJECT fdo, PIRP Irp)
 
 NTSTATUS DefaultPowerHandler(PDEVICE_EXTENSION pdx, IN PIRP Irp)
 {							// DefaultPowerHandler
-	PAGED_CODE();
+	PAGED_CODE()
 	PoStartNextPowerIrp(Irp);	// must be done while we own the IRP
 	IoSkipCurrentIrpStackLocation(Irp);
 	return PoCallDriver(pdx->LowerDeviceObject, Irp);
@@ -108,7 +108,7 @@ NTSTATUS DefaultPowerHandler(PDEVICE_EXTENSION pdx, IN PIRP Irp)
 
 VOID SendAsyncNotification(PVOID context)
 {							// SendAsyncNotification
-	PAGED_CODE();
+	PAGED_CODE()
 	HandlePowerEvent((PPOWCONTEXT)context, AsyncNotify);
 }							// SendAsyncNotification
 

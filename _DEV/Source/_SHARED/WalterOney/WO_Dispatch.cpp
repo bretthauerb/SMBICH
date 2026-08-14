@@ -21,12 +21,10 @@ static VOID OnCancelIrp(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 
 
-#pragma PAGEDCODE
-
 _Use_decl_annotations_
 NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp)
 {
-	PAGED_CODE();
+
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	NTSTATUS status = IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
 
@@ -42,11 +40,10 @@ NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#pragma PAGEDCODE
 _Use_decl_annotations_
 NTSTATUS DispatchCleanup(PDEVICE_OBJECT fdo, PIRP Irp)
 {							// DispatchCleanup
-	PAGED_CODE();
+	
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 
@@ -58,11 +55,11 @@ NTSTATUS DispatchCleanup(PDEVICE_OBJECT fdo, PIRP Irp)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#pragma PAGEDCODE
+//#pragma PAGEDCODE
 _Use_decl_annotations_
 NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp)
 {							// DispatchCreate
-	PAGED_CODE();
+	
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
@@ -88,11 +85,11 @@ NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#pragma PAGEDCODE
+//#pragma PAGEDCODE
 _Use_decl_annotations_
 NTSTATUS DispatchClose(PDEVICE_OBJECT fdo, PIRP Irp)
 {							// DispatchClose
-	PAGED_CODE();
+	
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	if (InterlockedDecrement(&pdx->handles) == 0)

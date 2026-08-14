@@ -703,11 +703,11 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 		IoStartTimer( fdo );
 	}
 }
-#pragma INITCODE
+#pragma PAGEDCODE
 
 VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 {
-
+	PAGED_CODE();
 
 	if (!pdx->bPIIX4)
 		SMBus_ReleaseSemaphore( pdx );
@@ -731,11 +731,11 @@ VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 	DebugPrint(DEBUGLEVEL_DEBUG, "bPIIX4 = %x;  UseInterrupt = %x\n", pdx->bPIIX4, pdx->UseInterrupt);
 }
 
-#pragma PAGEDCODE
+#pragma LOCKEDCODE
 
 NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_PARTIAL_RESOURCE_LIST translated)
 	{							// StartDevice
-	PAGED_CODE();
+	
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 	NTSTATUS status;
 
@@ -846,11 +846,11 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#pragma PAGEDCODE
+#pragma LOCKEDCODE
 
 VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN /*oktouch = FALSE */)
 	{							// StopDevice
-	PAGED_CODE();
+	
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 
 	if (pdx->InterruptObject)

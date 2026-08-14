@@ -77,7 +77,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	return STATUS_SUCCESS;
 }		
 
-#pragma PAGEDCODE
+#pragma LOCKEDCODE
 
 
 NTSTATUS
@@ -86,7 +86,7 @@ DispatchSystemControl(
 	PIRP Irp
 )
 {							// DispatchSystemControl
-	PAGED_CODE();
+	PAGED_CODE_LOCKED();
 	IoSkipCurrentIrpStackLocation(Irp);
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);

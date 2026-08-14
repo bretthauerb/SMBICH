@@ -43,7 +43,7 @@ PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfB
 
 	if (pfnMmMapIoSpaceEx != NULL)
 	{
-		return pfnMmMapIoSpaceEx(PhysicalAddress, NumberOfBytes, PAGE_READWRITE | PAGE_NOCACHE);
+		return pfnMmMapIoSpaceEx(PhysicalAddress, NumberOfBytes, PAGE_READONLY | PAGE_NOCACHE);
 	}
 	else
 	{
@@ -56,7 +56,7 @@ PVOID MapEntryPoint(_In_ PHYSICAL_ADDRESS PhysicalAddress, _In_ SIZE_T NumberOfB
 //
 // Timeout timer.
 //
-static VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
+VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
 {
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	if (pdx->TimeOutCounter) {
@@ -70,7 +70,7 @@ static VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
 		KeCancelTimer(&pdx->Timer);
 
 //		KeAcquireSpinLock( &pdx->TimeoutLock, &oldirql);
-		KeRemoveQueueDpc( &fdo->Dpc );
+		KeRemoveQueueDpc(&pdx->IsrDpc);
 //		KeReleaseSpinLock( &pdx->TimeoutLock, oldirql );
 
 		SMBus_ReleaseSemaphore( pdx );
@@ -87,8 +87,6 @@ static VOID  IoTimer(PDEVICE_OBJECT fdo, VOID *)
 
 static NTSTATUS HostStatus2NtStatus( IN UCHAR ucHostStatus )
 {
-    if (ucHostStatus & SMBUS_HST_STA_BYTE_DONE_STS )    // this happens for a Block Read
-        return STATUS_SUCCESS;
 	if (ucHostStatus & SMBUS_HST_STA_INTR)
 		return STATUS_SUCCESS;
 	if (ucHostStatus & SMBUS_HST_STA_DEV_ERR)
@@ -100,6 +98,8 @@ static NTSTATUS HostStatus2NtStatus( IN UCHAR ucHostStatus )
 
 	return STATUS_ADAPTER_HARDWARE_ERROR;
 }
+
+
 
 //
 // The interrupt stuff.
@@ -116,11 +116,11 @@ VOID DpcForPoll(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PVOID, PVOID)
 		KeSetTimer( &pdx->Timer, liInterval, &pdx->PollDpc );
 	} else {
 		// Polling done: run DpcForIsr
-		KeInsertQueueDpc( &fdo->Dpc, NULL, pdx );
+		IoRequestDpc(fdo, NULL, pdx);
 	}
 }
 
-#if DBG
+#ifdef _USED_
 static void e2t(UCHAR ucHostStatus)
 {
 	if (ucHostStatus & SMBUS_HST_STA_INTR)
@@ -136,59 +136,18 @@ static void e2t(UCHAR ucHostStatus)
 }
 #endif //#ifdef _USED_
 
-
-// TRUE: next byte ready;  FALSE: all work done
-BOOLEAN WaitForNextByte( PDEVICE_EXTENSION pdx )
-{
-    ULONG Retries = 100;
-	UCHAR HostStatus = READ_PORT_UCHAR(pdx->portbase + SMBUS_HOST_STATUS_REGISTER);
-    KdPrint(("WaitForNextByte: HostStatus = 0x%X\n",HostStatus));
-
-    // Clear the BYTE DONE bit
-    WRITE_PORT_UCHAR( pdx->portbase + SMBUS_HOST_STATUS_REGISTER, SMBUS_HST_STA_BYTE_DONE_STS );
-
-    // Check whether the host is still busy or already done
-    if ( 0 == (HostStatus & SMBUS_HST_STA_HOST_BUSY) &&  (HostStatus & SMBUS_HST_STA_INTR) )
-    {
-        KdPrint(("WaitForNextByte: returning FALSE (shortcut)\n"));
-        return FALSE;
-    }
-
-    // Wait for the bit coming up again ...
-    while ( Retries-- )
-    {
-        HostStatus = READ_PORT_UCHAR(pdx->portbase + SMBUS_HOST_STATUS_REGISTER);
-        KdPrint(("WaitForNextByte: HostStatus = 0x%X\n",HostStatus));
-        if ( HostStatus & SMBUS_HST_STA_BYTE_DONE_STS )
-        {
-            KdPrint(("WaitForNextByte: returning TRUE\n"));
-            return TRUE;
-        }
-    }
-
-    KdPrint(("WaitForNextByte: returning FALSE\n"));
-    return FALSE;
-}
-
-
 VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 {		
 	ULONG info;
 	NTSTATUS status;
 	PDEVICE_EXTENSION pdx = static_cast<PDEVICE_EXTENSION>(pVoid);
 	PIRP Irp = GetCurrentIrp(&pdx->dqReadWrite);
-	if (Irp == NULL) {
-		DbgPrint(SMBUS_DRIVER_NAME" ERROR: DpcForIsr called with no current IRP\n");
-		return;
-	}
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	PVOID SystemBuffer = Irp->AssociatedIrp.SystemBuffer;
 	PUCHAR portbase = pdx->portbase;
 
 	UCHAR HostStatus = READ_PORT_UCHAR(portbase + SMBUS_HOST_STATUS_REGISTER);
-    KdPrint(("DpcForIsr: HostStatus = 0x%X\n", HostStatus));
 	status = HostStatus2NtStatus(HostStatus);
-    KdPrint(("DpcForIsr:     Status = 0x%X\n", status));
 
 	info = 0;
 
@@ -249,82 +208,7 @@ VOID DpcForIsr(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PIRP /*junk*/, PVOID pVoid)
 					status = STATUS_PENDING;
 				}
 			}
-			break;
 
-		case IOCTL_SMBus_WordDataRead:
-			if (NT_SUCCESS(status)) {
-				pdx->SMBusInfo.Status       = status;
-				pdx->SMBusInfo.DataByteLow  = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA0_REGISTER );
-				pdx->SMBusInfo.DataByteHigh = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA1_REGISTER );
-				RtlCopyMemory( SystemBuffer, &pdx->SMBusInfo, sizeof(SMB_INFO) );
-				info = sizeof(SMB_INFO);
-				KdPrint(("IOCTL_SMBus_WordDataRead: High = 0x%X, Low = 0x%X\n", pdx->SMBusInfo.DataByteHigh, pdx->SMBusInfo.DataByteLow));
-			}
-			else
-			{
-				// BUS error, retry access assuming arbitration was lost
-				if ((HostStatus & SMBUS_HST_STA_BUS_ERR) && pdx->TimeOutCounter > 1)
-				{
-					SMBus_ClearStatus( pdx );
-#if DBG
-					pdx->RetryCount++;
-#endif
-					// Write Slave Address
-					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_ADDRESS_REGISTER, (UCHAR) ((pdx->SMBusInfo.SlaveAddress<<1) | 1) );
-					// Write Command
-					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
-					// Write Control (Command Protocol)
-					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BYTE_DATA | pdx->StartCommand );
-
-					status = STATUS_PENDING;
-				}
-			}
-			break;
-
-        //
-        // SMBus Block Read is byte-driven.
-        // BYTE_DONE must be acknowledged after each byte read,
-        // otherwise the host controller keeps presenting the same
-        // BLOCK_DATA value repeatedly.
-        //
-		case IOCTL_SMBus_BlockRead:
-			if (NT_SUCCESS(status)) {
-                constexpr const size_t BlockBufSize = sizeof(SMB_INFO::BlockBuf)/sizeof(SMB_INFO::BlockBuf[0]);
-
-				pdx->SMBusInfo.Status = status;
-				KdPrint(("IOCTL_SMBus_BlockRead: Status = 0x%X\n", pdx->SMBusInfo.Status));
-				pdx->SMBusInfo.Count  = READ_PORT_UCHAR( portbase + SMBUS_HOST_DATA0_REGISTER );
-				KdPrint(("IOCTL_SMBus_BlockRead: Count = 0x%X\n", pdx->SMBusInfo.Count));
-                for ( size_t i = 0 ; i < pdx->SMBusInfo.Count && i < BlockBufSize ; ++i )
-                {
-                    pdx->SMBusInfo.BlockBuf[i] = READ_PORT_UCHAR( portbase + SMBUS_HOST_BLOCKDATA_REGISTER );
-                    KdPrint(("IOCTL_SMBus_BlockRead: BlockBuf[%Iu] = 0x%X\n", i, pdx->SMBusInfo.BlockBuf[i]));
-                    WaitForNextByte( pdx );
-                }
-				RtlCopyMemory( SystemBuffer, &pdx->SMBusInfo, sizeof(SMB_INFO) );
-				info = sizeof(SMB_INFO);
-				KdPrint(("IOCTL_SMBus_BlockRead: at eof\n"));
-			}
-			else
-			{
-				KdPrint(("IOCTL_SMBus_BlockRead: after BUS error\n"));
-				// BUS error, retry access assuming arbitration was lost
-				if ((HostStatus & SMBUS_HST_STA_BUS_ERR) && pdx->TimeOutCounter > 1)
-				{
-					SMBus_ClearStatus( pdx );
-#if DBG
-					pdx->RetryCount++;
-#endif
-					// Write Slave Address
-					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_ADDRESS_REGISTER, (UCHAR) ((pdx->SMBusInfo.SlaveAddress<<1) | 1) );
-					// Write Command
-					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
-					// Write Control (Command Protocol)
-					WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BLOCK | pdx->StartCommand );
-
-					status = STATUS_PENDING;
-				}
-			}
 			break;
 
 		default:
@@ -612,55 +496,6 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 			}
 			break;
 
-		case IOCTL_SMBus_WordDataRead:
-			if (CheckAndCopyIn(cbin ,cbout, &pdx->SMBusInfo, SystemBuffer, sizeof(SMB_INFO)))
-			{
-				SMBus_AcquireSemaphore(pdx);
-
-				SMBus_ClearStatus( pdx );
-#if DBG
-				pdx->RetryCount = 0;
-#endif
-				// Write Slave Address
-				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_ADDRESS_REGISTER, (UCHAR) ((pdx->SMBusInfo.SlaveAddress<<1) | 1) );
-				// Write Command
-				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
-				// Write Control (Command Protocol)
-				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_WORD_DATA | pdx->StartCommand );
-
-				status = STATUS_PENDING;
-			}
-			break;
-
-		case IOCTL_SMBus_BlockRead:
-            KdPrint(("IOCTL_SMBus_BlockRead: StartIo\n"));
-			if (CheckAndCopyIn(cbin ,cbout, &pdx->SMBusInfo, SystemBuffer, sizeof(SMB_INFO)))
-			{
-                KdPrint(("IOCTL_SMBus_BlockRead: CheckAndCopyIn() succeeded\n"));
-
-				SMBus_AcquireSemaphore(pdx);
-
-#if DBG
-				BOOLEAN Cleared = SMBus_ClearStatus( pdx );
-                KdPrint(("IOCTL_SMBus_BlockRead: SMBus_ClearStatus() returned 0x%X\n",Cleared));
-#else
-                SMBus_ClearStatus( pdx );
-#endif
-
-#if DBG
-				pdx->RetryCount = 0;
-#endif
-				// Write Slave Address
-				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_ADDRESS_REGISTER, (UCHAR) ((pdx->SMBusInfo.SlaveAddress<<1) | 1) );
-				// Write Command
-				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_COMMAND_REGISTER, (UCHAR) pdx->SMBusInfo.CommandCode );
-				// Write Control (Command Protocol)
-				WRITE_PORT_UCHAR( portbase + SMBUS_HOST_CONTROL_REGISTER, SMBUS_HST_CNT_CMD_BLOCK | pdx->StartCommand );
-
-				status = STATUS_PENDING;
-			}
-			break;
-
 		case IOCTL_GET_SMBIOS_SIZE:
 			if (pdx->pucDMI && pdx->ulDMISize && (cbout == sizeof(DMI_SIZE_T)))
 			{
@@ -674,7 +509,7 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 		case IOCTL_GET_SMBIOS:
 			if (pdx->pucDMI && pdx->ulDMISize && (cbout >= pdx->ulDMISize))
 			{
-					RtlCopyMemory(SystemBuffer, pdx->pucDMI, pdx->ulDMISize);
+					memcpy(SystemBuffer, pdx->pucDMI, pdx->ulDMISize);
 					info = pdx->ulDMISize;
 					status = STATUS_SUCCESS;
 			}
@@ -703,9 +538,7 @@ VOID StartIo(PDEVICE_OBJECT fdo, PIRP Irp)
 		IoStartTimer( fdo );
 	}
 }
-
-//  #pragma INITCODE
-#pragma PAGEDCODE
+#pragma INITCODE
 
 VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 {
@@ -728,20 +561,16 @@ VOID ICH_Initialize( IN PDEVICE_EXTENSION pdx )
 		}
 	}
 #endif
-	if (!pdx->bIoInitializeTimerCalled)
-	{
-		IoInitializeTimer(pdx->DeviceObject, IoTimer, NULL);
-		pdx->bIoInitializeTimerCalled = TRUE;
-	}
+	
 	pdx->StartCommand = (pdx->UseInterrupt) ? (SMBUS_HST_CNT_START | SMBUS_HST_CNT_INTREN) : SMBUS_HST_CNT_START;
 	DebugPrint(DEBUGLEVEL_DEBUG, "bPIIX4 = %x;  UseInterrupt = %x\n", pdx->bPIIX4, pdx->UseInterrupt);
-	KdPrint(("ICH_Initialize: bPIIX4 = 0x%X;  UseInterrupt = 0x%X\n", pdx->bPIIX4, pdx->UseInterrupt));
 }
 
 #pragma PAGEDCODE
 
 NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_PARTIAL_RESOURCE_LIST translated)
 	{							// StartDevice
+	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 	NTSTATUS status;
 
@@ -752,7 +581,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 	ULONG vector = 0;
 	KIRQL irql = 0;
 	KINTERRUPT_MODE mode = KINTERRUPT_MODE::Latched;
-	KAFFINITY affinity = 0;
+	KAFFINITY affinity = NULL;
 	BOOLEAN irqshare = FALSE;
 	BOOLEAN gotport = FALSE;
 	PHYSICAL_ADDRESS portbase = { 0 };
@@ -826,7 +655,6 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 
 	// Do some HW initialisation
 	ICH_Initialize( pdx );
-    KdPrint(("StartDevice: pdx->portbase = %p\n", pdx->portbase));
 
 	if (pdx->UseInterrupt)
 		{
@@ -857,6 +685,7 @@ NTSTATUS StartDevice(PDEVICE_OBJECT fdo, PCM_PARTIAL_RESOURCE_LIST /*raw*/, PCM_
 
 VOID StopDevice(IN PDEVICE_OBJECT fdo, BOOLEAN /*oktouch = FALSE */)
 	{							// StopDevice
+	PAGED_CODE();
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION) fdo->DeviceExtension;
 
 	if (pdx->InterruptObject)

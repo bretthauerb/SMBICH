@@ -1,17 +1,17 @@
-// Declarations for sources driver
+﻿// Declarations for sources driver
 // Copyright (C) 1999 by Walter Oney
 // All rights reserved
 
 #ifndef DRIVER_H
 #define DRIVER_H
 
-#define MAJOR_VERSION	7
-#define MINOR_VERSION	0
-#define RELEASE		    0
+#define MAJOR_VERSION	6
+#define MINOR_VERSION	2
+#define RELEASE		0
 #define DRIVER_VERSION ((MAJOR_VERSION<<24) + (MINOR_VERSION<<16) + RELEASE)
 
 
-#if defined(_NTDDK_) || defined(_WDMDDK_)
+#ifdef _NTDDK_
 
 #define SMBUS_DRIVER_ID SMBUS_HWID_SmbIch
 
@@ -52,7 +52,7 @@ typedef struct _DEVICE_EXTENSION {
 	PKINTERRUPT InterruptObject;			// address of interrupt object
 	PUCHAR portbase;						// I/O port base address
 	ULONG nports;							// number of assigned ports
-
+	KDPC	IsrDpc;                    // ← neu: eigener DPC statt fdo->Dpc
 	// Additional per-device declarations
 	struct block_tranfer {
 		enum { NONE, READ, WRITE }	mode;
@@ -97,12 +97,22 @@ VOID DpcForPoll(PKDPC Dpc, PDEVICE_OBJECT fdo, PVOID, PVOID);
 VOID DisableInterrupt( PDEVICE_EXTENSION );
 BOOLEAN OnInterrupt(PKINTERRUPT, PDEVICE_EXTENSION);
 VOID ICH_Initialize(PDEVICE_EXTENSION pdx);
+VOID IoTimer(PDEVICE_OBJECT fdo, PVOID Context);
 VOID UnstallQueue(PDEVICE_OBJECT fdo);
 BOOLEAN StallQueueAndNotify(PDEVICE_OBJECT, PVOID, VOID (*)(PVOID));
 BOOLEAN CheckQueueStalled( PDEVICE_OBJECT fdo );
 NTSTATUS SendDeviceSetPower(PDEVICE_EXTENSION fdo, DEVICE_POWER_STATE state, BOOLEAN wait = FALSE);
 // I/O request handlers
 
+_Dispatch_type_(IRP_MJ_CREATE)          DRIVER_DISPATCH DispatchCreate;
+_Dispatch_type_(IRP_MJ_CLOSE)           DRIVER_DISPATCH DispatchClose;
+_Dispatch_type_(IRP_MJ_DEVICE_CONTROL)  DRIVER_DISPATCH DispatchControl;
+_Dispatch_type_(IRP_MJ_CLEANUP)         DRIVER_DISPATCH DispatchCleanup;
+_Dispatch_type_(IRP_MJ_POWER)           DRIVER_DISPATCH DispatchPower;
+_Dispatch_type_(IRP_MJ_PNP)             DRIVER_DISPATCH DispatchPnp;
+_Dispatch_type_(IRP_MJ_SYSTEM_CONTROL)  DRIVER_DISPATCH DispatchSystemControl;
+
+/*
 NTSTATUS DispatchCreate(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchClose(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchControl(PDEVICE_OBJECT fdo, PIRP Irp);
@@ -110,9 +120,10 @@ NTSTATUS DispatchCleanup(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchPower(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchPnp(PDEVICE_OBJECT fdo, PIRP Irp);
 NTSTATUS DispatchSystemControl(PDEVICE_OBJECT fdo, PIRP Irp);
+*/
 
 extern UNICODE_STRING servkey;
 
-#endif // defined(_NTDDK_) || defined(_WDMDDK_)
+#endif // _NTDDK_
 
 #endif // DRIVER_H

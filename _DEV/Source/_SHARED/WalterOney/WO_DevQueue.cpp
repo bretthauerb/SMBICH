@@ -9,34 +9,61 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI AbortRequests(PREMOVE_LOCK lock, PDEVQUEUE pdq, NTSTATUS status)
-	{							// AbortRequests
+{							// AbortRequests
 	pdq->abortstatus = status;
 	CleanupRequests(lock, pdq, NULL, status);
-	}							// AbortRequests
+}							// AbortRequests
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI AllowRequests(PDEVQUEUE pdq)
-	{							// AllowRequests
+{							// AllowRequests
 	pdq->abortstatus = STATUS_SUCCESS;
-	}							// AllowRequests
+}							// AllowRequests
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS AreRequestsBeingAborted(PDEVQUEUE pdq)
-	{							// AreRequestsBeingAborted
+{							// AreRequestsBeingAborted
 	return pdq->abortstatus;
-	}							// AreRequestsBeingAborted
+}							// AreRequestsBeingAborted
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
+//  warning C28167: The function 'CancelRequest' changes the IRQL and does not
+//  restore the IRQL before it exits. It should be annotated to reflect the
+//  change or the IRQL should be restored. IRQL was last set at line 44.
+//
+//  There is a similar warning C28166 ...
+//
+//  The "normal" compiler run shows no error/warning message here.
+//
+//  To avoid this overzealous remark of the analyzer, we just skip this
+//  warning for this function.
+//
+//==============================================================================
+#pragma warning ( push )
+#pragma warning ( disable: 28166 )
+#pragma warning ( disable: 28167 )
+
+//------------------------------------------------------------------------------
+//
+//  _IRQL_is_cancel_   <-- cannot use this recommended macro here,
+//                         expands to 'unexpected end of file'
+
+
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+_IRQL_requires_same_
+_IRQL_uses_cancel_
 VOID NTAPI CancelRequest(PREMOVE_LOCK lock, PDEVQUEUE pdq, PIRP Irp)
-	{							// CancelRequest
+{							// CancelRequest
 	KIRQL oldirql = Irp->CancelIrql;
 
 	// Release the global cancel spin lock as soon as possible
 
-	IoReleaseCancelSpinLock(DISPATCH_LEVEL);
+	IoReleaseCancelSpinLock(oldirql);
 
 	// Acquire our queue-specific queue lock. Note that we stayed at DISPATCH_LEVEL
 	// when we released the cancel spin lock
@@ -49,15 +76,18 @@ VOID NTAPI CancelRequest(PREMOVE_LOCK lock, PDEVQUEUE pdq, PIRP Irp)
 	RemoveEntryList(&Irp->Tail.Overlay.ListEntry);
 	KeReleaseSpinLock(&pdq->lock, oldirql);
 
+
 	Irp->IoStatus.Status = STATUS_CANCELLED;
 	ReleaseRemoveLock(lock, Irp);
 	IoCompleteRequest(Irp, IO_NO_INCREMENT);
-	}							// CancelRequest
+}							// CancelRequest
+
+#pragma warning (pop)
 
 ///////////////////////////////////////////////////////////////////////////////
 
 BOOLEAN NTAPI CheckBusyAndStall(PDEVQUEUE pdq)
-	{							// CheckBusyAndStall
+{							// CheckBusyAndStall
 	KIRQL oldirql;
 	KeAcquireSpinLock(&pdq->lock, &oldirql);
 	BOOLEAN busy = pdq->CurrentIrp != NULL;
@@ -65,12 +95,12 @@ BOOLEAN NTAPI CheckBusyAndStall(PDEVQUEUE pdq)
 		InterlockedIncrement(&pdq->stallcount);
 	KeReleaseSpinLock(&pdq->lock, oldirql);
 	return busy;
-	}							// CheckBusyAndStall
+}							// CheckBusyAndStall
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI CleanupRequests(PREMOVE_LOCK lock, PDEVQUEUE pdq, PFILE_OBJECT fop, NTSTATUS status)
-	{							// CleanupRequests
+{							// CleanupRequests
 	LIST_ENTRY cancellist;
 	InitializeListHead(&cancellist);
 
@@ -83,7 +113,7 @@ VOID NTAPI CleanupRequests(PREMOVE_LOCK lock, PDEVQUEUE pdq, PFILE_OBJECT fop, N
 	PLIST_ENTRY next;
 
 	for (next = first->Flink; next != first; )
-		{						// for each queued IRP
+	{						// for each queued IRP
 		PIRP Irp = CONTAINING_RECORD(next, IRP, Tail.Overlay.ListEntry);
 		PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 
@@ -107,96 +137,96 @@ VOID NTAPI CleanupRequests(PREMOVE_LOCK lock, PDEVQUEUE pdq, PFILE_OBJECT fop, N
 			continue;
 		RemoveEntryList(current);
 		InsertTailList(&cancellist, current);
-		}						// for each queued IRP
+	}						// for each queued IRP
 
-	// Release the spin lock. We're about to undertake a potentially time-consuming
-	// operation that might conceivably result in a deadlock if we keep the lock.
+// Release the spin lock. We're about to undertake a potentially time-consuming
+// operation that might conceivably result in a deadlock if we keep the lock.
 
 	KeReleaseSpinLock(&pdq->lock, oldirql);
 
 	// Complete the selected requests.
 
 	while (!IsListEmpty(&cancellist))
-		{						// cancel selected requests
+	{						// cancel selected requests
 		next = RemoveHeadList(&cancellist);
 		PIRP Irp = CONTAINING_RECORD(next, IRP, Tail.Overlay.ListEntry);
 		Irp->IoStatus.Status = status;
 		ReleaseRemoveLock(lock, Irp);
 		IoCompleteRequest(Irp, IO_NO_INCREMENT);
-		}						// cancel selected requests
-	}							// CleanupRequests
+	}						// cancel selected requests
+}							// CleanupRequests
 
 ///////////////////////////////////////////////////////////////////////////////
 
 PIRP NTAPI GetCurrentIrp(PDEVQUEUE pdq)
-	{							// GetCurrentIrp
+{							// GetCurrentIrp
 	return pdq->CurrentIrp;
-	}							// GetCurrentIrp
+}							// GetCurrentIrp
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI InitializeQueue(PDEVQUEUE pdq, PDRIVER_STARTIO StartIo)
-	{							// InitializeQueue
+{							// InitializeQueue
 	InitializeListHead(&pdq->head);
 	KeInitializeSpinLock(&pdq->lock);
 	pdq->StartIo = StartIo;
 	pdq->stallcount = 1;
 	pdq->CurrentIrp = NULL;
 	KeInitializeEvent(&pdq->evStop, NotificationEvent, FALSE);
-	pdq->abortstatus = (NTSTATUS) 0;
+	pdq->abortstatus = (NTSTATUS)0;
 	pdq->notify = NULL;
 	pdq->notifycontext = 0;
-	}							// InitializeQueue
+}							// InitializeQueue
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI RestartRequests(PDEVQUEUE pdq, PDEVICE_OBJECT fdo)
 #if 0
-	{							// RestartRequests
+{							// RestartRequests
 	if (InterlockedDecrement(&pdq->stallcount) > 0)
 		return;
 	ASSERT(pdq->stallcount == 0); // guard against excessive restart calls
 	StartNextPacket(pdq, fdo);
-	}							// RestartRequests
+}							// RestartRequests
 #else
-	{
+{
 	KIRQL oldirql;
-	KeAcquireSpinLock(&pdq->lock, &oldirql );
+	KeAcquireSpinLock(&pdq->lock, &oldirql);
 	if (InterlockedDecrement(&pdq->stallcount) > 0)
-		{
+	{
 		KeReleaseSpinLock(&pdq->lock, oldirql);
 		return;
-		}
+	}
 	while (!pdq->stallcount && !pdq->CurrentIrp && !pdq->abortstatus && !IsListEmpty(&pdq->head))
-		{
+	{
 		PLIST_ENTRY next = RemoveHeadList(&pdq->head);
 		PIRP Irp = CONTAINING_RECORD(next, IRP, Tail.Overlay.ListEntry);
 
 		if (!IoSetCancelRoutine(Irp, NULL))
-			{
+		{
 			InitializeListHead(&Irp->Tail.Overlay.ListEntry);
 			continue;
-			}
+		}
 		pdq->CurrentIrp = Irp;
 		KeReleaseSpinLockFromDpcLevel(&pdq->lock);
 		(*pdq->StartIo)(fdo, Irp);
 		KeLowerIrql(oldirql);
 		return;
-		}
-	KeReleaseSpinLock(&pdq->lock, oldirql);
 	}
+	KeReleaseSpinLock(&pdq->lock, oldirql);
+}
 #endif
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI StallRequests(PDEVQUEUE pdq)
-	{							// StallRequests
+{							// StallRequests
 	InterlockedIncrement(&pdq->stallcount);
-	}							// StallRequests
+}							// StallRequests
 
 ///////////////////////////////////////////////////////////////////////////////
 
 NTSTATUS NTAPI StallRequestsAndNotify(PDEVQUEUE pdq, PQNOTIFYFUNC notify, PVOID context)
-	{							// StallRequestsAndNotify
+{							// StallRequestsAndNotify
 	NTSTATUS status;
 	KIRQL oldirql;
 	KeAcquireSpinLock(&pdq->lock, &oldirql);
@@ -204,26 +234,26 @@ NTSTATUS NTAPI StallRequestsAndNotify(PDEVQUEUE pdq, PQNOTIFYFUNC notify, PVOID 
 	if (pdq->notify)
 		status = STATUS_INVALID_DEVICE_REQUEST;
 	else
-		{						// valid request
+	{						// valid request
 		InterlockedIncrement(&pdq->stallcount);
 		if (pdq->CurrentIrp)
-			{					// device is busy
+		{					// device is busy
 			pdq->notify = notify;
 			pdq->notifycontext = context;
 			status = STATUS_PENDING;
-			}					// device is busy
+		}					// device is busy
 		else
 			status = STATUS_SUCCESS; // device is idle
-		}						// valid request
+	}						// valid request
 
 	KeReleaseSpinLock(&pdq->lock, oldirql);
 	return status;
-	}							// StallRequestsAndNotify
+}							// StallRequestsAndNotify
 
 ///////////////////////////////////////////////////////////////////////////////
 
 PIRP NTAPI StartNextPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo)
-	{							// StartNextPacket
+{							// StartNextPacket
 	KIRQL oldirql;
 	KeAcquireSpinLock(&pdq->lock, &oldirql);
 
@@ -231,7 +261,7 @@ PIRP NTAPI StartNextPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo)
 	// We'll return the current IRP pointer as our return value so that
 	// a DPC routine has a way to know whether an active request got
 	// aborted.
-	PIRP CurrentIrp = (PIRP) InterlockedExchangePointer((volatile PVOID *)&pdq->CurrentIrp, NULL);
+	PIRP CurrentIrp = (PIRP)InterlockedExchangePointer((volatile PVOID*)&pdq->CurrentIrp, NULL);
 
 	// If we just finished processing a request, set the event on which
 	// WaitForCurrentIrp may be waiting in some other thread.
@@ -251,7 +281,7 @@ PIRP NTAPI StartNextPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo)
 	// Start the next IRP
 
 	while (!pdq->stallcount && !pdq->abortstatus && !IsListEmpty(&pdq->head))
-		{						// start next packet
+	{						// start next packet
 		PLIST_ENTRY next = RemoveHeadList(&pdq->head);
 		PIRP Irp = CONTAINING_RECORD(next, IRP, Tail.Overlay.ListEntry);
 
@@ -262,18 +292,18 @@ PIRP NTAPI StartNextPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo)
 		// take over as soon as we release the spin lock
 
 		if (!IoSetCancelRoutine(Irp, NULL))
-			{					// IRP being cancelled right now
+		{					// IRP being cancelled right now
 			ASSERT(Irp->Cancel);	// else CancelRoutine shouldn't be NULL!
 			InitializeListHead(&Irp->Tail.Overlay.ListEntry);
 			continue;			// with "start next packet"
-			}					// IRP being cancelled right now
+		}					// IRP being cancelled right now
 
 		pdq->CurrentIrp = Irp;
 		KeReleaseSpinLockFromDpcLevel(&pdq->lock);
 		(*pdq->StartIo)(fdo, Irp);
 		KeLowerIrql(oldirql);
 		return CurrentIrp;
-		}						// start next packet
+	}						// start next packet
 
 	KeReleaseSpinLock(&pdq->lock, oldirql);
 
@@ -281,12 +311,12 @@ PIRP NTAPI StartNextPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo)
 		(*notify)(notifycontext);
 
 	return CurrentIrp;
-	}							// StartNextPacket
+}							// StartNextPacket
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI StartPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo, PIRP Irp, PDRIVER_CANCEL cancel)
-	{							// StartPacket
+{							// StartPacket
 	KIRQL oldirql;
 	KeAcquireSpinLock(&pdq->lock, &oldirql);
 
@@ -297,54 +327,54 @@ VOID NTAPI StartPacket(PDEVQUEUE pdq, PDEVICE_OBJECT fdo, PIRP Irp, PDRIVER_CANC
 
 	NTSTATUS abortstatus = pdq->abortstatus;
 	if (abortstatus)
-		{						// aborting all requests now
+	{						// aborting all requests now
 		KeReleaseSpinLock(&pdq->lock, oldirql);
 		Irp->IoStatus.Status = abortstatus;
 		IoCompleteRequest(Irp, IO_NO_INCREMENT);
-		}						// aborting all requests now
+	}						// aborting all requests now
 
-	// If the device is busy with another request, or if the queue has
-	// been stalled due to some PnP or power event, just put the new IRP
-	// onto the queue and set a cancel routine pointer.
+// If the device is busy with another request, or if the queue has
+// been stalled due to some PnP or power event, just put the new IRP
+// onto the queue and set a cancel routine pointer.
 
 	else if (pdq->CurrentIrp || pdq->stallcount)
-		{						// queue this irp
+	{						// queue this irp
 
-		// (After Peretz) See if this IRP was cancelled before it got to us. If so,
-		// make sure either we or the cancel routine completes it
+	// (After Peretz) See if this IRP was cancelled before it got to us. If so,
+	// make sure either we or the cancel routine completes it
 
 		IoSetCancelRoutine(Irp, cancel);
 		if (Irp->Cancel && IoSetCancelRoutine(Irp, NULL))
-			{					// IRP has already been cancelled
+		{					// IRP has already been cancelled
 			KeReleaseSpinLock(&pdq->lock, oldirql);
 			Irp->IoStatus.Status = STATUS_CANCELLED;
 			IoCompleteRequest(Irp, IO_NO_INCREMENT);
-			}					// IRP has already been cancelled
+		}					// IRP has already been cancelled
 		else
-			{					// queue IRP
+		{					// queue IRP
 			InsertTailList(&pdq->head, &Irp->Tail.Overlay.ListEntry);
 			KeReleaseSpinLock(&pdq->lock, oldirql);
-			}					// queue IRP
-		}						// queue this irp
+		}					// queue IRP
+	}						// queue this irp
 
-	// If the device is idle and not stalled, pass the IRP to the StartIo
-	// routine associated with this queue
+// If the device is idle and not stalled, pass the IRP to the StartIo
+// routine associated with this queue
 
 	else
-		{						// start this irp
+	{						// start this irp
 		pdq->CurrentIrp = Irp;
 		KeReleaseSpinLock(&pdq->lock, DISPATCH_LEVEL);
 		(*pdq->StartIo)(fdo, Irp);
 		KeLowerIrql(oldirql);
-		}						// start this irp
-	}							// StartPacket
+	}						// start this irp
+}							// StartPacket
 
 ///////////////////////////////////////////////////////////////////////////////
 
 VOID NTAPI WaitForCurrentIrp(PDEVQUEUE pdq)
-	{							// WaitForCurrentIrp
+{							// WaitForCurrentIrp
 
-	// First reset the event that StartNextPacket sets each time.
+// First reset the event that StartNextPacket sets each time.
 
 	KeClearEvent(&pdq->evStop);
 
@@ -353,7 +383,7 @@ VOID NTAPI WaitForCurrentIrp(PDEVQUEUE pdq)
 	// in after we release the spin lock and start a new request behind our back.
 
 	ASSERT(pdq->stallcount != 0);	// should be stalled now!
-	
+
 	KIRQL oldirql;
 	KeAcquireSpinLock(&pdq->lock, &oldirql);
 	BOOLEAN mustwait = pdq->CurrentIrp != NULL;
@@ -361,4 +391,4 @@ VOID NTAPI WaitForCurrentIrp(PDEVQUEUE pdq)
 
 	if (mustwait)
 		KeWaitForSingleObject(&pdq->evStop, Executive, KernelMode, FALSE, NULL);
-	}							// WaitForCurrentIrp
+}							// WaitForCurrentIrp

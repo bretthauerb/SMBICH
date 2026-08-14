@@ -135,3 +135,5 @@
 /_DEV/.vs
 /_DEV/Source/Drivers/FscTime/Driver/Sources/RCa09788
 /_DEV/Source/Drivers/SmbIch/Driver/Sources/RCa04200
+/_DEV/Source/Drivers/SmbIch/Driver/Sources/SmbIch.DVL.XML
+/_DEV/Source/Drivers/SmbIch/Driver/Sources/smbich.sarif

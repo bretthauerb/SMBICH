@@ -2,14 +2,27 @@
 // Copyright (C) 1999 by Walter Oney
 // All rights reserved
 
+#pragma warning ( disable : 4201 )
+#pragma warning ( disable : 4514 )
+
 #include "stddcls.h"
 #include "driver.h"
 #include <ntstrsafe.h>
 
-static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo);
+
+#pragma warning ( default : 4201 )
+#pragma warning(disable: 28172) // False positive: RemoveDevice gibt Speicher frei
+
+static DRIVER_ADD_DEVICE AddDevice; 
 static VOID WdmDriverUnload(IN PDRIVER_OBJECT fdo);
 static VOID DriverUnload(IN PDRIVER_OBJECT fdo);
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev);
+
+extern "C" {
+
+	DRIVER_INITIALIZE DriverEntry;
+}
+	
 
 #if 0
 UNICODE_STRING servkey;
@@ -19,6 +32,8 @@ UNICODE_STRING servkey;
 
 
 #pragma INITCODE
+
+
 
 extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	IN PUNICODE_STRING RegistryPath)
@@ -60,15 +75,22 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	DriverObject->MajorFunction[IRP_MJ_SYSTEM_CONTROL] = DispatchSystemControl;
 
 	return STATUS_SUCCESS;
-}							// DriverEntry
+}		
 
-extern NTSTATUS DispatchSystemControl(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
+#pragma PAGEDCODE
+
+
+NTSTATUS
+DispatchSystemControl(
+	PDEVICE_OBJECT fdo,
+	PIRP Irp
+)
 {							// DispatchSystemControl
+	PAGED_CODE();
 	IoSkipCurrentIrpStackLocation(Irp);
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);
 }							// DispatchSystemControl
-
 ///////////////////////////////////////////////////////////////////////////////
 #pragma PAGEDCODE
 
@@ -82,10 +104,14 @@ static VOID DriverUnload(IN PDRIVER_OBJECT /*DriverObject*/)
 
 #pragma PAGEDCODE
 
-static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
+_Use_decl_annotations_
+static NTSTATUS
+AddDevice(
+	PDRIVER_OBJECT DriverObject,
+	PDEVICE_OBJECT pdo
+)
 {							// AddDevice
 	PAGED_CODE();
-
 	NTSTATUS status;
 
 	// Create a functional device object to represent the hardware we're managing.
@@ -118,6 +144,10 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 	pdx->bIoInitializeTimerCalled = FALSE;
 	KeInitializeTimer(&pdx->Timer);
 	KeInitializeDpc(&pdx->PollDpc, (PKDEFERRED_ROUTINE)DpcForPoll, fdo);
+
+
+	IoInitializeTimer(fdo, IoTimer, NULL);   // jetzt wirklich direkt in AddDevice ro suppress warning C28133
+	pdx->bIoInitializeTimerCalled = TRUE;
 
 	// From this point forward, any error will have side effects that need to
 	// be cleaned up. Using a try-finally block allows us to modify the program
@@ -157,7 +187,7 @@ static NTSTATUS AddDevice(IN PDRIVER_OBJECT DriverObject, IN PDEVICE_OBJECT pdo)
 
 		// Initialize DPC object
 
-		IoInitializeDpcRequest(fdo, DpcForIsr);
+		KeInitializeDpc(&pdx->IsrDpc, (PKDEFERRED_ROUTINE)DpcForIsr, fdo);
 
 		// Link our device object into the stack leading to the PDO
 		if (pdo)

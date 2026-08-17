@@ -334,9 +334,20 @@ VOID RemoveDevice(IN PDEVICE_OBJECT fdo)
 		IoDetachDevice(pdx->LowerDeviceObject);
 		pdx->LowerDeviceObject = NULL;
 	}
+	if (pdx->bIoInitializeTimerCalled)
+	{
+		IoStopTimer(fdo);
+	}
+
+	KeCancelTimer(&pdx->Timer);
+
+	KeRemoveQueueDpc(&pdx->PollDpc);
+	KeRemoveQueueDpc(&pdx->IsrDpc);
 
 	if (fdo)
 		IoDeleteDevice(fdo);
+
+
 }							// RemoveDevice
 
 ///////////////////////////////////////////////////////////////////////////////

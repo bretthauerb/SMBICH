@@ -14,10 +14,12 @@
 #pragma warning(disable: 28172) // False positive: RemoveDevice gibt Speicher frei
 
 static DRIVER_ADD_DEVICE AddDevice; 
-static VOID WdmDriverUnload(IN PDRIVER_OBJECT fdo);
 static VOID DriverUnload(IN PDRIVER_OBJECT fdo);
 static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev);
 
+
+
+#pragma INITCODE
 extern "C" {
 
 	DRIVER_INITIALIZE DriverEntry;
@@ -31,11 +33,10 @@ UNICODE_STRING servkey;
 ///////////////////////////////////////////////////////////////////////////////
 
 
-#pragma INITCODE
 
 
 
-extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
+NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	IN PUNICODE_STRING RegistryPath)
 {
 	RegistryPath;  // prevent compiler warning "'RegistryPath': unreferenced formal parameter" which is treated as error.
@@ -77,7 +78,7 @@ extern "C" NTSTATUS DriverEntry(IN PDRIVER_OBJECT DriverObject,
 	return STATUS_SUCCESS;
 }		
 
-#pragma LOCKEDCODE
+#pragma PAGEDCODE
 
 
 NTSTATUS
@@ -86,7 +87,7 @@ DispatchSystemControl(
 	PIRP Irp
 )
 {							// DispatchSystemControl
-	PAGED_CODE_LOCKED();
+	PAGED_CODE()
 	IoSkipCurrentIrpStackLocation(Irp);
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);
@@ -94,9 +95,11 @@ DispatchSystemControl(
 ///////////////////////////////////////////////////////////////////////////////
 #pragma PAGEDCODE
 
-static VOID DriverUnload(IN PDRIVER_OBJECT /*DriverObject*/)
+static VOID DriverUnload(IN PDRIVER_OBJECT DriverObject)
 {							// WdmDriverUnload
-	PAGED_CODE();
+	UNREFERENCED_PARAMETER(DriverObject);
+	PAGED_CODE()
+		
 #if 0
 	RtlFreeUnicodeString(&servkey);
 #endif
@@ -104,14 +107,13 @@ static VOID DriverUnload(IN PDRIVER_OBJECT /*DriverObject*/)
 
 #pragma PAGEDCODE
 
-_Use_decl_annotations_
 static NTSTATUS
 AddDevice(
 	PDRIVER_OBJECT DriverObject,
 	PDEVICE_OBJECT pdo
 )
 {							// AddDevice
-	PAGED_CODE();
+	PAGED_CODE()
 	NTSTATUS status;
 
 	// Create a functional device object to represent the hardware we're managing.
@@ -288,8 +290,10 @@ NTSTATUS ForwardAndWait(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 #pragma LOCKEDCODE
 
-static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT /*fdo*/, IN PIRP /*Irp*/, IN PKEVENT pev)
+static NTSTATUS OnRequestComplete(IN PDEVICE_OBJECT fdo, IN PIRP Irp, IN PKEVENT pev)
 {							// OnRequestComplete
+	UNREFERENCED_PARAMETER(fdo);
+	UNREFERENCED_PARAMETER(Irp);
 	KeSetEvent(pev, 0, FALSE);
 	return STATUS_MORE_PROCESSING_REQUIRED;
 }							// OnRequestComplete

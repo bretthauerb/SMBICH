@@ -7,8 +7,6 @@
 
 NTSTATUS DefaultPowerHandler(PDEVICE_EXTENSION pdx, IN PIRP Irp);
 
-
-
 enum POWSTATE {
 	InitialState = 0,				// initial state of FSM
 	SysPowerUpPending,				// system power-up IRP forwarded
@@ -50,8 +48,8 @@ NTSTATUS HandlePowerEvent(PPOWCONTEXT ctx, enum POWEVENT event);
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma PAGEDCODE
-_Use_decl_annotations_
-NTSTATUS DispatchPower(PDEVICE_OBJECT fdo, PIRP Irp)
+
+NTSTATUS DispatchPower(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DispatchPower
 	PAGED_CODE()
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;

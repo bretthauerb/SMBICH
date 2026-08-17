@@ -18,11 +18,11 @@ NTSTATUS HandleSurpriseRemoval(IN PDEVICE_OBJECT fdo, IN PIRP Irp);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#pragma LOCKEDCODE
-_Use_decl_annotations_
-NTSTATUS DispatchPnp(PDEVICE_OBJECT fdo, PIRP Irp)
-{							// DispatchPnp
+#pragma PAGEDCODE
 
+NTSTATUS DispatchPnp(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
+{							// DispatchPnp
+	PAGED_CODE()
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	NTSTATUS status = IoAcquireRemoveLock(&pdx->RemoveLock, Irp);
 	if (!NT_SUCCESS(status))
@@ -77,7 +77,7 @@ NTSTATUS DispatchPnp(PDEVICE_OBJECT fdo, PIRP Irp)
 
 NTSTATUS DefaultPnpHandler(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// DefaultPnpHandler
-	
+	PAGED_CODE()
 		IoSkipCurrentIrpStackLocation(Irp);
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 	return IoCallDriver(pdx->LowerDeviceObject, Irp);
@@ -87,7 +87,7 @@ NTSTATUS DefaultPnpHandler(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleCancelRemove(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleCancelRemove
-	
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_CANCEL_REMOVE_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -119,7 +119,7 @@ NTSTATUS HandleCancelRemove(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleCancelStop(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleCancelStop
-
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_CANCEL_STOP_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -149,7 +149,7 @@ NTSTATUS HandleCancelStop(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleQueryCapabilities(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleQueryCapabilities
-
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_QUERY_CAPABILITIES);
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	PDEVICE_CAPABILITIES pdc = stack->Parameters.DeviceCapabilities.Capabilities;
@@ -178,7 +178,7 @@ NTSTATUS HandleQueryCapabilities(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleQueryRemove(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleQueryRemove
-	
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_QUERY_REMOVE_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -201,7 +201,7 @@ NTSTATUS HandleQueryRemove(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleQueryStop(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleQueryStop
-
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_QUERY_STOP_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -222,7 +222,7 @@ NTSTATUS HandleQueryStop(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleRemoveDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleRemoveDevice
-	
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_REMOVE_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -262,7 +262,7 @@ NTSTATUS HandleRemoveDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleStartDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleStartDevice
-	
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_START_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	NTSTATUS status = ForwardAndWait(fdo, Irp);
@@ -308,7 +308,7 @@ NTSTATUS HandleStartDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleStopDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleStopDevice
-	
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_STOP_DEVICE);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
@@ -332,7 +332,7 @@ NTSTATUS HandleStopDevice(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 
 NTSTATUS HandleSurpriseRemoval(IN PDEVICE_OBJECT fdo, IN PIRP Irp)
 {							// HandleSurpriseRemoval
-
+	PAGED_CODE()
 		ASSERT(IoGetCurrentIrpStackLocation(Irp)->MinorFunction == IRP_MN_SURPRISE_REMOVAL);
 	Irp->IoStatus.Status = STATUS_SUCCESS;	// flag that we handled this IRP
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;

@@ -10,7 +10,7 @@
 
 VOID InitializeRemoveLock(PREMOVE_LOCK lock, ULONG tag, ULONG minutes, ULONG maxcount)
 {							// InitializeRemoveLock
-	PAGED_CODE();
+	PAGED_CODE()
 	KeInitializeEvent(&lock->evRemove, NotificationEvent, FALSE);
 
 	UNREFERENCED_PARAMETER(tag);
@@ -55,7 +55,7 @@ VOID ReleaseRemoveLock(PREMOVE_LOCK lock, PVOID tag)
 
 VOID ReleaseRemoveLockAndWait(PREMOVE_LOCK lock, PVOID tag)
 {							// ReleaseRemoveLockAndWait
-	PAGED_CODE();
+	PAGED_CODE()
 
 	UNREFERENCED_PARAMETER(tag);
 

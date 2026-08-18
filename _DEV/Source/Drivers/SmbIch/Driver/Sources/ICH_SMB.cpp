@@ -1,4 +1,4 @@
-#include "stddcls.h"
+﻿#include "stddcls.h"
 #include "driver.h"
 #include "DebugPrint.h"
 
@@ -110,15 +110,13 @@ VOID DpcForPoll(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PVOID, PVOID)
 {
 	PDEVICE_EXTENSION pdx = (PDEVICE_EXTENSION)fdo->DeviceExtension;
 
-	// Call the interrupt handler without interrupt object -> polling mode.
-	if (!OnInterrupt(NULL, pdx )) {
-
-		// Polling not yet done: re-schedule this DPC again in 100 ysec.
+	if (!OnInterrupt(NULL, pdx)) {
 		LARGE_INTEGER	liInterval;	liInterval.QuadPart = RelativeInterval_100ys;
-		KeSetTimer( &pdx->Timer, liInterval, &pdx->PollDpc );
-	} else {
+		KeSetTimer(&pdx->Timer, liInterval, &pdx->PollDpc);
+	}
+	else {
 		// Polling done: run DpcForIsr
-		IoRequestDpc(fdo, NULL, pdx);
+		KeInsertQueueDpc(&pdx->IsrDpc, NULL, pdx);   // ← statt IoRequestDpc(fdo, NULL, pdx)
 	}
 }
 

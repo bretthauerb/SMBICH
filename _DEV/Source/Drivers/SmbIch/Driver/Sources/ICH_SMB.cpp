@@ -116,7 +116,7 @@ VOID DpcForPoll(PKDPC /*Dpc*/, PDEVICE_OBJECT fdo, PVOID, PVOID)
 	}
 	else {
 		// Polling done: run DpcForIsr
-		KeInsertQueueDpc(&pdx->IsrDpc, NULL, pdx);   // ← statt IoRequestDpc(fdo, NULL, pdx)
+		KeInsertQueueDpc(&pdx->IsrDpc, NULL, pdx);   // ← statt IoRequestDpc(fdo, NULL, pdx) to suppress illegal-field-access-2
 	}
 }
 

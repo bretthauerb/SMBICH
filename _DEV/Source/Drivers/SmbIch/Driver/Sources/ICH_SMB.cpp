@@ -422,9 +422,9 @@ BOOLEAN OnInterrupt( IN PKINTERRUPT InterruptObject, IN PDEVICE_EXTENSION pdx )
 		}			
 	}
 	// Command should be finished, real work is done in Dpc
-	DisableInterrupt( pdx );
+	DisableInterrupt(pdx);
 	if (InterruptObject)
-		IoRequestDpc(pdx->DeviceObject, NULL, pdx);
+		KeInsertQueueDpc(&pdx->IsrDpc, NULL, pdx);   // statt IoRequestDpc(pdx->DeviceObject, NULL, pdx)
 	return TRUE;
 }							// OnInterrupt
 

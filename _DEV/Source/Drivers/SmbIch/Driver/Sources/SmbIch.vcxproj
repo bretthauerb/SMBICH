@@ -157,12 +157,12 @@
       <PreprocessorDefinitions>POOL_NX_OPTIN=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Inf>
-      <TimeStamp>7.0.0.0</TimeStamp>
+      <TimeStamp>8.5.0.0</TimeStamp>
     </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Inf>
-      <TimeStamp>7.0.0.0</TimeStamp>
+      <TimeStamp>8.5.0.0</TimeStamp>
     </Inf>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
